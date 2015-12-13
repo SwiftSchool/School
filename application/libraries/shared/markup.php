@@ -41,6 +41,24 @@ namespace Shared {
             return "";
         }
 
+        public static function hash($length = 22) {
+            $hash_format = "$2y$10$";  //tells PHP to use Blowfish with a "cost" of 10
+            $salt_length = 22; //Blowfish salts should be 22-characters or more
+            $salt = $this->generateSalt($salt_length);
+            $format_and_salt = $hash_format . $salt;
+            $hash = crypt($password, $format_and_salt);
+            return $hash;
+        }
+
+        public function checkHash($new, $old) {
+            $hash = crypt($new, $old);
+            if ($hash == $old) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 
 }

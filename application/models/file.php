@@ -30,25 +30,4 @@ class File extends Shared\Model {
      */
     protected $_size;
 
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     */
-    protected $_width;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     */
-    protected $_height;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     */
-    protected $_user;
-
 }
