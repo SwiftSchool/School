@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html class="transition-navbar-scroll top-navbar-xlarge bottom-footer" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="{echo strip_tags($seo->getKeywords())}">
+  <meta name="description" content="{echo strip_tags($seo->getDescription())}, app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav, ">
+  <meta name="author" content="Hemant Mann, hemant@cloudstuffs.com">
+  <meta name="developer" content="Hemant Mann, hemant@cloudstuffs.com">
+  <title>{echo $seo->getTitle()}</title>
+
+  <link rel="stylesheet" type="text/css" href="{echo CDN}css/all.css">
+  <link rel="stylesheet" type="text/css" href="{echo CDN}css/app.css">
+
+  </head>
+
+<body>
+    
+    {include layouts/navigation/student.html}
+    {ayield action}
+    <section class="footer-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <h4 class="text-headline text-light">Corporate</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html#">About the company</a></li>
+                            <li><a href="index.html#">Company offices</a></li>
+                            <li><a href="index.html#">Partners</a></li>
+                            <li><a href="index.html#">Terms of use</a></li>
+                            <li><a href="index.html#">Privacy</a></li>
+                            <li><a href="index.html#">Contact us</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <h4 class="text-headline text-light">Explore</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html">Courses</a></li>
+                            <li><a href="index.html">Tutors</a></li>
+                            <li><a href="index.html">Pricing</a></li>
+                            <li><a href="index.html">Become Tutor</a></li>
+                            <li><a href="index.html">Sign Up</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h4 class="text-headline text-light">Newsletter</h4>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Enter email here...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-grey-800" type="button">Subscribe</button>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <p>
+                        <a href="index.html#" class="btn btn-indigo-500 btn-circle"><i class="fa fa-facebook"></i></a>
+                        <a href="index.html#" class="btn btn-pink-500 btn-circle"><i class="fa fa-dribbble"></i></a>
+                        <a href="index.html#" class="btn btn-blue-500 btn-circle"><i class="fa fa-twitter"></i></a>
+                        <a href="index.html#" class="btn btn-danger btn-circle"><i class="fa fa-google-plus"></i></a>
+                        </p>
+                        <p class="text-subhead">
+                        &copy; 2015 Learning App by mosaicpro.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!-- Footer -->
+    <footer class="footer">
+        <strong>Learning</strong> v1.1.0 &copy; Copyright 2015
+    </footer>
+    <!-- // Footer -->
+    
+    <script src="{echo CDN}js/main.js"></script>
+    <script src="{echo CDN}js/all.js"></script>
+    <script src="{echo CDN}js/app.js"></script>
+
+</body>
+</html>

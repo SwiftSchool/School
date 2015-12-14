@@ -120,26 +120,20 @@
                 </li>
             </ul>
             <div class="navbar-right">
-                {if isset($user) && ($user->type == "student" || $user->type == "teacher")}
                 <ul class="nav navbar-nav navbar-nav-bordered navbar-nav-margin-right">
                     <!-- user -->
                     <li class="dropdown user">
-                        <a href="index.html#" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="{echo CDN}images/people/110/guy-6.jpg" alt="" class="img-circle" /> {echo $user->name}<span class="caret"></span>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="{echo CDN}images/people/110/guy-6.jpg" alt="" class="img-circle" /> {echo $user->name}<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="/{echo $user->type . "s"}/dashboard"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
-                            <li><a href="/{echo $user->type . "s"}/profile"><i class="fa fa-user"></i> Profile</a></li>
-                            <li><a href="/{echo $user->type . "s"}/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+                            <li><a href="/teachers/dashboard"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
+                            <li><a href="/teachers/profile"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="/teachers/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </li>
                     <!-- // END user -->
                 </ul>
-                {/if}
-                {else}
-                <a href="/students/login" class="navbar-btn btn btn-primary">Students Login</a>
-                <a href="/teachers/login" class="navbar-btn btn btn-primary">Teachers Login</a>
-                {/else}
             </div>
         </div>
         <!-- /.navbar-collapse -->

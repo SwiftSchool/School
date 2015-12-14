@@ -20,4 +20,10 @@ class Students extends Users {
         ));
         $view = $this->getActionView();
 	}
+
+	public function login() {
+		$this->willRenderLayoutView = false;
+		$view = $this->getActionView();
+		
+	}
 }
