@@ -19,26 +19,6 @@ namespace Shared {
          */
         protected $_user;
 
-        /**
-         * @protected
-         */
-        public function _admin() {
-            if (!$this->user->admin) {
-                throw new Router\Exception\Controller("Not a valid admin user account");
-            }
-        }
-
-        /**
-         * @protected
-         */
-        public function _secure() {
-            $user = $this->getUser();
-            if (!$user) {
-                header("Location: /login.html");
-                exit();
-            }
-        }
-
         public function seo($params = array()) {
             $seo = Registry::get("seo");
             foreach ($params as $key => $value) {
@@ -51,17 +31,6 @@ namespace Shared {
         public static function redirect($url) {
             header("Location: {$url}");
             exit();
-        }
-
-        public function setUser($user) {
-            $session = Registry::get("session");
-            if ($user) {
-                $session->set("user", $user->id);
-            } else {
-                $session->erase("user");
-            }
-            $this->_user = $user;
-            return $this;
         }
 
         public function __construct($options = array()) {

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * The Default Example Controller Class
+ * The Home Controller
  *
- * @author Faizan Ayubi
+ * @author Faizan Ayubi, Hemant Mann
  */
 use Shared\Controller as Controller;
 
