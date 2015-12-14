@@ -11,7 +11,7 @@ class Performance extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 3
+     * @length 8
      * 
      * @validate required
      */

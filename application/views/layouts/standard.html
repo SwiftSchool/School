@@ -1,45 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="transition-navbar-scroll top-navbar-xlarge bottom-footer" lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="SwiftMVC Framework">
-    <meta name="author" content="Faizan Ayubi">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Learning</title>
 
-    <title>SwiftMVC Framework</title>
+  <link rel="stylesheet" type="text/css" href="{echo CDN}css/all.css">
+  <link rel="stylesheet" type="text/css" href="{echo CDN}css/app.css">
 
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <style>
-    body {
-        padding-top: 70px;
-        /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
-    </style>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
+  </head>
 
 <body>
-
+    
     {include layouts/navigation/standard.html}
     {ayield action}
-
-    <!-- jQuery Version 1.11.1 -->
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <section class="footer-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <h4 class="text-headline text-light">Corporate</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html#">About the company</a></li>
+                            <li><a href="index.html#">Company offices</a></li>
+                            <li><a href="index.html#">Partners</a></li>
+                            <li><a href="index.html#">Terms of use</a></li>
+                            <li><a href="index.html#">Privacy</a></li>
+                            <li><a href="index.html#">Contact us</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <h4 class="text-headline text-light">Explore</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html">Courses</a></li>
+                            <li><a href="index.html">Tutors</a></li>
+                            <li><a href="index.html">Pricing</a></li>
+                            <li><a href="index.html">Become Tutor</a></li>
+                            <li><a href="index.html">Sign Up</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h4 class="text-headline text-light">Newsletter</h4>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Enter email here...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-grey-800" type="button">Subscribe</button>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <p>
+                        <a href="index.html#" class="btn btn-indigo-500 btn-circle"><i class="fa fa-facebook"></i></a>
+                        <a href="index.html#" class="btn btn-pink-500 btn-circle"><i class="fa fa-dribbble"></i></a>
+                        <a href="index.html#" class="btn btn-blue-500 btn-circle"><i class="fa fa-twitter"></i></a>
+                        <a href="index.html#" class="btn btn-danger btn-circle"><i class="fa fa-google-plus"></i></a>
+                        </p>
+                        <p class="text-subhead">
+                        &copy; 2015 Learning App by mosaicpro.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <!-- Footer -->
+    <footer class="footer">
+        <strong>Learning</strong> v1.1.0 &copy; Copyright 2015
+    </footer>
+    <!-- // Footer -->
+    <!-- Inline Script for colors and config objects; used by various external scripts; -->
+    <script src="{echo CDN}js/main.js"></script>
+    <script src="{echo CDN}js/all.js"></script>
+    <script src="{echo CDN}js/app.js"></script>
 
 </body>
-
 </html>
