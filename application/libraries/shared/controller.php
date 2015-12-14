@@ -39,6 +39,15 @@ namespace Shared {
             }
         }
 
+        public function seo($params = array()) {
+            $seo = Registry::get("seo");
+            foreach ($params as $key => $value) {
+                $property = "set" . ucfirst($key);
+                $seo->$property($value);
+            }
+            $params["view"]->set("seo", $seo);
+        }
+
         public static function redirect($url) {
             header("Location: {$url}");
             exit();
