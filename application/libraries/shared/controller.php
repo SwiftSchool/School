@@ -28,6 +28,16 @@ namespace Shared {
             $params["view"]->set("seo", $seo);
         }
 
+        public function noview() {
+            $this->willRenderLayoutView = false;
+            $this->willRenderActionView = false;
+        }
+
+        public function JSONview() {
+            $this->willRenderLayoutView = false;
+            $this->defaultExtension = "json";
+        }
+
         public static function redirect($url) {
             header("Location: {$url}");
             exit();
