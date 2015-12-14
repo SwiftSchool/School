@@ -3,7 +3,7 @@
 /**
  * The User Model
  *
- * @author Faizan Ayubi
+ * @author Hemant Mann
  */
 class User extends Shared\Model {
 
@@ -21,13 +21,45 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
+     * @length 100
+     * 
+     * @validate required, min(3), max(100)
+     */
+    protected $_username;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
      * @length 255
      * @index
      * 
-     * @validate required, max(255)
+     * @validate max(255)
      * @label email address
      */
     protected $_email;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 255
+     * @index
+     * 
+     * @validate max(255)
+     * @label Type of Account - student | teacher | school + admin = true | central + admin = true
+     */
+    protected $_type = "student";
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 13
+     * 
+     * @validate min(10), max(13)
+     */
+    protected $_phone;
 
     /**
      * @column

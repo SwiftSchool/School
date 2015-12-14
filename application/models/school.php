@@ -31,16 +31,6 @@ class School extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 255
-     * 
-     * @validate required, min(7), max(255)
-     */
-    protected $_email;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
      * @length 13
      * 
      * @validate required, min(10), max(13)
@@ -54,12 +44,5 @@ class School extends Shared\Model {
      * @length 100
      */
     protected $_logo;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     */
-    protected $_logo_id;
 
 }

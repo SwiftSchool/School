@@ -57,16 +57,6 @@ class Student extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 13
-     * 
-     * @validate required, min(10), max(13)
-     */
-    protected $_phone;
-
-    /**
-     * @column
-     * @readwrite
      * @type integer
      * @index
      */

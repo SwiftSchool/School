@@ -1,11 +1,11 @@
 <?php
 
 /**
- * The Project Model
+ * The Assignment Model
  *
  * @author Hemant Mann
  */
-class Project extends Shared\Model {
+class Assignment extends Shared\Model {
     /**
      * @column
      * @readwrite
@@ -29,7 +29,7 @@ class Project extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_student_id;
+    protected $_teacher_id;
 
     /**
      * @column
@@ -38,15 +38,5 @@ class Project extends Shared\Model {
      * @index
      */
     protected $_subject_id;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 20
-     *
-     * @label marks|grade scored
-     */
-    protected $_score;
 
 }

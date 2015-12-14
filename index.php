@@ -4,7 +4,8 @@ define("DEBUG", TRUE);
 
 // 1. define the default path for includes
 define("APP_PATH", str_replace(DIRECTORY_SEPARATOR, "/", dirname(__FILE__)));
-define("CDN", "http://localhost/School/public/assets/");
+define("CDN", "http://school.cloudstuff.tech/public/assets/");
+
 date_default_timezone_set('Asia/Kolkata');
 
 try {
