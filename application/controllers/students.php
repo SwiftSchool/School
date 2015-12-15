@@ -9,8 +9,22 @@ use Shared\Controller as Controller;
 use Framework\Registry as Registry;
 
 class Students extends Users {
+    /**
+     * @readwrite
+     */
+    protected $_student = false;
+
+    /**
+     * @protected
+     */
+    public function _student() {
+        if (!$this->student) {
+            self::redirect("/");
+        }
+        $this->changeLayout();
+    }
 	/**
-	 * @before _secure, changeLayout
+	 * @before _secure, _student
 	 */
 	public function index() {
 		$this->seo(array(
@@ -23,6 +37,9 @@ class Students extends Users {
 
 	}
 
+    /**
+     * @before _secure, _student
+     */
 	public function profile() {
 		$this->seo(array(
             "title" => "e-Learning",
@@ -32,8 +49,7 @@ class Students extends Users {
         ));
         $view = $this->getActionView();
 
-        $student = Registry::get("session")->get("student");
-        $view->set("student", $student);
+        $view->set("student", $this->student);
 	}
 
 }

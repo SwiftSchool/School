@@ -8,8 +8,23 @@
 use Shared\Controller as Controller;
 
 class Teachers extends Users {
+    /**
+     * @readwrite
+     */
+    protected $_teacher = false;
+
+    /**
+     * @protected
+     */
+    public function _teacher() {
+        if (!$this->teacher) {
+            self::redirect("/");
+        }
+        $this->changeLayout();
+    }
+
 	/**
-	 * @before _secure, changeLayout
+	 * @before _secure, _teacher
 	 */
 	public function index() {
 		$this->seo(array(
@@ -22,7 +37,7 @@ class Teachers extends Users {
 	}
 
 	/**
-	 * @before _secure, changeLayout
+	 * @before _secure, _teacher
 	 */
 	public function profile() {
 		$this->seo(array(

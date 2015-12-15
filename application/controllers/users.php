@@ -13,17 +13,8 @@ class Users extends Controller {
     /**
      * @protected
      */
-    public function _schoolAdmin() {
-        if (!$this->user->admin || $this->user->type != 'teacher') {
-            self::redirect("/404");
-        }
-    }
-
-    /**
-     * @protected
-     */
-    public function _centralAdmin() {
-        if (!$this->user->admin || $this->user->type != 'central') {
+    public function _admin() {
+        if (!$this->user->admin) {
             self::redirect("/404");
         }
     }
@@ -91,6 +82,7 @@ class Users extends Controller {
             case 'students':
             case 'teachers':
                 $location = "/$which/login";
+                Registry::get("session")->erase($this->user->type);
                 break;
             
             default:
@@ -125,6 +117,8 @@ class Users extends Controller {
                     $school = School::first(array("id = ?" => $person->school_id));
                     $session->set('school', $school);
                 }
+                $func = "set".$model.
+                $this->{$func}($person);
                 $session->set($user->type, $person);
 
                 self::redirect("/". $user->type."s/dashboard");
