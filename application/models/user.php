@@ -47,7 +47,7 @@ class User extends Shared\Model {
      * @index
      * 
      * @validate max(255)
-     * @label Type of Account - student | teacher | school + admin = true | central + admin = true
+     * @label Type of Account - student | teacher | teacher + admin = true (school's admin) | central + admin = true
      */
     protected $_type = "student";
 

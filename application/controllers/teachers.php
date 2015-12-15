@@ -21,4 +21,20 @@ class Teachers extends Users {
         $view = $this->getActionView();
 	}
 
+	/**
+	 * @before _secure, changeLayout
+	 */
+	public function profile() {
+		$this->seo(array(
+            "title" => "e-Learning",
+            "keywords" => "dashboard",
+            "description" => "Students/Parents Dashboard",
+            "view" => $this->getLayoutView()
+        ));
+        $view = $this->getActionView();
+
+        $teacher = Registry::get("session")->get("teacher");
+        $view->set("teacher", $teacher);
+	}
+
 }

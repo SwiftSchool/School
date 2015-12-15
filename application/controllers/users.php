@@ -13,8 +13,17 @@ class Users extends Controller {
     /**
      * @protected
      */
-    public function _admin() {
-        if (!$this->user->admin) {
+    public function _schoolAdmin() {
+        if (!$this->user->admin || $this->user->type != 'teacher') {
+            self::redirect("/404");
+        }
+    }
+
+    /**
+     * @protected
+     */
+    public function _centralAdmin() {
+        if (!$this->user->admin || $this->user->type != 'central') {
             self::redirect("/404");
         }
     }
@@ -23,8 +32,10 @@ class Users extends Controller {
      * @protected
      */
     public function _session() {
-        if ($this->user) {
+        if ($this->user && $this->user->type != 'central') {
             self::redirect("/". $this->user->type ."s/");
+        } elseif ($this->user->type == 'central') {
+            self::redirect("/central");
         }
     }
 
@@ -50,8 +61,12 @@ class Users extends Controller {
         return $this;
     }
 
+    /**
+     * @protected
+     */
     public function changeLayout() {
         $which = strtolower(get_class($this));
+        $which = substr($which, 0, strlen($which) - 1);
         $this->defaultLayout = "layouts/$which";
         $this->setLayout();
     }
@@ -75,7 +90,7 @@ class Users extends Controller {
         switch ($which) {
             case 'students':
             case 'teachers':
-                $location = "$which/login";
+                $location = "/$which/login";
                 break;
             
             default:
@@ -100,14 +115,22 @@ class Users extends Controller {
             if (!Markup::checkHash($password, $user->password)) {
                 return array("error" => "Invalid username/password");
             }
-
-            $model = ucfirst($user->type);
-            $person = $model::first(array("user_id = ?" => $user->id));
-
+            $session = Registry::get("session");
             $this->setUser($user);
-            Registry::get("session")->set($user->type, $person);
 
-            self::redirect("/". $user->type."s". "/dashboard");
+            $model = ucfirst(strtolower($user->type));
+            if ($model != 'Central') {
+                $person = $model::first(array("user_id = ?" => $user->id));
+                if ($person->school_id) {
+                    $school = School::first(array("id = ?" => $person->school_id));
+                    $session->set('school', $school);
+                }
+                $session->set($user->type, $person);
+
+                self::redirect("/". $user->type."s/dashboard");
+            } else {
+                self::redirect("/central");
+            }
         } else {
             return null;
         }
