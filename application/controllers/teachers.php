@@ -5,13 +5,28 @@
  *
  * @author Hemant Mann
  */
-use Shared\Controller as Controller;
-
 class Teachers extends Users {
     /**
      * @readwrite
      */
-    protected $_teacher = false;
+    protected $_teacher;
+
+    protected function setTeacher($teacher) {
+        $session = Registry::get("session");
+        if ($teacher) {
+            $session->set("teacher", $teacher);
+        } else {
+            $session->erase("teacher");
+        }
+        $this->_teacher = $teacher;
+        return $this;
+    }
+
+    public function __construct($options = array()) {
+        parent::__construct($options);
+
+        $this->teacher = Registry::get("session")->get("teacher");
+    }
 
     /**
      * @protected

@@ -56,8 +56,7 @@ class Users extends Controller {
      * @protected
      */
     public function changeLayout() {
-        $which = strtolower(get_class($this));
-        $which = substr($which, 0, strlen($which) - 1);
+        $which = $this->user->type;
         $this->defaultLayout = "layouts/$which";
         $this->setLayout();
     }
@@ -82,7 +81,8 @@ class Users extends Controller {
             case 'students':
             case 'teachers':
                 $location = "/$which/login";
-                Registry::get("session")->erase($this->user->type);
+                $func = "set".ucfirst($this->user->type);   
+                $this->$func(false);     
                 break;
             
             default:
@@ -117,10 +117,8 @@ class Users extends Controller {
                     $school = School::first(array("id = ?" => $person->school_id));
                     $session->set('school', $school);
                 }
-                $func = "set".$model.
-                $this->{$func}($person);
-                $session->set($user->type, $person);
-
+                $func = "set".$model;
+                $this->$func($person);
                 self::redirect("/". $user->type."s/dashboard");
             } else {
                 self::redirect("/central");
