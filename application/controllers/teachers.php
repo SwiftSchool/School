@@ -11,6 +11,11 @@ class Teachers extends Users {
      */
     protected $_teacher;
 
+    /**
+     * @readwrite
+     */
+    protected $_school;
+
     protected function setTeacher($teacher) {
         $session = Registry::get("session");
         if ($teacher) {
@@ -25,7 +30,24 @@ class Teachers extends Users {
     public function __construct($options = array()) {
         parent::__construct($options);
 
-        $this->teacher = Registry::get("session")->get("teacher");
+        $session = Registry::get("session");
+        $this->teacher = $session->get("teacher");
+        $this->school = $session->get("school");
+    }
+
+    public function render() {
+        if ($this->teacher) {
+            if ($this->actionView) {
+                $this->actionView->set("__teacher", $this->teacher);
+                $this->actionView->set("__school", $this->school);
+            }
+
+            if ($this->layoutView) {
+                $this->layoutView->set("__teacher", $this->teacher);
+                $this->layoutView->set("__school", $this->school);
+            }
+        }
+        parent::render();
     }
 
     /**
@@ -52,9 +74,6 @@ class Teachers extends Users {
 	public function profile() {
 		$this->setSEO(array("title" => "Teachers | Profile"));
         $view = $this->getActionView();
-
-        $teacher = Registry::get("session")->get("teacher");
-        $view->set("teacher", $teacher);
 	}
 
 }

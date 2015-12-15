@@ -30,6 +30,19 @@ class Students extends Users {
         $this->student = Registry::get("session")->get("student");
     }
 
+    public function render() {
+        if ($this->student) {
+            if ($this->actionView) {
+                $this->actionView->set("__student", $this->student);
+            }
+
+            if ($this->layoutView) {
+                $this->layoutView->set("__student", $this->student);
+            }
+        }
+        parent::render();
+    }
+
     /**
      * @protected
      */
@@ -45,7 +58,6 @@ class Students extends Users {
 	public function index() {
 		$this->setSEO(array("title" => "Students | Dashboard"));
         $view = $this->getActionView();
-        $view->set("student", $this->student);
 	}
 
     /**
@@ -54,8 +66,6 @@ class Students extends Users {
 	public function profile() {
 		$this->setSEO(array("title" => "Students | Profile"));
         $view = $this->getActionView();
-
-        $view->set("student", $this->student);
 	}
 
 }

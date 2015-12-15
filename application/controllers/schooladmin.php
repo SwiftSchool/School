@@ -31,7 +31,8 @@ class SchoolAdmin extends Teacher {
 	 * @before _secure, _admin
 	 */
 	public function addStudent() {
-
+		$this->setSEO(array("title" => "Admin | School | Add Students"));
+		$view = $this->getActionView();
 	}
 
 	/**
