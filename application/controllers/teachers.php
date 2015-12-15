@@ -42,12 +42,7 @@ class Teachers extends Users {
 	 * @before _secure, _teacher
 	 */
 	public function index() {
-		$this->seo(array(
-            "title" => "e-Learning",
-            "keywords" => "dashboard",
-            "description" => "Teachers Dashboard",
-            "view" => $this->getLayoutView()
-        ));
+		$this->setSEO(array("title" => "Teachers | Dashboard"));
         $view = $this->getActionView();
 	}
 
@@ -55,12 +50,7 @@ class Teachers extends Users {
 	 * @before _secure, _teacher
 	 */
 	public function profile() {
-		$this->seo(array(
-            "title" => "e-Learning",
-            "keywords" => "dashboard",
-            "description" => "Students/Parents Dashboard",
-            "view" => $this->getLayoutView()
-        ));
+		$this->setSEO(array("title" => "Teachers | Profile"));
         $view = $this->getActionView();
 
         $teacher = Registry::get("session")->get("teacher");

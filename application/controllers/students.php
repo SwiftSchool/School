@@ -43,12 +43,7 @@ class Students extends Users {
 	 * @before _secure, _student
 	 */
 	public function index() {
-		$this->seo(array(
-            "title" => "e-Learning",
-            "keywords" => "dashboard",
-            "description" => "Students/Parents Dashboard",
-            "view" => $this->getLayoutView()
-        ));
+		$this->setSEO(array("title" => "Students | Dashboard"));
         $view = $this->getActionView();
         $view->set("student", $this->student);
 	}
@@ -57,12 +52,7 @@ class Students extends Users {
      * @before _secure, _student
      */
 	public function profile() {
-		$this->seo(array(
-            "title" => "e-Learning",
-            "keywords" => "dashboard",
-            "description" => "Students/Parents Dashboard",
-            "view" => $this->getLayoutView()
-        ));
+		$this->setSEO(array("title" => "Students | Profile"));
         $view = $this->getActionView();
 
         $view->set("student", $this->student);

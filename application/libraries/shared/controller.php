@@ -102,6 +102,14 @@ namespace Shared {
             parent::render();
         }
 
+        protected function setSEO($opts = array()) {
+            $this->seo(array(
+                "title" => $opts["title"],
+                "keywords" => (isset($opts["keywords"]) ? $opts["keywords"] : "School, School Management System, Management System, e-Learning"),
+                "description" => (isset($opts["description"]) ? $opts["description"] : "A Management platform made for every school"),
+                "view" => $this->getLayoutView()
+            ));
+        }
     }
 
 }

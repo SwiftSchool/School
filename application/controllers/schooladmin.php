@@ -23,12 +23,7 @@ class SchoolAdmin extends Teacher {
 	 * @before _secure, _admin
 	 */
 	public function index() {
-		$this->seo(array(
-			"title" => "e-Learning",
-			"keywords" => "dashboard",
-			"description" => "Students/Parents Dashboard",
-			"view" => $this->getLayoutView()
-		));
+		$this->setSEO(array("title" => "Admin | School | Dashboard"));
 		$view = $this->getActionView();
 	}
 
