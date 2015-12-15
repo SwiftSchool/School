@@ -6,6 +6,7 @@
  * @author Hemant Mann
  */
 use Shared\Controller as Controller;
+use Framework\Registry as Registry;
 
 class Students extends Users {
 	/**
@@ -19,6 +20,7 @@ class Students extends Users {
             "view" => $this->getLayoutView()
         ));
         $view = $this->getActionView();
+
 	}
 
 }

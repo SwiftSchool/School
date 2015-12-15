@@ -85,6 +85,15 @@ class Student extends Shared\Model {
     /**
      * @column
      * @readwrite
+     * @type text
+     * @length 20
+     * @index
+     */
+    protected $_section;    
+
+    /**
+     * @column
+     * @readwrite
      * @type integer
      * @index
      */

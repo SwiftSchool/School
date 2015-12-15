@@ -7,6 +7,7 @@
 use Shared\Controller as Controller;
 use Framework\RequestMethods as RequestMethods;
 use Shared\Markup as Markup;
+use Framework\Registry as Registry;
 
 class Users extends Controller {
     /**
@@ -15,6 +16,15 @@ class Users extends Controller {
     public function _admin() {
         if (!$this->user->admin) {
             self::redirect("/404");
+        }
+    }
+
+    /**
+     * @protected
+     */
+    public function _session() {
+        if ($this->user) {
+            self::redirect("/". $this->user->type ."s/");
         }
     }
 
@@ -46,6 +56,9 @@ class Users extends Controller {
         $this->setLayout();
     }
 
+    /**
+     * @before _session
+     */
     public function login() {
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();
@@ -94,7 +107,7 @@ class Users extends Controller {
             $this->setUser($user);
             Registry::get("session")->set($user->type, $person);
 
-            self::redirect($user->type."s". "/dashboard");
+            self::redirect("/". $user->type."s". "/dashboard");
         } else {
             return null;
         }
