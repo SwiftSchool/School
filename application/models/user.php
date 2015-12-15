@@ -43,10 +43,10 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 255
+     * @length 20
      * @index
      * 
-     * @validate max(255)
+     * @validate max(20)
      * @label Type of Account - student | teacher | teacher + admin = true (school's admin) | central + admin = true
      */
     protected $_type = "student";
@@ -55,9 +55,9 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 13
+     * @length 10
      * 
-     * @validate min(10), max(13)
+     * @validate numeric, min(10), max(10)
      */
     protected $_phone;
 
@@ -65,7 +65,7 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 32
      * @index
      * 
      * @validate required, alpha, min(8), max(32)
