@@ -16,10 +16,55 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
-    <!-- Main Form -->
-    <div class="row">
-        
+
+    <!-- LIST -->
+    <div class="card">
+        <div class="title">
+            <h5><strong>Students</strong></h5>
+        </div>
+        <div class="content">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Student</th>
+                            <th>Username</th>
+                            <th>Class</th>
+                            <th>Created</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {script $i = 1}
+                        {foreach $s in $students}
+                        <tr>
+                            <td>{echo $i}</td>
+                            {script $usr = User::first(array("id = ?" => $s->user_id), array("name", "username"))}
+                            <td>{echo $usr->name}</td>
+                            <td>{echo $usr->username}</td>
+                            <td>{echo $s->class}</td>
+                            <td>{echo Framework\StringMethods::datetime_to_text($s->created)}</td>
+                            {script $live = $s->live}
+                            {if $live}
+                            <td class="green-text">Active</td>
+                            {/if}
+                            {else}
+                            <td class="red-text">Disabled</td>
+                            {/else}
+                            <td>
+                            <a href="/school_admin/editStudent/{echo $s->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/school_admin/deleteStudent/{echo $s->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            </td>
+                        </tr>
+                        {script ++$i}
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <!-- /Main Form -->
+    <!-- /LIST -->
 </section>
 <!-- /Main Content -->
