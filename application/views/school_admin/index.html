@@ -7,9 +7,9 @@
                 <h1>Dashboard</h1>
                 <ul>
                     <li>
-                        <a href="dashboard.html#"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                        <a href="/school_admin/"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
-                    <li><a href='dashboard.html'>Dashboard</a>
+                    <li><a href='#'>Dashboard</a>
                     </li>
                 </ul>
             </div>
@@ -24,8 +24,8 @@
         <div class="col l4 s12">
             <a href="dashboard.html#" class="card-panel stats-card indigo lighten-2 indigo-text text-lighten-5">
             <i class="fa fa-comments-o"></i>
-            <span class="count">145</span>
-            <div class="name">Feedbacks</div>
+            <span class="count">{echo $counts->teachers}</span>
+            <div class="name"><h4>Teachers</h4></div>
             </a>
         </div>
         <div class="col l4 s12">
@@ -34,8 +34,8 @@
             <div class="graph">
                 <div id="sparkcard1"></div>
             </div>
-            <span class="count">342</span>
-            <div class="name">Posts</div>
+            <span class="count">{echo $counts->students}</span>
+            <div class="name"><h4>Students</h4></div>
             </a>
         </div>
         <div class="col l4 s12">

@@ -7,6 +7,7 @@
 use Framework\RequestMethods as RequestMethods;
 use Shared\Markup as Markup;
 use Framework\Registry as Registry;
+use Framework\ArrayMethods as ArrayMethods;
 
 class School_Admin extends Teachers {
 	/**
@@ -27,6 +28,13 @@ class School_Admin extends Teachers {
 	public function index() {
 		$this->setSEO(array("title" => "Admin | School | Dashboard"));
 		$view = $this->getActionView();
+
+		$counts = array();
+		$counts["students"] = Student::count(array("school_id = ?" => $this->school->id));
+		$counts["teachers"] = Teacher::count(array("school_id = ?" => $this->school->id));
+		$counts = ArrayMethods::toObject($counts);
+
+		$view->set("counts", $counts);
 	}
 
 	/**
