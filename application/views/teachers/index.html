@@ -2,7 +2,7 @@
     <div class="container parallax-layer" data-opacity="true">
         <div class="media v-middle">
             <div class="media-left text-center">
-                <a href="website-instructor-courses.html#">
+                <a href="website-instructor-dashboard.html#">
                 <img src="{echo CDN}images/people/110/guy-1.jpg" alt="people" class="img-circle width-80" />
                 </a>
             </div>
@@ -10,7 +10,7 @@
                 <h1 class="text-white text-display-1 margin-v-0">{echo $user->name}</h1>
             </div>
             <div class="media-right">
-                <span class="label bg-blue-500">Teacher</span>
+                <span class="label bg-blue-500">Instructor</span>
             </div>
         </div>
     </div>
@@ -20,98 +20,248 @@
         <div class="row">
             <div class="col-md-9">
                 <div class="row" data-toggle="isotope">
-                    <div class="item col-xs-12 col-sm-6 col-lg-4">
+                    <div class="item col-xs-12 col-lg-6">
                         <div class="panel panel-default paper-shadow" data-z="0.5">
-                            <div class="cover overlay cover-image-full hover">
-                                <span class="img icon-block height-150 bg-default"></span>
-                                <a href="website-instructor-course-edit-course.html" class="padding-none overlay overlay-full icon-block bg-default">
-                                <span class="v-center">
-                                <i class="fa fa-github"></i>
-                                </span>
-                                </a>
-                                <a href="website-instructor-course-edit-course.html" class="overlay overlay-full overlay-hover overlay-bg-white">
-                                <span class="v-center">
-                                <span class="btn btn-circle btn-white btn-lg"><i class="fa fa-graduation-cap"></i></span>
-                                </span>
-                                </a>
+                            <div class="panel-heading">
+                                <div class="media v-middle">
+                                    <div class="media-body">
+                                        <h4 class="text-headline margin-none">Earnings</h4>
+                                        <p class="text-subhead text-light">This Month</p>
+                                    </div>
+                                    <div class="media-right">
+                                        <a class="btn btn-white btn-flat" href="website-instructor-earnings.html">Reports</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="panel-body">
-                                <h4 class="text-headline margin-v-0-10"><a href="website-instructor-course-edit-course.html">Github Webhooks for Beginners</a></h4>
+                                <div id="line-holder" data-toggle="flot-chart-earnings" class="flotchart-holder height-200"></div>
                             </div>
-                            <hr class="margin-none" />
+                            <hr/>
                             <div class="panel-body">
-                                <a class="btn btn-white btn-flat paper-shadow relative" data-z="0" data-hover-z="1" data-animated href="website-instructor-course-edit-course.html"><i class="fa fa-fw fa-pencil"></i> Edit course</a>
+                                <div class="row text-center">
+                                    <div class="col-md-6">
+                                        <h4 class="margin-none">Gross Revenue</h4>
+                                        <p class="text-display-1 text-warning margin-none">102.4k</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="margin-none">Net Revenue</h4>
+                                        <p class="text-display-1 text-success margin-none">55k</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="item col-xs-12 col-sm-6 col-lg-4">
+                    <div class="item col-xs-12 col-lg-6">
                         <div class="panel panel-default paper-shadow" data-z="0.5">
-                            <div class="cover overlay cover-image-full hover">
-                                <span class="img icon-block height-150 bg-primary"></span>
-                                <a href="website-instructor-course-edit-course.html" class="padding-none overlay overlay-full icon-block bg-primary">
-                                <span class="v-center">
-                                <i class="fa fa-css3"></i>
-                                </span>
-                                </a>
-                                <a href="website-instructor-course-edit-course.html" class="overlay overlay-full overlay-hover overlay-bg-white">
-                                <span class="v-center">
-                                <span class="btn btn-circle btn-primary btn-lg"><i class="fa fa-graduation-cap"></i></span>
-                                </span>
-                                </a>
+                            <div class="panel-heading">
+                                <h4 class="text-headline margin-none">My Courses</h4>
+                                <p class="text-subhead text-light">Your recent courses</p>
                             </div>
-                            <div class="panel-body">
-                                <h4 class="text-headline margin-v-0-10"><a href="website-instructor-course-edit-course.html">Awesome CSS with LESS Processing</a></h4>
-                            </div>
-                            <hr class="margin-none" />
-                            <div class="panel-body">
-                                <a class="btn btn-white btn-flat paper-shadow relative" data-z="0" data-hover-z="1" data-animated href="website-instructor-course-edit-course.html"><i class="fa fa-fw fa-pencil"></i> Edit course</a>
+                            <ul class="list-group">
+                                <li class="list-group-item media v-middle">
+                                    <div class="media-body">
+                                        <a href="website-instructor-course-edit-course.html" class="text-subhead list-group-link">Basics of HTML</a>
+                                    </div>
+                                    <div class="media-right">
+                                        <div class="progress progress-mini width-100 margin-none">
+                                            <div class="progress-bar progress-bar-green-300" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item media v-middle">
+                                    <div class="media-body">
+                                        <a href="website-instructor-course-edit-course.html" class="text-subhead list-group-link">Angular in Steps</a>
+                                    </div>
+                                    <div class="media-right">
+                                        <div class="progress progress-mini width-100 margin-none">
+                                            <div class="progress-bar progress-bar-green-300" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item media v-middle">
+                                    <div class="media-body">
+                                        <a href="website-instructor-course-edit-course.html" class="text-subhead list-group-link">Bootstrap Foundations</a>
+                                    </div>
+                                    <div class="media-right">
+                                        <div class="progress progress-mini width-100 margin-none">
+                                            <div class="progress-bar progress-bar-green-300" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="panel-footer text-right">
+                                <a href="website-instructor-courses.html" class="btn btn-white paper-shadow relative" data-z="0" data-hover-z="1" data-animated>View all</a>
+                                <a href="website-instructor-course-edit-course.html" class="btn btn-primary paper-shadow relative" data-z="0" data-hover-z="1" data-animated>CREATE COURSE <i class="fa fa-plus"></i></a>
                             </div>
                         </div>
                     </div>
-                    <div class="item col-xs-12 col-sm-6 col-lg-4">
-                        <div class="panel panel-default paper-shadow" data-z="0.5">
-                            <div class="cover overlay cover-image-full hover">
-                                <span class="img icon-block height-150 bg-lightred"></span>
-                                <a href="website-instructor-course-edit-course.html" class="padding-none overlay overlay-full icon-block bg-lightred">
-                                <span class="v-center">
-                                <i class="fa fa-windows"></i>
-                                </span>
-                                </a>
-                                <a href="website-instructor-course-edit-course.html" class="overlay overlay-full overlay-hover overlay-bg-white">
-                                <span class="v-center">
-                                <span class="btn btn-circle btn-red-500 btn-lg"><i class="fa fa-graduation-cap"></i></span>
-                                </span>
-                                </a>
-                            </div>
-                            <div class="panel-body">
-                                <h4 class="text-headline margin-v-0-10"><a href="website-instructor-course-edit-course.html">Vagrant Portable Environments</a></h4>
-                            </div>
-                            <hr class="margin-none" />
-                            <div class="panel-body">
-                                <a class="btn btn-white btn-flat paper-shadow relative" data-z="0" data-hover-z="1" data-animated href="website-instructor-course-edit-course.html"><i class="fa fa-fw fa-pencil"></i> Edit course</a>
-                            </div>
+                    <div class="item col-xs-12 col-lg-6">
+                        <div class="s-container">
+                            <h4 class="text-headline margin-none">Comments</h4>
+                            <p class="text-subhead text-light">Latest student comments </p>
+                        </div>
+                        <div class="panel panel-default">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div class="media v-middle margin-v-0-10">
+                                        <div class="media-body">
+                                            <p class="text-subhead">
+                                            <a href="website-instructor-dashboard.html#">
+                                            <img src="{echo CDN}images/people/110/guy-3.jpg" alt="person" class="width-30 img-circle" />
+                                            </a> &nbsp;
+                                            <a href="website-instructor-dashboard.html#">mosaicpro</a>
+                                            <span class="text-caption text-light">51 min ago</span>
+                                            </p>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="width-50 text-right">
+                                                <a href="website-instructor-dashboard.html#" class="btn btn-white btn-xs"><i class="fa fa-reply"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias, blanditiis eligendi expedita ipsam minus non numquam quidem reiciendis ut?</p>
+                                    <p class="text-light"><span class="caption">Course:</span> <a href="app-student-course.html">Basics Of HTML</a></p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="media v-middle margin-v-0-10">
+                                        <div class="media-body">
+                                            <p class="text-subhead">
+                                            <a href="website-instructor-dashboard.html#">
+                                            <img src="{echo CDN}images/people/110/guy-4.jpg" alt="person" class="width-30 img-circle" />
+                                            </a> &nbsp;
+                                            <a href="website-instructor-dashboard.html#">mosaicpro</a>
+                                            <span class="text-caption text-light">46 min ago</span>
+                                            </p>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="width-50 text-right">
+                                                <a href="website-instructor-dashboard.html#" class="btn btn-white btn-xs"><i class="fa fa-reply"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias, blanditiis eligendi expedita ipsam minus non numquam quidem reiciendis ut?</p>
+                                    <p class="text-light"><span class="caption">Course:</span> <a href="app-student-course.html">Basics Of HTML</a></p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="media v-middle margin-v-0-10">
+                                        <div class="media-body">
+                                            <p class="text-subhead">
+                                            <a href="website-instructor-dashboard.html#">
+                                            <img src="{echo CDN}images/people/110/guy-4.jpg" alt="person" class="width-30 img-circle" />
+                                            </a> &nbsp;
+                                            <a href="website-instructor-dashboard.html#">mosaicpro</a>
+                                            <span class="text-caption text-light">60 min ago</span>
+                                            </p>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="width-50 text-right">
+                                                <a href="website-instructor-dashboard.html#" class="btn btn-white btn-xs"><i class="fa fa-reply"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias, blanditiis eligendi expedita ipsam minus non numquam quidem reiciendis ut?</p>
+                                    <p class="text-light"><span class="caption">Course:</span> <a href="app-student-course.html">Basics Of HTML</a></p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="media v-middle margin-v-0-10">
+                                        <div class="media-body">
+                                            <p class="text-subhead">
+                                            <a href="website-instructor-dashboard.html#">
+                                            <img src="{echo CDN}images/people/110/guy-3.jpg" alt="person" class="width-30 img-circle" />
+                                            </a> &nbsp;
+                                            <a href="website-instructor-dashboard.html#">mosaicpro</a>
+                                            <span class="text-caption text-light">55 min ago</span>
+                                            </p>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="width-50 text-right">
+                                                <a href="website-instructor-dashboard.html#" class="btn btn-white btn-xs"><i class="fa fa-reply"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias, blanditiis eligendi expedita ipsam minus non numquam quidem reiciendis ut?</p>
+                                    <p class="text-light"><span class="caption">Course:</span> <a href="app-student-course.html">Basics Of HTML</a></p>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="media v-middle margin-v-0-10">
+                                        <div class="media-body">
+                                            <p class="text-subhead">
+                                            <a href="website-instructor-dashboard.html#">
+                                            <img src="{echo CDN}images/people/110/guy-4.jpg" alt="person" class="width-30 img-circle" />
+                                            </a> &nbsp;
+                                            <a href="website-instructor-dashboard.html#">mosaicpro</a>
+                                            <span class="text-caption text-light">17 min ago</span>
+                                            </p>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="width-50 text-right">
+                                                <a href="website-instructor-dashboard.html#" class="btn btn-white btn-xs"><i class="fa fa-reply"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium alias, blanditiis eligendi expedita ipsam minus non numquam quidem reiciendis ut?</p>
+                                    <p class="text-light"><span class="caption">Course:</span> <a href="app-student-course.html">Basics Of HTML</a></p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="item col-xs-12 col-sm-6 col-lg-4">
+                    <div class="item col-xs-12 col-lg-6">
                         <div class="panel panel-default paper-shadow" data-z="0.5">
-                            <div class="cover overlay cover-image-full hover">
-                                <span class="img icon-block height-150 bg-grey-200"></span>
-                                <a href="website-instructor-course-edit-course.html" class="padding-none overlay overlay-full icon-block bg-grey-200">
-                                <span class="v-center">
-                                <i class="fa fa-plus text-grey-600"></i>
-                                </span>
-                                </a>
+                            <div class="panel-heading">
+                                <div class="media v-middle">
+                                    <div class="media-body">
+                                        <h4 class="text-headline margin-none">Transactions</h4>
+                                        <p class="text-subhead text-light">Latest from statement</p>
+                                    </div>
+                                    <div class="media-right">
+                                        <a class="btn btn-white btn-flat" href="website-instructor-statement.html">Statement</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table text-subhead v-middle">
+                                    <tbody>
+                                        <tr>
+                                            <td class="width-100 text-caption">
+                                                <div class="label label-grey-200 label-xs">12 Jan 2015</div>
+                                            </td>
+                                            <td>Adrian Demian</td>
+                                            <td class="width-80 text-center"><a href="website-instructor-dashboard.html#">#11539</a></td>
+                                            <td class="width-50 text-center">&dollar;61</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="width-100 text-caption">
+                                                <div class="label label-grey-200 label-xs">12 Jan 2015</div>
+                                            </td>
+                                            <td>Adrian Demian</td>
+                                            <td class="width-80 text-center"><a href="website-instructor-dashboard.html#">#7963</a></td>
+                                            <td class="width-50 text-center">&dollar;61</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="width-100 text-caption">
+                                                <div class="label label-grey-200 label-xs">12 Jan 2015</div>
+                                            </td>
+                                            <td>Adrian Demian</td>
+                                            <td class="width-80 text-center"><a href="website-instructor-dashboard.html#">#5064</a></td>
+                                            <td class="width-50 text-center">&dollar;44</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="width-100 text-caption">
+                                                <div class="label label-grey-200 label-xs">12 Jan 2015</div>
+                                            </td>
+                                            <td>Adrian Demian</td>
+                                            <td class="width-80 text-center"><a href="website-instructor-dashboard.html#">#9434</a></td>
+                                            <td class="width-50 text-center">&dollar;37</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ul class="pagination margin-top-none">
-                    <li class="disabled"><a href="website-instructor-courses.html#">&laquo;</a></li>
-                    <li class="active"><a href="website-instructor-courses.html#">1</a></li>
-                    <li><a href="website-instructor-courses.html#">2</a></li>
-                    <li><a href="website-instructor-courses.html#">3</a></li>
-                    <li><a href="website-instructor-courses.html#">&raquo;</a></li>
-                </ul>
                 <br/>
                 <br/>
             </div>
@@ -122,8 +272,8 @@
                     </div>
                     <div class="panel-body list-group">
                         <ul class="list-group list-group-menu">
-                            <li class="list-group-item"><a class="link-text-color" href="website-instructor-dashboard.html">Dashboard</a></li>
-                            <li class="list-group-item active"><a class="link-text-color" href="website-instructor-courses.html">My Courses</a></li>
+                            <li class="list-group-item active"><a class="link-text-color" href="website-instructor-dashboard.html">Dashboard</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="website-instructor-courses.html">My Courses</a></li>
                             <li class="list-group-item"><a class="link-text-color" href="website-instructor-messages.html">Messages</a></li>
                             <li class="list-group-item"><a class="link-text-color" href="website-instructor-earnings.html">Earnings</a></li>
                             <li class="list-group-item"><a class="link-text-color" href="website-instructor-statement.html">Statement</a></li>
