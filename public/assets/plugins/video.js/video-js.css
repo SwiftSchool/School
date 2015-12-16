@@ -21,7 +21,7 @@ The control icons are from a custom font. Each icon corresponds to a character
 @font-face {
   font-family: 'VideoJS';
   src: url('font/vjs.eot');
-  src: url('font/vjs.eot?#iefix') format('embedded-opentype'), url('font/vjs.woff') format('woff'), url('font/vjs.ttf') format('truetype'), url('font/vjs.svg#icomoon') format('svg');
+  src: url('font/vjs.eot@') format('embedded-opentype'), url('font/vjs.woff') format('woff'), url('font/vjs.ttf') format('truetype'), url('font/vjs.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }
