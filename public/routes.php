@@ -22,6 +22,11 @@ $routes = array(
         "pattern" => "teachers/dashboard",
         "controller" => "teachers",
         "action" => "index"
+    ),
+    array(
+        "pattern" => "school_admin/login",
+        "controller" => "teachers",
+        "action" => "login"
     )
 );
 

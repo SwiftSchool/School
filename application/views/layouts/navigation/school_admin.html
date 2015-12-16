@@ -7,28 +7,27 @@
         <div class="burg3"></div>
         </a>
         <!-- Sidebar toggle -->
-        <!-- Logo -->
-        <a href="#!" class="brand-logo">
-        <img src="{echo CDN}plugins/_con/images/logo.png" alt="Con">
-        </a>
-        <!-- /Logo -->
         <!-- Menu -->
         <ul>
-            <li><a href="#!" class="search-bar-toggle"><i class="mdi-action-search"></i></a>
+            <li>
+                <a href="#!" class="search-bar-toggle"><i class="mdi-action-search"></i></a>
             </li>
             <li class="user">
                 <a class="dropdown-button" href="#!" data-activates="user-dropdown">
-                <img src="{echo CDN}plugins/_con/images/user.jpg" alt="John Doe" class="circle">John Doe<i class="mdi-navigation-expand-more right"></i>
+                <img src="{echo CDN}plugins/_con/images/user.jpg" alt="{echo $user->name}" class="circle">{echo $user->name}<i class="mdi-navigation-expand-more right"></i>
                 </a>
                 <ul id="user-dropdown" class="dropdown-content">
-                    <li><a href="page-profile.html"><i class="fa fa-user"></i> Profile</a>
+                    <li>
+                        <a href="/teachers/dashboard">Teacher Panel</a>
                     </li>
-                    <li><a href="mail-inbox.html"><i class="fa fa-envelope"></i> Messages <span class="badge new">2</span></a>
+                    <li>
+                        <a href="mail-inbox.html"><i class="fa fa-envelope"></i> Messages <span class="badge new">2</span></a>
                     </li>
-                    <li><a href="#!"><i class="fa fa-cogs"></i> Settings</a>
+                    <li>
+                        <a href="#!"><i class="fa fa-cogs"></i> Settings</a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="page-sign-in.html"><i class="fa fa-sign-out"></i> Logout</a>
+                    <li><a href="/teachers/logout"><i class="fa fa-sign-out"></i> Logout</a>
                     </li>
                 </ul>
             </li>
@@ -57,9 +56,6 @@
     <div class="nano">
         <div class="nano-content">
             <ul>
-                <li>
-                    <a href="angularjs/" class="waves-effect waves-blue"><i class="ion ion-social-angular"></i> Open Angular Version <span class="badge new"></span></a>
-                </li>
                 <li class="label">Menu</li>
                 <li class="open">
                     <a class="yay-sub-toggle waves-effect waves-blue"><i class="fa fa-dashboard"></i> Dashboards<span class="yay-collapse-icon mdi-navigation-expand-more"></span></a>

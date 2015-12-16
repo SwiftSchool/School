@@ -35,8 +35,9 @@ class Users extends Controller {
      */
     public function _secure() {
         $user = $this->getUser();
+        $which = strtolower(get_class($this));
         if (!$user) {
-            header("Location: /login");
+            header("Location: /$which/login");
             exit();
         }
     }
@@ -122,7 +123,12 @@ class Users extends Controller {
                     $session->set('school', $school);
                 }
                 $func = "set".$model;
-                $this->$func($person);
+                try {
+                    $this->$func($person);    
+                } catch (\Exception $e) {
+                    $this->setUser(false);
+                    self::redirect("/404");
+                }
                 self::redirect("/". $user->type."s/dashboard");
             } else {
                 self::redirect("/central");

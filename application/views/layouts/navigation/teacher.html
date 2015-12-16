@@ -109,6 +109,11 @@
             </ul>
             <div class="navbar-right">
                 <ul class="nav navbar-nav navbar-nav-bordered navbar-nav-margin-right">
+                    {if $user->admin}
+                    <li>
+                        <a href="/school_admin">Admin Panel</a>
+                    </li>
+                    {/if}
                     <!-- user -->
                     <li class="dropdown user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
