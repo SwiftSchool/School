@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>  <html class="lt-ie7"> <![endif]-->
+<!--[if IE 7]>     <html class="lt-ie8"> <![endif]-->
+<!--[if IE 8]>     <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html>
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Con - Admin Dashboard with Material Design</title>
+
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/nanoScroller/nanoscroller.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/material-design-icons/css/material-design-icons.min.css" />
+  <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/ionicons/css/ionicons.min.css" />
+
+  <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/google-code-prettify/prettify.css" />
+  <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/_con/css/_con.min.css" />
+
+  <!--[if lt IE 9]>
+    <script src="{echo CDN}plugins/html5shiv/html5shiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  {include layouts/navigation/school_admin.html}
+  {ayield action}
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <div class="layer-overlay"></div>
+    <div class="layer-content">
+      <form action="#!">
+        <!-- Header -->
+        <a class="search-bar-toggle grey-text text-darken-2" href="#!"><i class="mdi-navigation-close"></i></a>
+
+        <!-- Search Input -->
+        <div class="input-field">
+          <i class="mdi-action-search prefix"></i>
+          <input type="text" name="con-search" placeholder="Search...">
+        </div>
+
+        <!-- Search Results -->
+        <div class="search-results">
+
+          <div class="row">
+            <div class="col s12 l4">
+              <h4>Users</h4>
+
+              <div class="each-result">
+                <img src="{echo CDN}plugins/_con/images/user2.jpg" alt="Felecia Castro" class="circle photo">
+                <div class="title">Felecia Castro</div>
+                <div class="label">Content Manager</div>
+              </div>
+
+              <div class="each-result">
+                <img src="{echo CDN}plugins/_con/images/user3.jpg" alt="Max Brooks" class="circle photo">
+                <div class="title">Max Brooks</div>
+                <div class="label">Programmer</div>
+              </div>
+
+              <div class="each-result">
+                <img src="{echo CDN}plugins/_con/images/user4.jpg" alt="Patsy Griffin" class="circle photo">
+                <div class="title">Patsy Griffin</div>
+                <div class="label">Support</div>
+              </div>
+
+              <div class="each-result">
+                <img src="{echo CDN}plugins/_con/images/user6.jpg" alt="Vernon Garrett" class="circle photo">
+                <div class="title">Vernon Garrett</div>
+                <div class="label">Photographer</div>
+              </div>
+            </div>
+            <div class="col s12 l4">
+              <h4>Articles</h4>
+
+              <div class="each-result">
+                <div class="icon circle blue white-text">MD</div>
+                <div class="title">Material Design</div>
+                <div class="label nowrap">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi consequatur debitis veritatis dolorum, enim libero!</div>
+              </div>
+
+              <div class="each-result">
+                <div class="icon circle teal white-text">
+                  <i class="fa fa-dashboard"></i>
+                </div>
+                <div class="title">Admin Dashboard</div>
+                <div class="label nowrap">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi consequatur debitis veritatis dolorum, enim libero!</div>
+              </div>
+
+              <div class="each-result">
+                <div class="icon circle orange white-text">RD</div>
+                <div class="title">Responsive Design</div>
+                <div class="label nowrap">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi consequatur debitis veritatis dolorum, enim libero!</div>
+              </div>
+
+              <div class="each-result">
+                <div class="icon circle red white-text">
+                  <i class="fa fa-tablet"></i>
+                </div>
+                <div class="title">Mobile First</div>
+                <div class="label nowrap">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi consequatur debitis veritatis dolorum, enim libero!</div>
+              </div>
+            </div>
+            <div class="col s12 l4">
+              <h4>Posts</h4>
+
+              <div class="no-result">No results were found ;(</div>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <!-- /Search Bar -->
+
+
+  <footer>&copy; {echo date('Y')}<strong>SwiftDeal Online LLP</strong>. All rights reserved</footer>
+  <!-- DEMO [REMOVE IT ON PRODUCTION] -->
+  <script type="text/javascript" src="{echo CDN}plugins/_con/js/_demo.js"></script>
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="{echo CDN}plugins/jquery/jquery.min.js"></script>
+
+  <!-- jQuery RAF (improved animation performance) -->
+  <script type="text/javascript" src="{echo CDN}plugins/jqueryRAF/jquery.requestAnimationFrame.min.js"></script>
+
+  <!-- nanoScroller -->
+  <script type="text/javascript" src="{echo CDN}plugins/nanoScroller/jquery.nanoscroller.min.js"></script>
+
+  <!-- Materialize -->
+  <script type="text/javascript" src="{echo CDN}plugins/materialize/js/materialize.min.js"></script>
+
+
+  <!-- Simple Weather -->
+  <script type="text/javascript" src="{echo CDN}plugins/simpleWeather/jquery.simpleWeather.min.js"></script>
+
+  <!-- Sparkline -->
+  <script type="text/javascript" src="{echo CDN}plugins/sparkline/jquery.sparkline.min.js"></script>
+
+  <!-- Flot -->
+  <script type="text/javascript" src="{echo CDN}plugins/flot/jquery.flot.min.js"></script>
+  <script type="text/javascript" src="{echo CDN}plugins/flot/jquery.flot.time.min.js"></script>
+  <script type="text/javascript" src="{echo CDN}plugins/flot/jquery.flot.pie.min.js"></script>
+  <script type="text/javascript" src="{echo CDN}plugins/flot/jquery.flot.tooltip.min.js"></script>
+  <script type="text/javascript" src="{echo CDN}plugins/flot/jquery.flot.categories.min.js"></script>
+
+  <!-- d3 -->
+  <script type="text/javascript" src="{echo CDN}plugins/d3/d3.min.js"></script>
+
+  <!-- Sortable -->
+  <script type="text/javascript" src="{echo CDN}plugins/sortable/Sortable.min.js"></script>
+
+  <!-- Main -->
+  <script type="text/javascript" src="{echo CDN}plugins/_con/js/_con.min.js"></script>
+
+
+  <!-- Google Prettify -->
+  <script type="text/javascript" src="{echo CDN}plugins/google-code-prettify/prettify.js"></script>
+  <script src="{echo CDN}js/admin.js"></script>
+</body>
+
+</html>

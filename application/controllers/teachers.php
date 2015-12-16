@@ -5,6 +5,8 @@
  *
  * @author Hemant Mann
  */
+use Framework\Registry as Registry;
+
 class Teachers extends Users {
     /**
      * @readwrite

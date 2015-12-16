@@ -56,7 +56,11 @@ class Users extends Controller {
      * @protected
      */
     public function changeLayout() {
-        $which = $this->user->type;
+        $which = strtolower(get_class($this));
+        $check = substr($which, -1);
+        if ($check == "s") {
+            $which = substr($which, 0, -1);
+        }
         $this->defaultLayout = "layouts/$which";
         $this->setLayout();
     }
