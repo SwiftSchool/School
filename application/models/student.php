@@ -48,15 +48,6 @@ class Student extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * 
-     * @validate required
-     */
-    protected $_hobbies;
-
-    /**
-     * @column
-     * @readwrite
      * @type integer
      * @index
      */
@@ -89,7 +80,7 @@ class Student extends Shared\Model {
      * @length 20
      * @index
      */
-    protected $_section;    
+    protected $_section;
 
     /**
      * @column

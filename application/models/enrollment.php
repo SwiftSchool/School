@@ -20,7 +20,7 @@ class Enrollment extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_subject_id;
+    protected $_course_id;
 
     /**
      * @column
