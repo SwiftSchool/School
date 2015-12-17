@@ -17,9 +17,42 @@
     </div>
     <!-- /Breadcrumb -->
     <!-- Main Form -->
-    <div class="row">
-        
-    </div>
+    <form action="" method="post">
+        <div class="card-panel">
+            <div class="input-field">
+                <i class="mdi-social-person-add prefix"></i>
+                <input type="text" class="validate" required="" name="name">
+                <label for="Teacher Name">Teacher Name</label>
+            </div>
+
+            <div class="input-field">
+                <i class="fa fa-user prefix"></i>
+                <input type="text" class="validate" required="" name="username">
+                <label for="Username">Username</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-communication-email prefix"></i>
+                <input type="email" class="" name="email">
+                <label for="Email">Email</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-communication-phone prefix"></i>
+                <input type="text" class="" pattern="[7-9]{1}[0-9]{9}" maxlength="10" required="" name="phone">
+                <label for="phone">Phone</label>
+            </div>
+
+            <div class="input-field">
+                <input type="password" class="" required="" name="password">
+                <label for="phone">Password</label>
+            </div>
+
+            <input type="hidden" name="action" value="addTeacher">
+            <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+            <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+        </div>
+    </form>
     <!-- /Main Form -->
 </section>
 <!-- /Main Content -->

@@ -17,68 +17,81 @@
     </div>
     <!-- /Breadcrumb -->
     <!-- Main Form -->
-    <div class="row">
-        <form action="" method="post">
-            <div class="card-panel">
-                <div class="input-field">
-                    <input type="text" class="validate" required="" name="name">
-                    <label for="Student Name">Student Name</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="validate" required="" name="username">
-                    <label for="Username">Username</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" name="email">
-                    <label for="Email">Email</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="phone">
-                    <label for="phone">Phone</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="father_name">
-                    <label for="Father Name">Father Name</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="mother_name">
-                    <label for="Mother Name">Mother Name</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="dob">
-                    <label for="Date of Birth">Date of Birth</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="address">
-                    <label for="address">Address</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="class">
-                    <label for="Class">Class</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" name="section">
-                    <label for="section">Section</label>
-                </div>
-
-                <div class="input-field">
-                    <input type="text" class="" required="" name="roll_no">
-                    <label for="Roll No">Roll No</label>
-                </div>
-
-                <input type="hidden" name="action" value="addStudent">
+    <form action="" method="post">
+        <div class="card-panel">
+            <div class="input-field">
+                <i class="mdi-social-person-add prefix"></i>
+                <input type="text" class="validate" required="" name="name">
+                <label for="Student Name">Student Name</label>
             </div>
-        </form>
-    </div>
+
+            <div class="input-field">
+                <i class="fa fa-user prefix"></i>
+                <input type="text" class="validate" required="" name="username">
+                <label for="Username">Username</label>
+            </div>
+
+            <div class="input-field">
+                <input type="password" class="" required="" name="password">
+                <label for="phone">Password</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-communication-email prefix"></i>
+                <input type="email" class="" name="email">
+                <label for="Email">Email</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-communication-phone prefix"></i>
+                <input type="text" class="" pattern="[7-9]{1}[0-9]{9}" maxlength="10" required="" name="phone">
+                <label for="phone">Phone</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-social-people prefix"></i>
+                <input type="text" class="" required="" name="father_name">
+                <label for="Father Name">Father Name</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-social-people prefix"></i>
+                <input type="text" class="" required="" name="mother_name">
+                <label for="Mother Name">Mother Name</label>
+            </div>
+
+            <div class="input-field">
+                <i class="fa fa-calendar prefix"></i>
+                <input type="text" required="" name="dob" value="YY-MM-DD">
+                <label for="Date of Birth">Date of Birth</label>
+            </div>
+
+            <div class="input-field">
+                <i class="mdi-action-home prefix"></i>
+                <input type="text" class="" required="" name="address">
+                <label for="address">Address</label>
+            </div>
+
+            <div class="input-field">
+                <input type="text" class="" required="" name="class">
+                <label for="Class">Class</label>
+            </div>
+
+            <div class="input-field">
+                <input type="text" class="" name="section">
+                <label for="section">Section</label>
+            </div>
+
+            <div class="input-field">
+                <input type="text" class="" required="" name="roll_no">
+                <label for="Roll No">Roll No</label>
+            </div>
+
+            <input type="hidden" name="action" value="addStudent">
+            <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+            <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+        </div>
+    </form>
     <!-- /Main Form -->
 </section>
 <!-- /Main Content -->
