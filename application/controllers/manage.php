@@ -23,7 +23,8 @@ class Manage extends School_Admin {
 	 * @before _secure, _admin
 	 */
 	public function index() {
-
+		$this->setSEO(array("title" => "Admin | School | Manage"));
+		$view = $this->getActionView();
 	}
 	
 	/**
