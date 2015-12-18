@@ -55,24 +55,27 @@ class Add extends School_Admin {
 	 * @before _secure, _admin
 	 */
 	public function courses($grade_id) {
-		$this->_verifyInput("Grade", array("id = ?" => $grade_id, "school_id = ?" => $this->school->id));
+		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "school_id = ?" => $this->school->id));
 		$this->setSEO(array("title" => "Admin | School | Add Courses"));
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "addCourses") {
-			$name = RequestMethods::post("name");
+			$title = RequestMethods::post("title");
 			$description = RequestMethods::post("description");
+			$code = RequestMethods::post("code");
 
-			foreach ($name as $key => $value) {
+			foreach ($title as $key => $value) {
 				$course = new Course(array(
-					"name" => Markup::sanitize($value),
+					"title" => Markup::sanitize($value),
 					"description" => Markup::sanitize($description[$key]),
+					"code" => Markup::sanitize($code[$key]),
 					"grade_id" => $grade_id
 				));
-				$coures->save();
+				$course->save();
 			}
-			$view->set("Success", 'Courses add successfully! <a href="/manage/courses/'. $grade_id .'">Manage Courses</a>');
+			$view->set("success", 'Courses added successfully! <a href="/manage/courses/'. $grade_id .'">Manage Courses</a>');
 		}
+		$view->set("grade", $grade);
 	}
 
 	/**

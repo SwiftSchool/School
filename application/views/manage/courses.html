@@ -1,0 +1,67 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Manage Subjects</h1>
+                <h4>Class: {echo $grade->title}</h4>
+                <ul>
+                    <li>
+                        <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/manage">Manage</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="#">Class: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Subjects</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+    <!-- LIST -->
+    <div class="card">
+        <div class="title">
+            <h5><strong>Subjects</strong></h5>
+        </div>
+        <div class="content">
+        	{if count($courses) > 0}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Class</th>
+                            <th>Description</th>
+                            <th>Code</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {script $i = 1}
+                        {foreach $c in $courses}
+                        <tr>
+                            <td>{echo $i}</td>
+                            <td>{echo $c->title}</td>
+                            <td>{echo $c->description}</td>
+                            <td>{echo $c->code}</td>
+                            <td>{echo Framework\StringMethods::datetime_to_text($c->created)}</td>
+                            <td>
+                            <a href="/edit/course/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Subject</a>
+                            <a href="/school_admin/delete/course/{echo $c->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove Subject</a>
+                            </td>
+                        </tr>
+                        {script ++$i}
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            {/if}
+            {else}
+            <a href="/add/grades" class="btn btn-small green z-depth-0"><i class="mdi mdi-content-add"></i> Add Classes</a>
+            {/else}
+        </div>
+    </div>
+    <!-- /LIST -->
+</section>
+<!-- /Main Content -->

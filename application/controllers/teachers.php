@@ -72,6 +72,8 @@ class Teachers extends Users {
         $check = $model::first($fields);
         if (!$check) {
             self::redirect($this->dashboard);
+        } else {
+            return $check;
         }
     }
 
