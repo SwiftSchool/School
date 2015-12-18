@@ -20,9 +20,8 @@ class Exam extends Shared\Model {
      * @column
      * @readwrite
      * @type date
-     * @index
      */
-    protected $_start_date;
+    protected $_commence;
 
     /**
      * @column

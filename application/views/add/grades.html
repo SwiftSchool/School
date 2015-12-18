@@ -1,0 +1,49 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Add Classes</h1>
+                <ul>
+                    <li>
+                        <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/add">Add</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="#">Classes</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+    <!-- Main Form -->
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
+    <form action="" method="post">
+        <div class="card-panel gradeStructure">
+            <div class="input-field">
+                <i class="mdi-social-person-add prefix"></i>
+                <input type="text" class="validate" required="" name="name[]">
+                <label for="Name">Name</label>
+            </div>
+
+            <div class="input-field">
+                <i class="fa fa-user prefix"></i>
+                <textarea name="description[]" class="materialize-textarea"></textarea>
+                <label for="Description">Description</label>
+            </div>
+        </div>
+        <div id="more_data"></div>
+        <br>
+        <a class="waves-effect btn" id="addMore" data-page="grade"><i class="mdi-content-add-box"></i> Add Another</a>
+        <input type="hidden" name="action" value="addGrades">
+        <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+        <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+    </form>
+    <!-- /Main Form -->
+</section>
+<!-- /Main Content -->

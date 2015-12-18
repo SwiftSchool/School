@@ -11,6 +11,13 @@ use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
 class Add extends School_Admin {
+	/**
+	 * @protected
+	 */
+	public function changeLayout() {
+		$this->defaultLayout = "layouts/school_admin";
+		$this->setLayout();
+	}
 	
 	/**
 	 * @before _secure, _admin
@@ -25,14 +32,14 @@ class Add extends School_Admin {
 
 			foreach ($name as $key => $value) {
 				$grade = new Grade(array(
-					"name" => Markup::sanitize($value),
+					"title" => Markup::sanitize($value),
 					"description" => Markup::sanitize($description[$key]),
 					"school_id" => $this->school->id
 				));
 				$grade->save();
 			}
 
-			$view->set("Success", 'Grades added successfully! Now <a href="/manage/grades">Manage Classes</a>');
+			$view->set("success", 'Classes added successfully! Now <a href="/manage/grades">Manage Classes</a>');
 		}
 	}
 

@@ -1,2 +1,66 @@
-Table
-grade	no. of courses	action
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Dashboard</h1>
+                <ul>
+                    <li>
+                        <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/manage">Manage</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="#">Classes</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+    <!-- LIST -->
+    <div class="card">
+        <div class="title">
+            <h5><strong>Classes</strong></h5>
+        </div>
+        <div class="content">
+        	{if count($grades) > 0}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Class</th>
+                            <th>Description</th>
+                            <th>Created</th>
+                            <th>Courses</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {script $i = 1}
+                        {foreach $g in $grades}
+                        <tr>
+                            <td>{echo $i}</td>
+                            <td>{echo $g->title}</td>
+                            <td>{echo $g->description}</td>
+                            <td>{echo Framework\StringMethods::datetime_to_text($g->created)}</td>
+                            {script $courses = Course::count(array("grade_id = ?" => $g->id))}
+                            <td>{echo $courses}</td>
+                            <td>
+                            <a href="/add/courses/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
+                            <a href="/edit/grade/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Class</a>
+                            </td>
+                        </tr>
+                        {script ++$i}
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            {/if}
+            {else}
+            <a href="/add/grades" class="btn btn-small green z-depth-0"><i class="mdi mdi-content-add"></i> Add Classes</a>
+            {/else}
+        </div>
+    </div>
+    <!-- /LIST -->
+</section>
+<!-- /Main Content -->

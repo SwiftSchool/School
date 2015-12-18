@@ -50,17 +50,6 @@ class Classroom extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 4
-     * @index
-     *
-     * @validate required, min(4), max(4)
-     */
-    protected $_year;
-
-    /**
-     * @column
-     * @readwrite
      * @type integer
      * @index
      */

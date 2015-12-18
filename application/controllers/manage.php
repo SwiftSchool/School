@@ -12,6 +12,14 @@ use Framework\ArrayMethods as ArrayMethods;
 
 class Manage extends School_Admin {
 	/**
+	 * @protected
+	 */
+	public function changeLayout() {
+		$this->defaultLayout = "layouts/school_admin";
+		$this->setLayout();
+	}
+	
+	/**
 	 * @before _secure, _admin
 	 */
 	public function grades() {

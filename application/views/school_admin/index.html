@@ -19,31 +19,25 @@
     <!-- Stats Panels -->
     <div class="row">
         <div class="col l4 s12">
-            <a href="dashboard.html#" class="card-panel stats-card indigo lighten-2 indigo-text text-lighten-5">
-            <i class="fa fa-comments-o"></i>
+            <a href="/manage/teachers" class="card-panel stats-card indigo lighten-2 indigo-text text-lighten-5">
+            <i class="fa fa-user-secret"></i>
             <span class="count">{echo $counts->teachers}</span>
             <div class="name"><h4>Teachers</h4></div>
             </a>
         </div>
         <div class="col l4 s12">
-            <a href="dashboard.html#" class="card-panel stats-card blue lighten-2 blue-text text-lighten-5">
-            <i class="fa fa-send"></i>
-            <div class="graph">
-                <div id="sparkcard1"></div>
-            </div>
+            <a href="/manage/students" class="card-panel stats-card blue lighten-2 blue-text text-lighten-5">
+            <i class="fa fa-users"></i>
             <span class="count">{echo $counts->students}</span>
             <div class="name"><h4>Students</h4></div>
             </a>
         </div>
         <div class="col l4 s12">
-            <div class="card-panel stats-card teal lighten-2 green-text text-lighten-5">
-                <div class="progress small teal lighten-1">
-                    <div class="teal darken-1" style="width: 42%"></div>
-                </div>
-                <i class="fa fa-spinner"></i>
-                <span class="count">42%</span>
-                <div class="name">Server Load</div>
-            </div>
+            <a href="/manage/grades" class="card-panel stats-card teal lighten-2 green-text text-lighten-5">
+                <i class="mdi-action-assignment-ind"></i>
+                <span class="count">{echo $counts->classes}</span>
+                <div class="name"><h4>Classes</h4></div>
+            </a>
         </div>
     </div>
     <!-- /Stats Panels -->
