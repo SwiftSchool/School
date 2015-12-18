@@ -49,6 +49,10 @@ class Add extends School_Admin {
 	public function students() {
 		$this->setSEO(array("title" => "Admin | School | Add Students"));
 		$view = $this->getActionView();
+
+		if (RequestMethods::post("action") == "addStudents") {
+			$this->_saveUser(array("type" => "student"));
+		}
 	}
 
 	/**
@@ -84,6 +88,66 @@ class Add extends School_Admin {
 	public function teachers() {
 		$this->setSEO(array("title" => "Admin | School | Add Teachers"));
 		$view = $this->getActionView();
+
+		if (RequestMethods::post("action") == "addTeachers") {
+			$this->_saveUser(array("type" => "teacher"));
+
+			$view->set("success", 'Teachers saved successfully!! Go to <a href="/manage/teachers">Manage Teachers');
+		}
+	}
+
+	protected function _saveUser($opts) {
+		$name = RequestMethods::post("name");
+		$email = RequestMethods::post("email");
+		$phone = RequestMethods::post("phone");
+
+		if ($opts["type"] == "student") {
+			$dob = RequestMethods::post("dob");
+			$address = RequestMethods::post("address");
+			$parentName = RequestMethods::post("parent");
+			$relation = RequestMethods::post("relation");
+			$parentPhone = RequestMethods::post("parent_phone");
+		}
+
+		$last = \User::first(array(), array("id", "created"), "created", "desc");
+		$prefix = strtolower(array_shift(explode(" ", $this->school->name)));
+		foreach ($name as $key => $value) {
+			$user = new \User(array(
+				"name" => $value,
+				"email" => $email[$key],
+				"phone" => $phone[$key],
+				"username" => $prefix. "_" .($last->id + 1),
+				"password" => Markup::encrypt("password"),
+				"type" => $opts["type"]
+			));
+			$user->save();
+
+			if ($opts["type"] == "teacher") {
+				$teacher = new \Teacher(array(
+					"user_id" => $user->id,
+					"school_id" => $this->school->id
+				));
+				$teacher->save();
+			} elseif ($opts["type"] == "student") {
+				$parent = new \StudentParent(array(
+					"relation" => $relation[$key],
+					"phone" => $parentPhone[$key],
+					"name" => $parentName[$key]
+				));
+				$parent->save();
+
+				$student = new \Student(array(
+					"dob" => $dob[$key],
+					"parent_id" => $parent->id,
+					"address" => $address[$key],
+					"school_id" => $this->school->id,
+					"roll_no" => "",
+					"user_id" => $user->id
+				));
+				$student->save();
+			}
+			
+		}
 	}
 
 

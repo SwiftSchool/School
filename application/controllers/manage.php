@@ -62,15 +62,21 @@ class Manage extends School_Admin {
 	 * @before _secure, _admin
 	 */
 	public function teachers() {
-		$this->setSEO(array("title" => "Admin | School | Add Grades"));
+		$this->setSEO(array("title" => "Admin | School | Manage Teachers"));
 		$view = $this->getActionView();
+
+		$teachers = Teacher::all(array("school_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+		$view->set("teachers", $teachers);
 	}
 
 	/**
 	 * @before _secure, _admin
 	 */
 	public function students() {
-		$this->setSEO(array("title" => "Admin | School | Add Grades"));
+		$this->setSEO(array("title" => "Admin | School | Manage Students"));
 		$view = $this->getActionView();
+
+		$students = Student::all(array("school_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+		$view->set("students", $students);
 	}
 }
