@@ -10,6 +10,12 @@ use Framework\Registry as Registry;
 class Teachers extends Users {
     /**
      * @readwrite
+     * Stores the dashboard redirect url
+     */
+    protected $_dashboard = "/teachers/dashboard";
+
+    /**
+     * @readwrite
      */
     protected $_teacher;
 
@@ -60,6 +66,13 @@ class Teachers extends Users {
             self::redirect("/");
         }
         $this->changeLayout();
+    }
+
+    protected function _verifyInput($model, $fields) {
+        $check = $model::first($fields);
+        if (!$check) {
+            self::redirect($this->dashboard);
+        }
     }
 
 	/**

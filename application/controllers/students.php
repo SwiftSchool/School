@@ -10,6 +10,12 @@ use Framework\Registry as Registry;
 class Students extends Users {
     /**
      * @readwrite
+     * Stores the dashboard redirect url
+     */
+    protected $_dashboard = "/students/dashboard";
+
+    /**
+     * @readwrite
      */
     protected $_student;
 

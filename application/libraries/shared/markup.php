@@ -75,6 +75,12 @@ namespace Shared {
             return $salt;
         }
 
+        public static function sanitize($string = "") {
+            $string = trim($string);
+
+            return ($string) ? $string : "";
+        }
+
     }
 
 }
