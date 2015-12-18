@@ -10,10 +10,10 @@ class Course extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 50
      * @index
      *
-     * @validate required, min(5), max(100)
+     * @validate required, min(5), max(50)
      */
     protected $_title;
 
@@ -21,8 +21,6 @@ class Course extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * 
-     * @validate required
      */
     protected $_description;    
 
@@ -30,24 +28,13 @@ class Course extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 20
+     * @length 30
      * @index
      * 
-     * @label MATH-101 etc
-     * @validate required, min(5), max(20)
+     * @value MATH-101 etc
+     * @validate max(30)
      */
     protected $_code;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 10
-     * 
-     * @label 'Grade' | 'Marks'
-     * @validate required
-     */
-    protected $_marking;
 
     /**
      * @column
@@ -55,6 +42,6 @@ class Course extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_school_id;
+    protected $_grade_id;
 
 }

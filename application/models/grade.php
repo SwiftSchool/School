@@ -1,18 +1,19 @@
 <?php
 
 /**
- * The Assignment Model
+ * The Grade | Class Model
  *
  * @author Hemant Mann
  */
-class Assignment extends Shared\Model {
-    /**
+class Grade extends Shared\Model {
+	/**
      * @column
      * @readwrite
      * @type text
-     * @length 100
-     * 
-     * @validate required
+     * @length 20
+     * @index
+     *
+     * @validate required, min(5), max(20)
      */
     protected $_title;
 
@@ -29,14 +30,5 @@ class Assignment extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_teacher_id;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     * @index
-     */
-    protected $_course_id;
-
+    protected $_school_id;
 }

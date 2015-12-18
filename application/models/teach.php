@@ -1,18 +1,18 @@
 <?php
 
 /**
- * The Enrollment Model
+ * The Teach Model - Contains which teacher teaches which course
  *
  * @author Hemant Mann
  */
-class Enrollment extends Shared\Model {
+class Teach extends Shared\Model {
     /**
      * @column
      * @readwrite
      * @type integer
      * @index
      */
-    protected $_student_id;
+    protected $_course_id;
 
     /**
      * @column
@@ -20,6 +20,6 @@ class Enrollment extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_classroom_id;
+    protected $_teacher_id;
 
 }
