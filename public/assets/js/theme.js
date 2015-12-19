@@ -433,15 +433,3 @@ setTimeout(function() {
 // setTimeout(function() {
 //   $(window).resize();
 // }, 1);
-
-$(document).ready(function() {
-    $('#addMore').on('click', function(event) {
-        event.preventDefault();
-        
-        var page = $(this).data('page'),
-            formClass = page + 'Structure',
-            form = $('.' + formClass);
-
-        $("#more_data").after(form);
-    });
-});

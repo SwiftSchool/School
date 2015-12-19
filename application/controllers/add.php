@@ -50,9 +50,12 @@ class Add extends School_Admin {
 		$this->setSEO(array("title" => "Admin | School | Add Students"));
 		$view = $this->getActionView();
 
+		$grades = Grade::all(array("school_id = ?" => $this->school->id));
+
 		if (RequestMethods::post("action") == "addStudents") {
 			$this->_saveUser(array("type" => "student"));
 		}
+		$view->set("grades", $grades);
 	}
 
 	/**
@@ -110,13 +113,14 @@ class Add extends School_Admin {
 		}
 
 		$last = \User::first(array(), array("id", "created"), "created", "desc");
+		$id = $last->id;
 		$prefix = strtolower(array_shift(explode(" ", $this->school->name)));
 		foreach ($name as $key => $value) {
 			$user = new \User(array(
 				"name" => $value,
 				"email" => $email[$key],
 				"phone" => $phone[$key],
-				"username" => $prefix. "_" .($last->id + 1),
+				"username" => $prefix. "_" .(++$id),
 				"password" => Markup::encrypt("password"),
 				"type" => $opts["type"]
 			));

@@ -53,6 +53,31 @@ class School_Admin extends Teachers {
 	/**
 	 * @before _secure, _admin
 	 */
+	public function misc() {
+		$this->setSEO(array("title" => "Admin | School | Dashboard"));
+		$view = $this->getActionView();
+		if (RequestMethods::post("action") == "process") {
+			$opts = RequestMethods::post("opts");
+			$query = $opts["query"];
+
+			$where = array();
+			foreach ($query as $q) {
+				$where[$q["where"]] = $q["value"];
+			}
+			
+			$check = $opts["model"]::all($where);
+			if ($check) {
+				$view->set("result", $check);
+			} else {
+				$view->set("error", true);
+			}
+		}
+		
+	}
+
+	/**
+	 * @before _secure, _admin
+	 */
 	public function addStudent() {
 		$this->setSEO(array("title" => "Admin | School | Add Student"));
 		$view = $this->getActionView();

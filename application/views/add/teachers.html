@@ -24,33 +24,33 @@
     </div>
     {/if}
     <form action="" method="post">
-        <div class="card-panel gradeStructure">
-            <div class="input-field">
-                <i class="mdi-social-person-add prefix"></i>
-                <input type="text" class="validate" required="" name="title[]">
-                <label for="Subject Name">Subject Name*</label>
-            </div>
-
-            <div class="input-field">
-                <i class="fa fa-user prefix"></i>
-                <textarea name="description[]" class="materialize-textarea"></textarea>
-                <label for="Subject Description">Subject Description</label>
-            </div>
-
-            <div class="input-field">
-                <i class="mdi-action-assignment prefix"></i>
-                <input type="text" class="validate" name="code[]">
-                <label for="Subject Code">Subject Code</label>
-            </div>
-        </div>
-        <div id="more_data"></div>
-        <br>
-        <p style="color: red;">* Marked fields are required</p>
-        <a class="waves-effect btn" id="addMore" data-page="grade"><i class="mdi-content-add-box"></i> Add Another</a>
-        <input type="hidden" name="action" value="addCourses">
-        <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
-        <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
-    </form>
-    <!-- /Main Form -->
+    <table class="table card-panel">
+        <thead>
+            <tr>
+                <th>Name *</th>
+                <th>Email</th>
+                <th>Phone *</th>
+            </tr>
+        </thead>
+        <tbody>    
+            <tr>
+                <td class="input-field">
+                    <i class="mdi-social-person-add prefix"></i>
+                    <input type="text" class="validate" required="" name="name[]">
+                </td>
+                <td class="input-field">
+                    <i class="fa fa-envelope-o prefix"></i>
+                    <input type="text" class="validate" name="email[]">
+                </td>
+                <td class="input-field">
+                    <i class="mdi-communication-stay-current-portrait prefix"></i>
+                    <input type="text" maxlength="10" pattern="[7-9]{1}[0-9]{9}" class="validate" required="" name="phone[]">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="hidden" name="action" value="addTeachers">
+    <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+    <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
 </section>
 <!-- /Main Content -->
