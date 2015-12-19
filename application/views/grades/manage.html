@@ -9,8 +9,7 @@
                     <li>
                         <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
-                    <li><a href="/manage">Manage</a> <i class="fa fa-angle-right"></i></li>
-                    <li><a href="#">Classes</a></li>
+                    <li><a href="#">Manage Classes</a></li>
                 </ul>
             </div>
         </div>
@@ -35,6 +34,7 @@
                             <th>Description</th>
                             <th>Created</th>
                             <th>Courses</th>
+                            <th>Sections</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -45,13 +45,25 @@
                             <td>{echo $i}</td>
                             <td>{echo $g->title}</td>
                             <td>{echo $g->description}</td>
-                            <td>{echo Framework\StringMethods::datetime_to_text($g->created)}</td>
+                            <td>{echo Framework\StringMethods::only_date($g->created)}</td>
                             {script $courses = Course::count(array("grade_id = ?" => $g->id))}
                             <td>{echo $courses}</td>
+                            {script $sections = Classroom::count(array("grade_id = ?" => $g->id))}
+                            <td>{echo $sections}</td>
                             <td>
-                            <a href="/add/courses/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
-                            <a href="/manage/courses/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Courses</a>
-                            <a href="/edit/grade/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            {if $courses == 0}
+                            <a href="/school_admin/addCourses/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
+                            {/if}
+                            {else}
+                            <a href="/school_admin/manageCourses/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Courses</a>
+                            {/else}
+                            {if $sections == 0}
+                            <a href="/school_admin/addClassrooms/{echo $g->id}" class="btn btn-small purple darken-1 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Sections</a>
+                            {/if}
+                            {else}
+                            <a href="/school_admin/manageClassrooms/{echo $g->id}" class="btn btn-small blue darken-4 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Manage Sections</a>
+                            {/else}
+                            <a href="/school_admin/editGrade/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

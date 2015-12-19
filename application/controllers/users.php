@@ -138,4 +138,59 @@ class Users extends Controller {
         }
         
     }
+
+    protected function _saveUser($opts) {
+        $name = RequestMethods::post("name");
+        $email = RequestMethods::post("email");
+        $phone = RequestMethods::post("phone");
+
+        if ($opts["type"] == "student") {
+            $dob = RequestMethods::post("dob");
+            $address = RequestMethods::post("address");
+            $parentName = RequestMethods::post("parent");
+            $relation = RequestMethods::post("relation");
+            $parentPhone = RequestMethods::post("parent_phone");
+        }
+
+        $last = \User::first(array(), array("id", "created"), "created", "desc");
+        $id = $last->id;
+        $prefix = strtolower(array_shift(explode(" ", $this->school->name)));
+        foreach ($name as $key => $value) {
+            $user = new \User(array(
+                "name" => $value,
+                "email" => $email[$key],
+                "phone" => $phone[$key],
+                "username" => $prefix. "_" .(++$id),
+                "password" => Markup::encrypt("password"),
+                "type" => $opts["type"]
+            ));
+            $user->save();
+
+            if ($opts["type"] == "teacher") {
+                $teacher = new \Teacher(array(
+                    "user_id" => $user->id,
+                    "school_id" => $this->school->id
+                ));
+                $teacher->save();
+            } elseif ($opts["type"] == "student") {
+                $parent = new \StudentParent(array(
+                    "relation" => $relation[$key],
+                    "phone" => $parentPhone[$key],
+                    "name" => $parentName[$key]
+                ));
+                $parent->save();
+
+                $student = new \Student(array(
+                    "dob" => $dob[$key],
+                    "parent_id" => $parent->id,
+                    "address" => $address[$key],
+                    "school_id" => $this->school->id,
+                    "roll_no" => "",
+                    "user_id" => $user->id
+                ));
+                $student->save();
+            }
+            
+        }
+    }
 }

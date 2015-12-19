@@ -9,6 +9,16 @@ use Framework\Registry as Registry;
 
 class Students extends Users {
     /**
+     * @protected
+     */
+    public function _admin() {
+        parent::_admin();
+
+        $this->defaultLayout = "layouts/school_admin";
+        $this->setLayout();
+    }
+
+    /**
      * @readwrite
      * Stores the dashboard redirect url
      */
@@ -73,5 +83,31 @@ class Students extends Users {
 		$this->setSEO(array("title" => "Students | Profile"));
         $view = $this->getActionView();
 	}
+
+    /**
+     * @before _secure, _admin
+     */
+    public function add() {
+        $this->setSEO(array("title" => "School | Add Students"));
+        $view = $this->getActionView();
+
+        $grades = Grade::all(array("school_id = ?" => $this->school->id));
+
+        if (RequestMethods::post("action") == "addStudents") {
+            $this->_saveUser(array("type" => "student"));
+        }
+        $view->set("grades", $grades);
+    }
+
+    /**
+     * @before _secure, _admin
+     */
+    public function manage() {
+        $this->setSEO(array("title" => "School | Manage Students"));
+        $view = $this->getActionView();
+
+        $students = Student::all(array("school_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+        $view->set("students", $students);
+    }
 
 }

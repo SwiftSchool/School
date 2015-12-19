@@ -9,6 +9,17 @@ use Framework\Registry as Registry;
 
 class Teachers extends Users {
     /**
+     * @protected
+     */
+    public function _admin() {
+        parent::_admin();
+
+        $this->dashboard = "/school_admin";
+        $this->defaultLayout = "layouts/school_admin";
+        $this->setLayout();
+    }
+    
+    /**
      * @readwrite
      * Stores the dashboard redirect url
      */
@@ -92,5 +103,30 @@ class Teachers extends Users {
 		$this->setSEO(array("title" => "Teachers | Profile"));
         $view = $this->getActionView();
 	}
+
+    /**
+     * @before _secure, _admin
+     */
+    public function add() {
+        $this->setSEO(array("title" => "School | Add Teachers"));
+        $view = $this->getActionView();
+
+        if (RequestMethods::post("action") == "addTeachers") {
+            $this->_saveUser(array("type" => "teacher"));
+
+            $view->set("success", 'Teachers saved successfully!! Go to <a href="/manage/teachers">Manage Teachers');
+        }
+    }
+
+    /**
+     * @before _secure, _admin
+     */
+    public function manage() {
+        $this->setSEO(array("title" => "School | Manage Teachers"));
+        $view = $this->getActionView();
+
+        $teachers = Teacher::all(array("school_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+        $view->set("teachers", $teachers);
+    }
 
 }
