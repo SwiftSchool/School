@@ -4,7 +4,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col s12 m9 l10">
-                <h1>Dashboard</h1>
+                <h1>Manage Classes</h1>
                 <ul>
                     <li>
                         <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
@@ -16,6 +16,9 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
+    <div class="">
+        <a href="/add/grades" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Classes</a><br><br>
+    </div>
     <!-- LIST -->
     <div class="card">
         <div class="title">
@@ -47,7 +50,8 @@
                             <td>{echo $courses}</td>
                             <td>
                             <a href="/add/courses/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
-                            <a href="/edit/grade/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Class</a>
+                            <a href="/manage/courses/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Courses</a>
+                            <a href="/edit/grade/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
                             </td>
                         </tr>
                         {script ++$i}
