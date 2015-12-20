@@ -37,6 +37,21 @@ class Assignment extends Shared\Model {
      * @type integer
      * @index
      */
+    protected $_classroom_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
     protected $_course_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type date
+     */
+    protected $_submission_date;
 
 }

@@ -12,7 +12,7 @@ class Submission extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_assignement_id;
+    protected $_assignment_id;
 
     /**
      * @column

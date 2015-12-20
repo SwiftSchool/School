@@ -133,4 +133,17 @@ class Teachers extends Users {
         $view->set("teachers", $teachers);
     }
 
+    /**
+     * @before _secure, _admin
+     */
+    public function allot() {
+        $this->setSEO(array("title" => "School | Allot Teachers to different classes"));
+        $view = $this->getActionView();
+
+        $teachers = \Teacher::all(array("school_id = ?" => $this->school->id));
+        $view->set("teachers", $teachers);
+
+        // @todo - how to store which teacher which subject to which class
+    }
+
 }

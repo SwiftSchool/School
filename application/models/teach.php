@@ -9,7 +9,8 @@ class Teach extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type text
+     * @length 20
      * @index
      */
     protected $_type;
