@@ -67,7 +67,7 @@ class School_Admin extends Teachers {
 			
 			$check = $opts["model"]::all($where);
 			if ($check) {
-				$view->set("result", $check);
+				$view->set("results", $check);
 			} else {
 				$view->set("error", true);
 			}

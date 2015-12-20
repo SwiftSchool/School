@@ -150,6 +150,7 @@ class Users extends Controller {
             $parentName = RequestMethods::post("parent");
             $relation = RequestMethods::post("relation");
             $parentPhone = RequestMethods::post("parent_phone");
+            $classroom = RequestMethods::post("classroom");
         }
 
         $last = \User::first(array(), array("id", "created"), "created", "desc");
@@ -195,6 +196,12 @@ class Users extends Controller {
                     "user_id" => $user->id
                 ));
                 $student->save();
+
+                $enrollment = new \Enrollment(array(
+                    "student_id" => $student->id,
+                    "classroom_id" => $classroom[$key]
+                ));
+                $enrollment->save();
             }
             
         }

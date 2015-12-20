@@ -4,7 +4,7 @@
 }(window, window.Model));
 
 $(document).ready(function() {
-    $('#selectClass').on('change', function (e) {
+    $('.selectClass').on('change', function (e) {
         e.preventDefault();
         var val = $(this).val(),
             opts = {
@@ -18,7 +18,11 @@ $(document).ready(function() {
             action: 'school_admin/misc',
             data: {action: 'process', opts: opts},
             callback: function (data) {
-                console.log(data);
+                if (data.results) {
+                    console.log(data.results);
+                } else {
+                    console.log(data.error);
+                }
             }
         });
     });

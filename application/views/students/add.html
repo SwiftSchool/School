@@ -16,78 +16,70 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
-    <!-- Main Form -->
     <form action="" method="post">
-        <div class="card-panel">
-            <div class="input-field">
-                <i class="mdi-social-person-add prefix"></i>
-                <input type="text" class="validate" required="" name="name">
-                <label for="Student Name">Student Name</label>
-            </div>
-
-            <div class="input-field">
-                <i class="mdi-communication-email prefix"></i>
-                <input type="email" class="" name="email">
-                <label for="Email">Email</label>
-            </div>
-
-            <div class="input-field">
-                <i class="mdi-communication-phone prefix"></i>
-                <input type="text" class="" pattern="[7-9]{1}[0-9]{9}" maxlength="10" name="phone">
-                <label for="phone">Phone</label>
-            </div>
-
-            <div class="input-field">
-                <i class="mdi-social-people prefix"></i>
-                <input type="text" class="" required="" name="parent">
-                <label for="Parent Name">Parent Name</label>
-            </div>
-
-            <div class="input-field">
-                <i class="mdi-social-people prefix"></i>
-                <input type="text" class="" required="" placeholder="father or mother or guardian" name="relation">
-                <label for="Parent Relation">Parent Relation</label>
-            </div>
-
-            <div class="input-field">
-                <i class="fa fa-calendar prefix"></i>
-                <input type="text" required="" name="dob" value="YY-MM-DD">
-                <label for="Date of Birth">Date of Birth</label>
-            </div>
-
-            <div class="input-field">
-                <i class="mdi-action-home prefix"></i>
-                <input type="text" class="" required="" name="address">
-                <label for="address">Address</label>
-            </div>
-    
-            <div>
-                <i class="mdi-action-class prefix"></i>
-                <select name="class" id="selectClass" class="align-right">
-                    {foreach $g in $grades}
-                    <option value="{echo $g->id}">{echo $g->title}</option>
-                    {/foreach}
-                </select>
-                <label for="class">Class</label>
-            </div>
-            
-            <div>
-                <select name="section" id="classSections">
-                    <option>Select</option>
-                </select>    
-            </div>
-            
-    
-            <!-- <div class="input-field">
-                <input type="text" class="" required="" name="roll_no">
-                <label for="Roll No">Roll No</label>
-            </div> -->
-
-            <input type="hidden" name="action" value="addStudent">
-            <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
-            <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
-        </div>
+        <table class="table card-panel">
+            <thead>
+                <tr>
+                    <th>Name *</th>
+                    <th>Phone </th>
+                    <th>Parent Name *</th>
+                    <th>Parent Relation *</th>
+                    <th>Parent Phone *</th>
+                    <th>DOB *</th>
+                    <th>Address *</th>
+                    <th>Class *</th>
+                    <th>Section *</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="input-field">
+                        <i class="mdi-social-person-add prefix"></i>
+                        <input type="text" class="validate" required="" name="name[]">
+                    </td>
+                    <input type="hidden" class="" name="email[]" value="">
+                    <td class="input-field">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input type="text" class="validate" name="phone[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-social-person prefix"></i>
+                        <input type="text" class="validate" name="parent[]">
+                    </td>
+                    <td class="input-field">
+                        <input type="text" class="validate" name="relation[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-stay-current-portrait prefix"></i>
+                        <input type="text" class="validate" name="parent_phone[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="text" class="validate" name="dob[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-home prefix"></i>
+                        <input type="text" class="validate" name="address[]">
+                    </td>
+                    <td class="input-field">
+                        <select required="" name="class[]" class="selectClass">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select required="" name="classroom[]" class="selectSection">
+                            <option value="">Select</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="hidden" name="action" value="addStudents">
+        <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+        <a href="/school_admin" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
     </form>
-    <!-- /Main Form -->
 </section>
 <!-- /Main Content -->
