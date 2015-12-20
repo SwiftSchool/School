@@ -22,19 +22,7 @@ class Course extends Shared\Model {
      * @readwrite
      * @type text
      */
-    protected $_description;    
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 30
-     * @index
-     * 
-     * @value MATH-101 etc
-     * @validate max(30)
-     */
-    protected $_code;
+    protected $_description;
 
     /**
      * @column

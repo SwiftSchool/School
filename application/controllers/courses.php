@@ -23,24 +23,22 @@ class Courses extends School_Admin {
 	 */
 	public function add($grade_id) {
 		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "school_id = ?" => $this->school->id));
-		$this->setSEO(array("title" => "Admin | School | Add Courses"));
+		$this->setSEO(array("title" => "School | Add Courses"));
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "addCourses") {
 			$title = RequestMethods::post("title");
 			$description = RequestMethods::post("description");
-			$code = RequestMethods::post("code");
 
 			foreach ($title as $key => $value) {
-				$course = new Course(array(
+				$course = new \Course(array(
 					"title" => Markup::checkValue($value),
 					"description" => Markup::checkValue($description[$key]),
-					"code" => Markup::checkValue($code[$key]),
 					"grade_id" => $grade_id
 				));
 				$course->save();
 			}
-			$view->set("success", 'Courses added successfully! <a href="/manage/courses/'. $grade_id .'">Manage Courses</a>');
+			$view->set("success", 'Courses added successfully! <a href="/courses/manage/'. $grade_id .'">Manage Courses</a>');
 		}
 		$view->set("grade", $grade);
 	}
@@ -57,10 +55,6 @@ class Courses extends School_Admin {
 
 		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "school_id = ?" => $this->school->id));
 		$courses = Course::all(array("grade_id = ?" => $grade_id));
-		if (!$courses) {
-			Registry::get("session")->set("redirectMessage", "No courses to display");
-			self::redirect($this->dashboard);
-		}
 		$view->set("courses", $courses);
 		$view->set("grade", $grade);
 	}

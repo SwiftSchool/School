@@ -12,7 +12,15 @@ class Teach extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_course_id;
+    protected $_type;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_type_id;
 
     /**
      * @column

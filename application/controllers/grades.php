@@ -26,11 +26,11 @@ class Grades extends School_Admin {
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "addGrades") {
-			$name = RequestMethods::post("name");
+			$title = RequestMethods::post("title");
 			$description = RequestMethods::post("description");
 
-			foreach ($name as $key => $value) {
-				$grade = new Grade(array(
+			foreach ($title as $key => $value) {
+				$grade = new \Grade(array(
 					"title" => Markup::checkValue($value),
 					"description" => Markup::checkValue($description[$key]),
 					"school_id" => $this->school->id
@@ -38,7 +38,7 @@ class Grades extends School_Admin {
 				$grade->save();
 			}
 
-			$view->set("success", 'Classes added successfully! Now <a href="/manage/grades">Manage Classes</a>');
+			$view->set("success", 'Classes added successfully! See <a href="/grades/manage">Manage Classes</a>');
 		}
 	}
 
@@ -49,7 +49,7 @@ class Grades extends School_Admin {
 		$this->setSEO(array("title" => "School | Manage Classes"));
 		$view = $this->getActionView();
 
-		$grades = Grade::all(array("school_id = ?" => $this->school->id));
+		$grades = \Grade::all(array("school_id = ?" => $this->school->id), array("*"), "title", "asc");
 		$view->set("grades", $grades);
 	}
 }

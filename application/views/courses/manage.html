@@ -18,7 +18,9 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
-
+    <div class="">
+        <a href="/courses/add/{echo $grade->id}" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Courses</a><br><br>
+    </div>
     <!-- LIST -->
     <div class="card">
         <div class="title">
@@ -33,7 +35,6 @@
                             <th>S. No.</th>
                             <th>Class</th>
                             <th>Description</th>
-                            <th>Code</th>
                             <th>Created</th>
                             <th>Action</th>
                         </tr>
@@ -45,11 +46,10 @@
                             <td>{echo $i}</td>
                             <td>{echo $c->title}</td>
                             <td>{echo $c->description}</td>
-                            <td>{echo $c->code}</td>
                             <td>{echo Framework\StringMethods::only_date($c->created)}</td>
                             <td>
-                            <a href="/courses/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Subject</a>
-                            <a href="/courses/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove Subject</a>
+                            <a href="/courses/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/courses/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove</a>
                             </td>
                         </tr>
                         {script ++$i}
@@ -59,7 +59,7 @@
             </div>
             {/if}
             {else}
-            <a href="/grades/add" class="btn btn-small green z-depth-0"><i class="mdi mdi-content-add"></i> Add Classes</a>
+            No Courses/Subjects for this class. Add some using the button above
             {/else}
         </div>
     </div>
