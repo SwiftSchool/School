@@ -75,7 +75,7 @@ namespace Shared {
             return $salt;
         }
 
-        public static function sanitize($string = "") {
+        public static function checkValue($string = "") {
             $string = trim($string);
 
             return ($string) ? $string : "";

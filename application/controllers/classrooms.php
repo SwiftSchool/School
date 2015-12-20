@@ -22,20 +22,9 @@ class Classrooms extends School_Admin {
      * @before _secure, _admin
      */
 	public function add($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id));
+		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id, "id = ?" => $grade_id));
 		$this->setSEO(array("title" => "School | Add Sections"));
 		$view = $this->getActionView();
-
-		$teachers = Teacher::all(array("school_id = ?" => $this->school->id), array("user_id", "id"));
-		$results = array();
-		foreach ($teachers as $t) {
-			$user = User::first(array("id = ?" => $t->user_id), array("name"));
-			$results[] = array(
-				"id" => $t->id,
-				"name" => $user->name
-			);
-		}
-		$results = ArrayMethods::toObject($results);
 
 		if (RequestMethods::post("action") == "addClassrooms") {
 			$year = RequestMethods::post("year");
@@ -55,15 +44,56 @@ class Classrooms extends School_Admin {
 			}
 			$view->set("success", "Sections added successfully!");
 		}
+		$teachers = \Teacher::all(array("school_id = ?" => $this->school->id), array("user_id", "id"));
+		$results = array();
+		foreach ($teachers as $t) {
+			$alloted = \Classroom::first(array("teacher_id = ?" => $t->id));
+			if ($alloted) {
+				continue;
+			}
+			$user = \User::first(array("id = ?" => $t->user_id), array("name"));
+			$results[] = array(
+				"id" => $t->id,
+				"name" => $user->name
+			);
+		}
+		$results = ArrayMethods::toObject($results);
+
 		$view->set("teachers", $results);
 		$view->set("grade", $grade);
+	}
+
+	/**
+	 * @before _secure, _admin
+	 */
+	public function enrollments($classroom_id, $grade_id) {
+		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id));
+		$this->setSEO(array("title" => "School | View students in section"));
+		$view = $this->getActionView();
+
+		$enrollments = \Enrollment::all(array("classroom_id = ?" => $classroom_id));
+		$students = array();
+		foreach ($enrollments as $e) {
+			$student = \Student::first(array("id = ?" => $e->student_id), array("user_id", "dob", "parent_id"));
+			$parent = \StudentParent::first(array("id = ?" => $student->parent_id), array("name", "relation"));
+			$usr = \User::first(array("id = ?" => $student->user_id));
+			$students[] = array(
+				"name" => $usr->name,
+				"parent_name" => $parent->name,
+				"parent_relation" => $parent->relation,
+				"dob" => $student->dob,
+				"username" => $usr->username
+			);
+		}
+		$students = ArrayMethods::toObject($students);
+		$view->set("students", $students);
 	}
 
 	/**
      * @before _secure, _admin
      */
 	public function manage($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id));
+		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id, "id = ?" => $grade_id));
 		$this->setSEO(array("title" => "School | Add Sections"));
 		$view = $this->getActionView();
 

@@ -31,8 +31,8 @@ class Grades extends School_Admin {
 
 			foreach ($name as $key => $value) {
 				$grade = new Grade(array(
-					"title" => Markup::sanitize($value),
-					"description" => Markup::sanitize($description[$key]),
+					"title" => Markup::checkValue($value),
+					"description" => Markup::checkValue($description[$key]),
 					"school_id" => $this->school->id
 				));
 				$grade->save();

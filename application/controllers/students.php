@@ -6,6 +6,7 @@
  * @author Hemant Mann
  */
 use Framework\Registry as Registry;
+use Framework\RequestMethods as RequestMethods;
 
 class Students extends Users {
     /**

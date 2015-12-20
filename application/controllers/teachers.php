@@ -113,9 +113,12 @@ class Teachers extends Users {
         $view = $this->getActionView();
 
         if (RequestMethods::post("action") == "addTeachers") {
-            $this->_saveUser(array("type" => "teacher"));
-
-            $view->set("success", 'Teachers saved successfully!! See <a href="/teachers/manage">Manage Teachers');
+            $message = $this->_saveUser(array("type" => "teacher"));
+            if (isset($message["error"])) {
+                $view->set("success", $message["error"]);
+            } else {
+                $view->set("success", 'Teachers saved successfully!! See <a href="/teachers/manage">Manage Teachers');
+            }
         }
     }
 

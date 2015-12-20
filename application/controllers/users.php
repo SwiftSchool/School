@@ -156,6 +156,12 @@ class Users extends Controller {
         $id = $last->id;
         $prefix = strtolower(array_shift(explode(" ", $this->school->name)));
         foreach ($name as $key => $value) {
+            if (Markup::checkValue($email["key"])) {
+                $found = \User::first(array("email = ?" => $email["key"]));
+                if ($found) {
+                    return array("error" => "Email already exists for ". $name[$key]);
+                }
+            }
             $user = new \User(array(
                 "name" => $value,
                 "email" => $email[$key],

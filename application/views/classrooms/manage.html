@@ -18,11 +18,13 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
-
+    <div class="">
+        <a href="/classrooms/add/{echo $grade->id}" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Sections</a><br><br>
+    </div>
     <!-- LIST -->
     <div class="card">
         <div class="title">
-            <h5><strong>Subjects</strong></h5>
+            <h5><strong>Sections</strong></h5>
         </div>
         <div class="content">
         	{if count($classrooms) > 0}
@@ -36,6 +38,7 @@
                             <th>Remarks</th>
                             <th>Class Teacher</th>
                             <th>Year</th>
+                            <th>Students</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -51,9 +54,12 @@
                             {script $usr = User::first(array("id = ?" => $teacher->user_id))}
                             <td>{echo $usr->name}</td>
                             <td>{echo $c->year}</td>
+                            {script $enrolled = Enrollment::count(array("classroom_id = ?" => $c->id))}
+                            <td>{echo $enrolled}</td>
                             <td>
-                            <a href="/classrooms/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Subject</a>
-                            <a href="/classrooms/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove Subject</a>
+                            <a href="/classrooms/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/classrooms/enrollments/{echo $c->id}/{echo $grade->id}" class="btn btn-small lighten-1 teal z-depth-0"><i class="fa fa-users"></i> Enrolled students</a>
+                            <a href="/classrooms/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove</a>
                             </td>
                         </tr>
                         {script ++$i}

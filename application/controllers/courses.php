@@ -33,9 +33,9 @@ class Courses extends School_Admin {
 
 			foreach ($title as $key => $value) {
 				$course = new Course(array(
-					"title" => Markup::sanitize($value),
-					"description" => Markup::sanitize($description[$key]),
-					"code" => Markup::sanitize($code[$key]),
+					"title" => Markup::checkValue($value),
+					"description" => Markup::checkValue($description[$key]),
+					"code" => Markup::checkValue($code[$key]),
 					"grade_id" => $grade_id
 				));
 				$course->save();
