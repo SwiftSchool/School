@@ -1,0 +1,27 @@
+<!-- Modal -->
+<div class="modal fade" id="displayEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Your Appointment</h4>
+            </div>
+            <div class="modal-body">
+                <h3 class="page-heading">Details:</h3>
+                <p>Title: <strong id="appointTitle"></strong></p>
+                <p>Location: <strong id="appointLocation"></strong></p>
+
+                <h3 class="page-heading">User:</h3>
+                <p>Name: <strong id="usrName"></strong></p>
+                <p>Email: <strong id="usrEmail"></strong></p>
+                <p>Phone: <strong id="usrPhone"></strong></p>
+
+                <div class="modal-footer">
+                    <a href="/appointments/edit/" id="appointEdit" class="btn btn-info">Edit</a>
+                    <a href="#" id="appointDel" class="btn btn-danger" data-dismiss="modal">Delete</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

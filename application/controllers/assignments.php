@@ -26,7 +26,7 @@ class Assignments extends Teachers {
 	 * @before _secure, _teacher
 	 */
 	public function manage() {
-		$this->setSEO(array("title" => "Teacher | View Assignment Submissions"));
+		$this->setSEO(array("title" => "Teacher | Manage Your assignments"));
 		$view = $this->getActionView();
 
 		$assignments = \Assignment::all(array("teacher_id = ?" => $this->teacher->id), array("title", "created", "course_id", "classroom_id", "submission_date"));
@@ -87,5 +87,44 @@ class Assignments extends Teachers {
 			$view->set("error", "Last Date of submission is over");
 		}
 		
+	}
+
+	/**
+	 * @before _secure, _teacher
+	 */
+	public function submissions($assi_id) {
+		$assignment = \Assignment::first(array("id = ?" => $assi_id));
+		if (!$assignment) {
+			self::redirect("/404");
+		}
+		$this->setSEO(array("title" => "Teacher | View Assignment Submissions"));
+		$view = $this->getActionView();
+		
+		$classroom = \Classroom::first(array("id = ?" => $assignment->classroom_id), array("section", "year", "grade_id"));
+		$grade = \Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
+
+		$find = \Submission::all(array("assignment_id = ?" => $assi_id));
+		$submissions = array();
+		foreach ($find as $f) {
+			$student = \Student::first(array("id = ?" => $f->student_id), array("user_id", "roll_no"));
+			$usr = \User::first(array("id = ?" => $student->user_id), array("name"));
+
+			$submissions[] = array(
+				"student" => $usr->name,
+				"student_roll_no" => $student->roll_no,
+				"response" => $f->response
+			);
+		}
+		$submissions = ArrayMethods::toObject($submissions);
+
+		$klass = array();
+		$klass["name"] = $grade->title;
+		$klass["section"] = $classroom->section;
+		$klass["year"] = $classroom->year;
+		$klass = ArrayMethods::toObject($klass);
+
+		$view->set("class", $klass);
+		$view->set("submissions", $submissions);
+		$view->set("assignment", $assignment);
 	}
 }

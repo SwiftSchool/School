@@ -32,6 +32,17 @@
         <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/google-code-prettify/prettify.css" />
         <!-- Main -->
         <link rel="stylesheet" type="text/css" href="{echo CDN}plugins/_con/css/_con.min.css" />
+
+        {if isset($cal)}
+        <link href="{echo CDN}plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" />
+        <link href="{echo CDN}plugins/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print" />
+        <style>
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        </style>
+        {/if}
         <!--[if lt IE 9]>
         <script src="{echo CDN}plugins/html5shiv/html5shiv.min.js"></script>
         <![endif]-->
@@ -154,5 +165,10 @@
         <script src="{echo CDN}js/theme.js"></script>
         <script src="{echo CDN}js/model.js"></script>
         <script src="{echo CDN}js/admin-1.0.js"></script>
+        {if isset($cal)}
+        <script src="{echo CDN}plugins/fullcalendar/moment.min.js"></script>
+        <script src="{echo CDN}plugins/fullcalendar/fullcalendar.min.js"></script>
+        <script src="{echo CDN}js/calendar.js"></script>
+        {/if}
     </body>
 </html>

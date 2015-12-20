@@ -1,0 +1,40 @@
+<!-- Modal -->
+<div class="modal fade" id="addEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">New Appointment</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/appointments/schedule" method="post" id="addAppointment">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <select name="title" class="form-control">
+                            <option>Massage Service</option>
+                            <option>Beauty Service</option>
+                            <option>Relaxation Service</option>
+                            <option>Other Service</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <!-- @todo Add office locations in options -->
+                        <select name="location" class="form-control">
+                            <option>Mayur Vihar</option>
+                            <option>Sarita Vihar</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="sendDate" name="date" value="">
+                    <input type="hidden" name="action" value="addEvent">
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
