@@ -4,7 +4,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col s12 m9 l10">
-                <h1>Manage Subjects</h1>
+                <h1>Manage Classrooms</h1>
                 <h4>Class: {echo $grade->title}</h4>
                 <ul>
                     <li>
@@ -25,31 +25,35 @@
             <h5><strong>Subjects</strong></h5>
         </div>
         <div class="content">
-        	{if count($courses) > 0}
+        	{if count($classrooms) > 0}
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>S. No.</th>
                             <th>Class</th>
-                            <th>Description</th>
-                            <th>Code</th>
-                            <th>Created</th>
+                            <th>Section</th>
+                            <th>Remarks</th>
+                            <th>Class Teacher</th>
+                            <th>Year</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {script $i = 1}
-                        {foreach $c in $courses}
+                        {foreach $c in $classrooms}
                         <tr>
                             <td>{echo $i}</td>
-                            <td>{echo $c->title}</td>
-                            <td>{echo $c->description}</td>
-                            <td>{echo $c->code}</td>
-                            <td>{echo Framework\StringMethods::only_date($c->created)}</td>
+                            <td>{echo $grade->title}</td>
+                            <td>{echo $c->section}</td>
+                            <td>{echo $c->remarks}</td>
+                            {script $teacher = Teacher::first(array("id = ?" => $c->teacher_id), array("user_id"))}
+                            {script $usr = User::first(array("id = ?" => $teacher->user_id))}
+                            <td>{echo $usr->name}</td>
+                            <td>{echo $c->year}</td>
                             <td>
-                            <a href="/courses/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Subject</a>
-                            <a href="/courses/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove Subject</a>
+                            <a href="/classrooms/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i> Edit Subject</a>
+                            <a href="/classrooms/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove Subject</a>
                             </td>
                         </tr>
                         {script ++$i}

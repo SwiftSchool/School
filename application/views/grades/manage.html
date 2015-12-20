@@ -16,7 +16,7 @@
     </div>
     <!-- /Breadcrumb -->
     <div class="">
-        <a href="/add/grades" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Classes</a><br><br>
+        <a href="/grades/add" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Classes</a><br><br>
     </div>
     <!-- LIST -->
     <div class="card">
@@ -52,18 +52,18 @@
                             <td>{echo $sections}</td>
                             <td>
                             {if $courses == 0}
-                            <a href="/school_admin/addCourses/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
+                            <a href="/courses/add/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
                             {/if}
                             {else}
-                            <a href="/school_admin/manageCourses/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Courses</a>
+                            <a href="/courses/manage/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Courses</a>
                             {/else}
                             {if $sections == 0}
-                            <a href="/school_admin/addClassrooms/{echo $g->id}" class="btn btn-small purple darken-1 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Sections</a>
+                            <a href="/classrooms/add/{echo $g->id}" class="btn btn-small purple darken-1 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Sections</a>
                             {/if}
                             {else}
-                            <a href="/school_admin/manageClassrooms/{echo $g->id}" class="btn btn-small blue darken-4 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Manage Sections</a>
+                            <a href="/classrooms/manage/{echo $g->id}" class="btn btn-small blue darken-4 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Manage Sections</a>
                             {/else}
-                            <a href="/school_admin/editGrade/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/grades/edit/{echo $g->id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

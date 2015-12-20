@@ -12,7 +12,7 @@
                     </li>
                     <li><a href="/grades/manage">Classes</a> <i class="fa fa-angle-right"></i></li>
                     <li><a href="#">Class: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
-                    <li>Add Subject</li>
+                    <li>Add Section</li>
                 </ul>
             </div>
         </div>
@@ -29,24 +29,38 @@
         <table class="table card-panel">
             <thead>
                 <tr>
-                    <th>Name *</th>
-                    <th>Description</th>
+                    <th>Section *</th>
+                    <th>Year *</th>
+                    <th>Remarks</th>
+                    <th>Class Teacher *</th>
                 </tr>
             </thead>
             <tbody>    
                 <tr>
                     <td class="input-field">
                         <i class="mdi-social-person-add prefix"></i>
-                        <input type="text" class="validate" required="" name="title[]">
+                        <input type="text" class="validate" required="" name="section[]">
                     </td>
                     <td class="input-field">
                         <i class="mdi-content-content-paste prefix"></i>
-                        <input type="text" class="validate" name="description[]">
+                        <input type="text" class="validate" required="" name="year[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-content-content-paste prefix"></i>
+                        <input type="text" class="validate" name="remarks[]">
+                    </td>
+                    <td class="input-field">
+                        <select required="" name="teacher[]" class="align-right">
+                            <option>Select</option>
+                            {foreach $t in $teachers}
+                            <option value="{echo $t->id}">{echo $t->name}</option>
+                            {/foreach}
+                        </select>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <input type="hidden" name="action" value="addCourses">
+        <input type="hidden" name="action" value="addClassrooms">
         <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
         <a href="/grades/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
     </form>

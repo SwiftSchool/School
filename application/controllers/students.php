@@ -90,8 +90,9 @@ class Students extends Users {
     public function add() {
         $this->setSEO(array("title" => "School | Add Students"));
         $view = $this->getActionView();
+        $session = Registry::get("session");
 
-        $grades = Grade::all(array("school_id = ?" => $this->school->id));
+        $grades = Grade::all(array("school_id = ?" => $session->get("school")->id));
 
         if (RequestMethods::post("action") == "addStudents") {
             $this->_saveUser(array("type" => "student"));
@@ -105,8 +106,9 @@ class Students extends Users {
     public function manage() {
         $this->setSEO(array("title" => "School | Manage Students"));
         $view = $this->getActionView();
+        $session = Registry::get("session");
 
-        $students = Student::all(array("school_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+        $students = Student::all(array("school_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
         $view->set("students", $students);
     }
 

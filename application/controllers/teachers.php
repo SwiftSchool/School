@@ -6,6 +6,7 @@
  * @author Hemant Mann
  */
 use Framework\Registry as Registry;
+use Framework\RequestMethods as RequestMethods;
 
 class Teachers extends Users {
     /**
@@ -114,7 +115,7 @@ class Teachers extends Users {
         if (RequestMethods::post("action") == "addTeachers") {
             $this->_saveUser(array("type" => "teacher"));
 
-            $view->set("success", 'Teachers saved successfully!! Go to <a href="/manage/teachers">Manage Teachers');
+            $view->set("success", 'Teachers saved successfully!! See <a href="/teachers/manage">Manage Teachers');
         }
     }
 
