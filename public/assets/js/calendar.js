@@ -118,7 +118,7 @@
 		}
 		return Cal;
 	}());
-	window.Cal = Cal;
+	window.Cal = new Cal;
 }(window, window.request, jQuery, bootbox));
 
 var now = new Date();

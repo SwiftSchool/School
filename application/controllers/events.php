@@ -42,13 +42,12 @@ class Events extends School_Admin {
             $user->save();
             $view->set("user", $user);
             
-            $appointment = new Appointment(array(
+            $appointment = new Event(array(
                 "user_id" => $user->id,
                 "title" => RequestMethods::post("service"), 
                 "start" => RequestMethods::post("date"),
                 "end" => RequestMethods::post("date"),
-                "allDay" => "1",
-                "location" => RequestMethods::post("location")
+                "allDay" => "1"
             ));
             $appointment->save();
             $view->set("appointment", $appointment);
@@ -62,10 +61,9 @@ class Events extends School_Admin {
 		if (RequestMethods::post("action") == "addEvent") {
 			$date = RequestMethods::post("date");
 			$date = explode("T", $date);
-			$apptmt = new Appointment(array(
+			$apptmt = new Event(array(
 				"user_id" => $this->user->id,
 				"title" => RequestMethods::post("title"),
-				"location" => RequestMethods::post("location"),
 				"start" => $date[0]." 00:00:00",
 				"end" => $date[0]. " 23:59:59",
 				"allDay" => true,
@@ -82,7 +80,7 @@ class Events extends School_Admin {
 	 */
 	public function delete($appointId) {
 		$this->noview();
-		$apptmt = Appointment::first(array("id = ?" => $appointId));
+		$apptmt = Event::first(array("id = ?" => $appointId));
 		if ($apptmt->delete()) {
 			echo true;
 		} else {
@@ -95,7 +93,7 @@ class Events extends School_Admin {
 	 */
 	public function all() {
 		$this->noview();
-		$results = Appointment::all();
+		$results = Event::all();
 		$events = array();
 
 		foreach ($results as $r) {
@@ -117,7 +115,7 @@ class Events extends School_Admin {
 	public function display($id) {
 		$this->seo(array("title" => "Display Appointments", "view" => $this->getLayoutView()));
 		$view = $this->getActionView();
-		$apptmt = Appointment::first(array("id = ?" => $id), array("title", "id", "location", "user_id"));
+		$apptmt = Event::first(array("id = ?" => $id), array("title", "id"));
 		$usr = User::first(array("id = ?" => $apptmt->user_id), array("name", "email", "phone"));
 		if (!$apptmt) {
 			$view->set("err", "Invalid ID");
@@ -135,11 +133,10 @@ class Events extends School_Admin {
 		$this->seo(array("title" => "Edit an Appointment", "view" => $this->getLayoutView()));
 		$view = $this->getActionView();
 
-		$apptmt = Appointment::first(array("id = ?" => $appointId));
+		$apptmt = Event::first(array("id = ?" => $appointId));
 		
 		if (RequestMethods::post("action") == "editApptmt") {
 			$apptmt->title = RequestMethods::post("title");
-			$apptmt->location = RequestMethods::post("location");
 			$apptmt->save();
 
 			$view->set("message", "Appointment Updated Successfully");
@@ -163,7 +160,7 @@ class Events extends School_Admin {
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "changeAppointment") {
-			$apptmt = Appointment::first(array("id = ?" => RequestMethods::post("id")));
+			$apptmt = Event::first(array("id = ?" => RequestMethods::post("id")));
 			$apptmt->start = RequestMethods::post("start");
 			$apptmt->save();
 
