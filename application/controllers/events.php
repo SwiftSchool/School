@@ -8,12 +8,12 @@
 use Framework\RequestMethods as RequestMethods;
 use Framework\Registry as Registry;
 
-class Events extends School_Admin {
+class Events extends School {
 	/**
 	 * @protected
 	 */
 	public function changeLayout() {
-		$this->defaultLayout = "layouts/school_admin";
+		$this->defaultLayout = "layouts/school";
 		$this->setLayout();
 	}
 

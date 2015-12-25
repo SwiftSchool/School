@@ -1,6 +1,6 @@
 <?php
 /**
- * The School Admin Controller
+ * The School Controller
  *
  * @author Hemant Mann
  */
@@ -9,19 +9,19 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class School_Admin extends Teachers {
+class School extends Teachers {
 	/**
 	 * @readwrite
 	 * Stores the dashboard redirect url
 	 */
-	protected $_dashboard = "/school_admin";
+	protected $_dashboard = "/school";
 
 	/**
      * @protected
      */
     public function _admin() {
     	parent::_admin();
-        if ($this->user->type != 'teacher') {
+        if ($this->user->type != 'educator') {
             self::redirect("/404");
         }
 
@@ -36,9 +36,9 @@ class School_Admin extends Teachers {
 		$view = $this->getActionView();
 
 		$counts = array();
-		$counts["students"] = Student::count(array("school_id = ?" => $this->school->id));
-		$counts["teachers"] = Teacher::count(array("school_id = ?" => $this->school->id));
-		$counts["classes"] = Grade::count(array("school_id = ?" => $this->school->id));
+		$counts["students"] = Student::count(array("organization_id = ?" => $this->school->id));
+		$counts["teachers"] = Educator::count(array("organization_id = ?" => $this->school->id));
+		$counts["classes"] = Grade::count(array("organization_id = ?" => $this->school->id));
 		$counts = ArrayMethods::toObject($counts);
 
 		$session = Registry::get("session");

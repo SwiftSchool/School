@@ -9,7 +9,7 @@ use Framework\RequestMethods as RequestMethods;
 use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 
-class Users extends Controller {
+class Auth extends Controller {
     /**
      * @protected
      */
@@ -118,18 +118,21 @@ class Users extends Controller {
             $model = ucfirst(strtolower($user->type));
             if ($model != 'Central') {
                 $person = $model::first(array("user_id = ?" => $user->id));
-                if ($person->school_id) {
-                    $school = School::first(array("id = ?" => $person->school_id));
-                    $session->set('school', $school);
+                if ($person->organization_id) {
+                    $organization = Organization::first(array("id = ?" => $person->organization_id));
+                    $session->set('school', $organization);
                 }
-                $func = "set".$model;
-                try {
-                    $this->$func($person);    
-                } catch (\Exception $e) {
-                    $this->setUser(false);
-                    self::redirect("/404");
+                switch ($model) {
+                    case 'Student':
+                        $session->set('student', $person);
+                        self::redirect("/students/dashboard");
+                        break;
+                    
+                    case 'Educator':
+                        $session->set('teacher', $person);
+                        self::redirect("/teachers/dashboard");
+                        break;
                 }
-                self::redirect("/". $user->type."s/dashboard");
             } else {
                 self::redirect("/central");
             }
@@ -174,9 +177,9 @@ class Users extends Controller {
             $user->save();
 
             if ($opts["type"] == "teacher") {
-                $teacher = new \Teacher(array(
+                $teacher = new \Educator(array(
                     "user_id" => $user->id,
-                    "school_id" => $this->school->id
+                    "organization_id" => $this->school->id
                 ));
                 $teacher->save();
             } elseif ($opts["type"] == "student") {
@@ -191,7 +194,7 @@ class Users extends Controller {
                     "dob" => $dob[$key],
                     "parent_id" => $parent->id,
                     "address" => $address[$key],
-                    "school_id" => $this->school->id,
+                    "organization_id" => $this->school->id,
                     "roll_no" => "",
                     "user_id" => $user->id
                 ));

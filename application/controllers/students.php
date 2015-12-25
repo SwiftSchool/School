@@ -8,14 +8,14 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 
-class Students extends Users {
+class Students extends Auth {
     /**
      * @protected
      */
     public function _admin() {
         parent::_admin();
 
-        $this->defaultLayout = "layouts/school_admin";
+        $this->defaultLayout = "layouts/school";
         $this->setLayout();
     }
 
@@ -93,7 +93,7 @@ class Students extends Users {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $grades = Grade::all(array("school_id = ?" => $session->get("school")->id));
+        $grades = Grade::all(array("organization_id = ?" => $session->get("school")->id));
 
         if (RequestMethods::post("action") == "addStudents") {
             $this->_saveUser(array("type" => "student"));
@@ -109,7 +109,7 @@ class Students extends Users {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $students = Student::all(array("school_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
+        $students = Student::all(array("organization_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
         $view->set("students", $students);
     }
 

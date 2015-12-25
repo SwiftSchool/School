@@ -9,12 +9,12 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class Exams extends School_Admin {
+class Exams extends School {
 	/**
 	 * @protected
 	 */
 	public function changeLayout() {
-		$this->defaultLayout = "layouts/school_admin";
+		$this->defaultLayout = "layouts/school";
 		$this->setLayout();
 	}
 

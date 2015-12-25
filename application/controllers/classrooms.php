@@ -9,12 +9,12 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class Classrooms extends School_Admin {
+class Classrooms extends School {
 	/**
 	 * @protected
 	 */
 	public function changeLayout() {
-		$this->defaultLayout = "layouts/school_admin";
+		$this->defaultLayout = "layouts/school";
 		$this->setLayout();
 	}
 	
@@ -22,7 +22,7 @@ class Classrooms extends School_Admin {
      * @before _secure, _admin
      */
 	public function add($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id, "id = ?" => $grade_id));
+		$grade = $this->_verifyInput("Grade", array("organization_id = ?" => $this->school->id, "id = ?" => $grade_id));
 		$this->setSEO(array("title" => "School | Add Sections"));
 		$view = $this->getActionView();
 
@@ -38,16 +38,16 @@ class Classrooms extends School_Admin {
 					"grade_id" => $grade_id,
 					"section" => $section[$key],
 					"remarks" => $remarks[$key],
-					"teacher_id" => $teacher[$key]
+					"educator_id" => $teacher[$key]
 				));
 				$classroom->save();
 			}
 			$view->set("success", "Sections added successfully!");
 		}
-		$teachers = \Teacher::all(array("school_id = ?" => $this->school->id), array("user_id", "id"));
+		$teachers = \Educator::all(array("organization_id = ?" => $this->school->id), array("user_id", "id"));
 		$results = array();
 		foreach ($teachers as $t) {
-			$alloted = \Classroom::first(array("teacher_id = ?" => $t->id));
+			$alloted = \Classroom::first(array("educator_id = ?" => $t->id));
 			if ($alloted) {
 				continue;
 			}
@@ -67,7 +67,7 @@ class Classrooms extends School_Admin {
 	 * @before _secure, _admin
 	 */
 	public function enrollments($classroom_id, $grade_id) {
-		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id));
+		$grade = $this->_verifyInput("Grade", array("organization_id = ?" => $this->school->id));
 		$this->setSEO(array("title" => "School | View students in section"));
 		$view = $this->getActionView();
 
@@ -93,7 +93,7 @@ class Classrooms extends School_Admin {
      * @before _secure, _admin
      */
 	public function manage($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("school_id = ?" => $this->school->id, "id = ?" => $grade_id));
+		$grade = $this->_verifyInput("Grade", array("organization_id = ?" => $this->school->id, "id = ?" => $grade_id));
 		$this->setSEO(array("title" => "School | Add Sections"));
 		$view = $this->getActionView();
 

@@ -5,7 +5,7 @@
  *
  * @author Hemant Mann
  */
-class Teacher extends Shared\Model {
+class Educator extends Shared\Model {
     
     /**
      * @column
@@ -13,7 +13,7 @@ class Teacher extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_school_id;
+    protected $_organization_id;
 
     /**
      * @column

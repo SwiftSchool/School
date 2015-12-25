@@ -51,6 +51,6 @@ class Event extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_school_id;
+    protected $_organization_id;
 
 }

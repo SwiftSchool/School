@@ -9,12 +9,12 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class Grades extends School_Admin {
+class Grades extends School {
 	/**
 	 * @protected
 	 */
 	public function changeLayout() {
-		$this->defaultLayout = "layouts/school_admin";
+		$this->defaultLayout = "layouts/school";
 		$this->setLayout();
 	}
 
@@ -33,7 +33,7 @@ class Grades extends School_Admin {
 				$grade = new \Grade(array(
 					"title" => Markup::checkValue($value),
 					"description" => Markup::checkValue($description[$key]),
-					"school_id" => $this->school->id
+					"organization_id" => $this->school->id
 				));
 				$grade->save();
 			}
@@ -49,7 +49,7 @@ class Grades extends School_Admin {
 		$this->setSEO(array("title" => "School | Manage Classes"));
 		$view = $this->getActionView();
 
-		$grades = \Grade::all(array("school_id = ?" => $this->school->id), array("*"), "title", "asc");
+		$grades = \Grade::all(array("organization_id = ?" => $this->school->id), array("*"), "title", "asc");
 		$view->set("grades", $grades);
 	}
 }

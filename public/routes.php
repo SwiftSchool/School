@@ -24,8 +24,8 @@ $routes = array(
         "action" => "index"
     ),
     array(
-        "pattern" => "school_admin/login",
-        "controller" => "teachers",
+        "pattern" => "login",
+        "controller" => "auth",
         "action" => "login"
     )
 );

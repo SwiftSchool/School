@@ -5,7 +5,7 @@
  *
  * @author Hemant Mann
  */
-class School extends Shared\Model {
+class Organization extends Shared\Model {
     /**
      * @column
      * @readwrite

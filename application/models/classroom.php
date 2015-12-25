@@ -53,6 +53,6 @@ class Classroom extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_teacher_id;
+    protected $_educator_id;
 
 }

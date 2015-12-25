@@ -7,7 +7,7 @@
                 <h1>Manage Teachers</h1>
                 <ul>
                     <li>
-                        <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
                     <li>Manage Teachers</li>
                 </ul>
@@ -64,8 +64,8 @@
                                 <td><span class="label label-primary">Teacher</span></td>
                             {/else}
                             <td>
-                            <a href="/school_admin/editTeacher/{echo $t->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
-                            <a href="/school_admin/deleteTeacher/{echo $t->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            <a href="/teachers/edit/{echo $t->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/teachers/delete/{echo $t->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

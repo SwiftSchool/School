@@ -7,7 +7,7 @@
                 <h1>Manage Students</h1>
                 <ul>
                     <li>
-                        <a href="/school_admin"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
                     <li><a href="/manage">Manage</a> <i class="fa fa-angle-right"></i></li>
                     <li><a href="#">Students</a></li>
@@ -56,8 +56,8 @@
                             <td class="red-text">Disabled</td>
                             {/else}
                             <td>
-                            <a href="/school_admin/editStudent/{echo $s->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
-                            <a href="/school_admin/deleteStudent/{echo $s->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            <a href="/school/editStudent/{echo $s->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/school/deleteStudent/{echo $s->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

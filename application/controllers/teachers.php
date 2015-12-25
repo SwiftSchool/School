@@ -8,15 +8,15 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 
-class Teachers extends Users {
+class Teachers extends Auth {
     /**
      * @protected
      */
     public function _admin() {
         parent::_admin();
 
-        $this->dashboard = "/school_admin";
-        $this->defaultLayout = "layouts/school_admin";
+        $this->dashboard = "/school";
+        $this->defaultLayout = "layouts/school";
         $this->setLayout();
     }
     
@@ -129,7 +129,7 @@ class Teachers extends Users {
         $this->setSEO(array("title" => "School | Manage Teachers"));
         $view = $this->getActionView();
 
-        $teachers = Teacher::all(array("school_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+        $teachers = Educator::all(array("organization_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
         $view->set("teachers", $teachers);
     }
 
@@ -140,7 +140,7 @@ class Teachers extends Users {
         $this->setSEO(array("title" => "School | Allot Teachers to different classes"));
         $view = $this->getActionView();
 
-        $teachers = \Teacher::all(array("school_id = ?" => $this->school->id));
+        $teachers = \Educator::all(array("organization_id = ?" => $this->school->id));
         $view->set("teachers", $teachers);
 
         // @todo - how to store which teacher which subject to which class

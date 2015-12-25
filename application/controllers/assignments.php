@@ -29,7 +29,7 @@ class Assignments extends Teachers {
 		$this->setSEO(array("title" => "Teacher | Manage Your assignments"));
 		$view = $this->getActionView();
 
-		$assignments = \Assignment::all(array("teacher_id = ?" => $this->teacher->id), array("title", "created", "course_id", "classroom_id", "submission_date"));
+		$assignments = \Assignment::all(array("educator_id = ?" => $this->teacher->id), array("title", "created", "course_id", "classroom_id", "submission_date"));
 		$results = array();
 		foreach ($assignments as $a) {
 			$course = \Course::first(array("id = ?" => $a->course_id), array("name", "grade_id"));
