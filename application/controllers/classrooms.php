@@ -74,7 +74,7 @@ class Classrooms extends School {
 		$enrollments = \Enrollment::all(array("classroom_id = ?" => $classroom_id));
 		$students = array();
 		foreach ($enrollments as $e) {
-			$student = \Student::first(array("id = ?" => $e->student_id), array("user_id", "dob", "parent_id"));
+			$student = \Scholar::first(array("id = ?" => $e->student_id), array("user_id", "dob", "parent_id"));
 			$parent = \StudentParent::first(array("id = ?" => $student->parent_id), array("name", "relation"));
 			$usr = \User::first(array("id = ?" => $student->user_id));
 			$students[] = array(

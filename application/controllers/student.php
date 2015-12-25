@@ -23,7 +23,7 @@ class Students extends Auth {
      * @readwrite
      * Stores the dashboard redirect url
      */
-    protected $_dashboard = "/students/dashboard";
+    protected $_dashboard = "/student/dashboard";
 
     /**
      * @readwrite
@@ -109,7 +109,7 @@ class Students extends Auth {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $students = Student::all(array("organization_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
+        $students = Scholar::all(array("organization_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
         $view->set("students", $students);
     }
 

@@ -36,7 +36,7 @@ class School extends Teachers {
 		$view = $this->getActionView();
 
 		$counts = array();
-		$counts["students"] = Student::count(array("organization_id = ?" => $this->school->id));
+		$counts["students"] = Scholar::count(array("organization_id = ?" => $this->school->id));
 		$counts["teachers"] = Educator::count(array("organization_id = ?" => $this->school->id));
 		$counts["classes"] = Grade::count(array("organization_id = ?" => $this->school->id));
 		$counts = ArrayMethods::toObject($counts);

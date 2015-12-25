@@ -106,7 +106,7 @@ class Assignments extends Teachers {
 		$find = \Submission::all(array("assignment_id = ?" => $assi_id));
 		$submissions = array();
 		foreach ($find as $f) {
-			$student = \Student::first(array("id = ?" => $f->student_id), array("user_id", "roll_no"));
+			$student = \Scholar::first(array("id = ?" => $f->student_id), array("user_id", "roll_no"));
 			$usr = \User::first(array("id = ?" => $student->user_id), array("name"));
 
 			$submissions[] = array(

@@ -5,7 +5,7 @@
  *
  * @author Hemant Mann
  */
-class Student extends Shared\Model {
+class Scholar extends Shared\Model {
     /**
      * @column
      * @readwrite

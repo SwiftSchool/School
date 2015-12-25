@@ -125,7 +125,7 @@ class Auth extends Controller {
                 switch ($model) {
                     case 'Student':
                         $session->set('student', $person);
-                        self::redirect("/students/dashboard");
+                        self::redirect("/student/dashboard");
                         break;
                     
                     case 'Educator':
