@@ -1,11 +1,11 @@
 <?php
 
 /**
- * The Student Model
+ * The Location Model
  *
- * @author Hemant Mann
+ * @author Faizan Ayubi
  */
-class Scholar extends Shared\Model {
+class Location extends Shared\Model {
 
     /**
      * @column
@@ -14,37 +14,37 @@ class Scholar extends Shared\Model {
      * @index
      */
     protected $_user_id;
-    
-    /**
-     * @column
-     * @readwrite
-     * @type date
-     */
-    protected $_dob;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     */
-    protected $_location_id;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     * @index
-     */
-    protected $_organization_id;
 
     /**
      * @column
      * @readwrite
      * @type text
-     * @length 100
-     * @index
-     * 
-     * @validate required, min(5), max(100)
+     * @length 255
      */
-    protected $_roll_no;
+    protected $_address;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_city;
+
+    /**
+     * @column
+     * @readwrite
+     * @type decimal
+     * @length 18, 15
+     */
+    protected $_latitude;
+
+    /**
+     * @column
+     * @readwrite
+     * @type decimal
+     * @length 18, 15
+     */
+    protected $_longitude;
+
 }

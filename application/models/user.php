@@ -43,18 +43,6 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 20
-     * @index
-     * 
-     * @validate max(20)
-     * @label Type of Account - student | educator | educator + admin = true (school's admin) | central (Top level admin)
-     */
-    protected $_type = "student";
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
      * @length 10
      * 
      * @validate numeric, min(10), max(10)

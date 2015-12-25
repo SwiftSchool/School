@@ -6,6 +6,15 @@
  * @author Hemant Mann
  */
 class Course extends Shared\Model {
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_user_id;
+    
     /**
      * @column
      * @readwrite
@@ -31,5 +40,13 @@ class Course extends Shared\Model {
      * @index
      */
     protected $_grade_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_organization_id;
 
 }

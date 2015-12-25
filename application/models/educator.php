@@ -23,4 +23,11 @@ class Educator extends Shared\Model {
      */
     protected $_user_id;
 
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     */
+    protected $_location_id;
+
 }

@@ -6,6 +6,15 @@
  * @author Hemant Mann
  */
 class Classroom extends Shared\Model {
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_organization_id;
+    
     /**
      * @column
      * @readwrite

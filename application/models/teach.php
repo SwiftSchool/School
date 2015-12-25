@@ -6,14 +6,14 @@
  * @author Hemant Mann
  */
 class Teach extends Shared\Model {
+    
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 20
+     * @type integer
      * @index
      */
-    protected $_type;
+    protected $_course_id;
 
     /**
      * @column
@@ -21,7 +21,7 @@ class Teach extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_type_id;
+    protected $_user_id;
 
     /**
      * @column
@@ -29,6 +29,5 @@ class Teach extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_educator_id;
-
+    protected $_organization_id;
 }

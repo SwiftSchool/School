@@ -20,7 +20,7 @@ class Submission extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_scholar_id;
+    protected $_user_id;
 
     /**
      * @column

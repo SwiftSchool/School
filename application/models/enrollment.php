@@ -6,13 +6,14 @@
  * @author Hemant Mann
  */
 class Enrollment extends Shared\Model {
+
     /**
      * @column
      * @readwrite
      * @type integer
      * @index
      */
-    protected $_scholar_id;
+    protected $_user_id;
 
     /**
      * @column
@@ -21,5 +22,13 @@ class Enrollment extends Shared\Model {
      * @index
      */
     protected $_classroom_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_organization_id;
 
 }

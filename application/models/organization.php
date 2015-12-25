@@ -6,6 +6,7 @@
  * @author Hemant Mann
  */
 class Organization extends Shared\Model {
+    
     /**
      * @column
      * @readwrite
@@ -20,12 +21,9 @@ class Organization extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 255
-     * 
-     * @validate required, min(10), max(255)
+     * @type integer
      */
-    protected $_address;
+    protected $_location_id;
 
     /**
      * @column

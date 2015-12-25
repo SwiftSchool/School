@@ -5,7 +5,8 @@
  * @author Hemant Mann
  */
 class ExamResult extends Shared\Model {
-	/**
+	
+    /**
      * @column
      * @readwrite
      * @type text
@@ -22,14 +23,13 @@ class ExamResult extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_scholar_id;
+    protected $_user_id;
 
     /**
      * @column
      * @readwrite
      * @type text
      * @length 10
-     * @index
      */
     protected $_marks;
 

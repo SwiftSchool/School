@@ -1,11 +1,11 @@
 <?php
 
 /**
- * The Events Model
+ * The Parent Model
  *
  * @author Hemant Mann
  */
-class Event extends Shared\Model {
+class Guardian extends Shared\Model {
 
     /**
      * @column
@@ -21,43 +21,36 @@ class Event extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_organization_id;
+    protected $_scholar_user_id;
+
+	/**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 20
+     *
+     * @value Father|Mother|Guardian
+     */
+    protected $_relation;
 
     /**
      * @column
      * @readwrite
      * @type text
-     * @length 100
-     * @index
      */
-    protected $_title;
+    protected $_occupation;
 
     /**
      * @column
      * @readwrite
      * @type text
      */
-    protected $_description;
+    protected $_qualification;
 
     /**
      * @column
      * @readwrite
-     * @type datetime
+     * @type integer
      */
-    protected $_start;
-
-    /**
-     * @column
-     * @readwrite
-     * @type datetime
-     */
-    protected $_end;
-
-    /**
-     * @column
-     * @readwrite
-     * @type boolean
-     * @index
-     */
-    protected $_allDay;
+    protected $_location_id;
 }

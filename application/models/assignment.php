@@ -6,6 +6,23 @@
  * @author Hemant Mann
  */
 class Assignment extends Shared\Model {
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_user_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_organization_id;
+
     /**
      * @column
      * @readwrite
@@ -29,14 +46,6 @@ class Assignment extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_educator_id;
-
-    /**
-     * @column
-     * @readwrite
-     * @type integer
-     * @index
-     */
     protected $_classroom_id;
 
     /**
@@ -52,6 +61,6 @@ class Assignment extends Shared\Model {
      * @readwrite
      * @type date
      */
-    protected $_submission_date;
+    protected $_deadline;
 
 }

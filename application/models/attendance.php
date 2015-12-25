@@ -6,6 +6,15 @@
  * @author Hemant Mann
  */
 class Attendance extends Shared\Model {
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_organization_id;
+
 	/**
      * @column
      * @readwrite
@@ -20,10 +29,8 @@ class Attendance extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
-     *
-     * @validate required, min(4), max(4)
      */
-    protected $_scholar_id;
+    protected $_user_id;
 
     /**
      * @column
