@@ -14,9 +14,6 @@ $routes = array(
         "action" => "index"
     ),
     array(
-<<<<<<< HEAD
-        "pattern" => "student/dashboard",
-=======
         "pattern" => "contact",
         "controller" => "home",
         "action" => "contact"
@@ -27,8 +24,7 @@ $routes = array(
         "action" => "pricing"
     ),
     array(
-        "pattern" => "students/dashboard",
->>>>>>> origin/master
+        "pattern" => "student/dashboard",
         "controller" => "students",
         "action" => "index"
     ),
