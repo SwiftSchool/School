@@ -232,7 +232,6 @@ body.survey .lock-container .panel .panel-footer .small {
   margin-left: 20px;
 }
 .navbar .navbar-brand-logo .svg {
-  display: inline-block;
   vertical-align: middle;
   background-repeat: no-repeat;
   fill: #42a5f5;
@@ -35083,14 +35082,6 @@ html.app-mobile #content .container-fluid {
 @media (min-width: 992px) {
   .top-navbar-large body {
     padding-top: 64px;
-  }
-}
-.top-navbar-xlarge body {
-  padding-top: 50px;
-}
-@media (min-width: 992px) {
-  .top-navbar-xlarge body {
-    padding-top: 80px;
   }
 }
 .top-navbar-small body {

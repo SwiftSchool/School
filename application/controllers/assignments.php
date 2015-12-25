@@ -77,7 +77,7 @@ class Assignments extends Teachers {
 
 				$submission = new \Submission(array(
 					"response" => $response,
-					"student_id" => Registry::get("session")->get("student")->id,
+					"scholar_id" => Registry::get("session")->get("student")->id,
 					"assignment_id" => $assignment->id
 				));
 				$submission->save();
@@ -106,7 +106,7 @@ class Assignments extends Teachers {
 		$find = \Submission::all(array("assignment_id = ?" => $assi_id));
 		$submissions = array();
 		foreach ($find as $f) {
-			$student = \Scholar::first(array("id = ?" => $f->student_id), array("user_id", "roll_no"));
+			$student = \Scholar::first(array("id = ?" => $f->scholar_id), array("user_id", "roll_no"));
 			$usr = \User::first(array("id = ?" => $student->user_id), array("name"));
 
 			$submissions[] = array(

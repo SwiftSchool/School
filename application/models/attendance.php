@@ -23,7 +23,7 @@ class Attendance extends Shared\Model {
      *
      * @validate required, min(4), max(4)
      */
-    protected $_student_id;
+    protected $_scholar_id;
 
     /**
      * @column

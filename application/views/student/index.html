@@ -1,43 +1,8 @@
-<div class="parallax overflow-hidden bg-blue-400 page-section third">
-    <div class="container parallax-layer" data-opacity="true">
-        <div class="media v-middle">
-            <div class="media-left text-center">
-                <a href="website-student-dashboard.html#">
-                <img src="{echo CDN}images/people/110/guy-6.jpg" alt="people" class="img-circle width-80" />
-                </a>
-            </div>
-            <div class="media-body">
-                <h1 class="text-white text-display-1 margin-v-0">{echo $user->name}</h1>
-            </div>
-            <div class="media-right">
-                <span class="label bg-blue-500">Student</span>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="container">
     <div class="page-section">
         <div class="row">
             <div class="col-md-9">
-                <div class="panel panel-default">
-                    <div class="media v-middle">
-                        <div class="media-left">
-                            <div class="bg-green-400 text-white">
-                                <div class="panel-body">
-                                    <i class="fa fa-credit-card fa-fw fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            Your year ends on <span class="text-body-2">25 February 2015</span>
-                        </div>
-                        <div class="media-right media-padding">
-                            <a class="btn btn-white paper-shadow relative" data-z="0.5" data-hover-z="1" data-animated href="website-student-dashboard.html#">
-                            Upgrade
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                
                 <div class="row" data-toggle="isotope">
                     <div class="item col-xs-12 col-lg-6">
                         <div class="panel panel-default paper-shadow" data-z="0.5">
@@ -284,11 +249,10 @@
                     </div>
                     <div class="panel-body list-group">
                         <ul class="list-group list-group-menu">
-                            <li class="list-group-item active"><a class="link-text-color" href="website-student-dashboard.html">Dashboard</a></li>
-                            <li class="list-group-item"><a class="link-text-color" href="website-student-courses.html">My Courses</a></li>
-                            <li class="list-group-item"><a class="link-text-color" href="website-student-profile.html">Profile</a></li>
-                            <li class="list-group-item"><a class="link-text-color" href="website-student-messages.html">Messages</a></li>
-                            <li class="list-group-item"><a class="link-text-color" href="login.html"><span>Logout</span></a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student.html">Dashboard</a></li>
+                            {foreach $course in $courses}
+                            <li class="list-group-item"><a class="link-text-color" href="/subject/{$course->name}/{$course->id}">{$course->name}</a></li>
+                            {/foreach}
                         </ul>
                     </div>
                 </div>

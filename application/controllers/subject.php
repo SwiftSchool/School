@@ -1,6 +1,6 @@
 <?php
 /**
- * The Courses Controller
+ * The Subject Controller
  *
  * @author Hemant Mann
  */
@@ -9,7 +9,7 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class Courses extends School {
+class Subject extends School {
 	/**
 	 * @protected
 	 */

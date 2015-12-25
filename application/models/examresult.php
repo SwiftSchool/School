@@ -22,7 +22,7 @@ class ExamResult extends Shared\Model {
      * @type integer
      * @index
      */
-    protected $_student_id;
+    protected $_scholar_id;
 
     /**
      * @column

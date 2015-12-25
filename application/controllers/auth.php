@@ -124,8 +124,8 @@ class Auth extends Controller {
                 }
                 switch ($model) {
                     case 'Student':
-                        $session->set('student', $person);
-                        self::redirect("/student/dashboard");
+                        $session->set('scholar', $person);
+                        self::redirect("/student");
                         break;
                     
                     case 'Educator':
@@ -147,7 +147,7 @@ class Auth extends Controller {
         $email = RequestMethods::post("email");
         $phone = RequestMethods::post("phone");
 
-        if ($opts["type"] == "student") {
+        if ($opts["type"] == "scholar") {
             $dob = RequestMethods::post("dob");
             $address = RequestMethods::post("address");
             $parentName = RequestMethods::post("parent");
@@ -182,7 +182,7 @@ class Auth extends Controller {
                     "organization_id" => $this->school->id
                 ));
                 $teacher->save();
-            } elseif ($opts["type"] == "student") {
+            } elseif ($opts["type"] == "scholar") {
                 $parent = new \StudentParent(array(
                     "relation" => $relation[$key],
                     "phone" => $parentPhone[$key],
@@ -201,7 +201,7 @@ class Auth extends Controller {
                 $student->save();
 
                 $enrollment = new \Enrollment(array(
-                    "student_id" => $student->id,
+                    "scholar_id" => $student->id,
                     "classroom_id" => $classroom[$key]
                 ));
                 $enrollment->save();
