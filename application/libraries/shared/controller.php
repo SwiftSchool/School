@@ -28,6 +28,17 @@ namespace Shared {
             $params["view"]->set("seo", $seo);
         }
 
+        public function setUser($user) {
+            $session = Registry::get("session");
+            if ($user) {
+                $session->set("user", $user->id);
+            } else {
+                $session->erase("user");
+            }
+            $this->_user = $user;
+            return $this;
+        }
+
         public function noview() {
             $this->willRenderLayoutView = false;
             $this->willRenderActionView = false;

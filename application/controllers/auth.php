@@ -54,12 +54,6 @@ class Auth extends Controller {
                 self::redirect("/admin");
             }
 
-            $organization = Organization::first(array("user_id = ?" => $user->id));
-            if ($organization) {
-                $session->set('organization', $organization);
-                self::redirect("/school");
-            }
-
             $scholar = Scholar::first(array("user_id = ?" => $user->id));
             if ($scholar) {
                 $session->set('scholar', $scholar);
@@ -67,6 +61,12 @@ class Auth extends Controller {
                 $organization = Organization::first(array("id = ?" => $scholar->organization_id));
                 $session->set('organization', $organization);
                 self::redirect("/student");
+            }
+
+            $organization = Organization::first(array("user_id = ?" => $user->id));
+            if ($organization) {
+                $session->set('organization', $organization);
+                self::redirect("/school");
             }
 
             $educator = Educator::first(array("user_id = ?" => $user->id));

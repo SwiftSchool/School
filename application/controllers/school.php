@@ -10,24 +10,12 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class School extends Teachers {
+class School extends Auth {
 
 	/**
      * @readwrite
      */
     protected $_organization;
-
-    public function __construct($options = array()) {
-        parent::__construct($options);
-
-        $this->organization = Registry::get("session")->get("organization");
-        if (!$this->organization && $this->organization->user_id != $this->user->id) {
-            self::redirect("/");
-        }
-
-        $this->defaultLayout = "layouts/school";
-        $this->setLayout();
-    }
 
     public function register() {
     	$this->setSEO(array("title" => "Register School"));
@@ -67,16 +55,16 @@ class School extends Teachers {
     }
 
     /**
-     * @before _secure
+     * @before _secure, _school
      */
 	public function index() {
 		$this->setSEO(array("title" => "Admin | School | Dashboard"));
 		$view = $this->getActionView();
 
 		$counts = array();
-		$counts["students"] = Scholar::count(array("organization_id = ?" => $this->school->id));
-		$counts["teachers"] = Educator::count(array("organization_id = ?" => $this->school->id));
-		$counts["classes"] = Grade::count(array("organization_id = ?" => $this->school->id));
+		$counts["students"] = Scholar::count(array("organization_id = ?" => $this->organization->id));
+		$counts["teachers"] = Educator::count(array("organization_id = ?" => $this->organization->id));
+		$counts["classes"] = Grade::count(array("organization_id = ?" => $this->organization->id));
 		$counts = ArrayMethods::toObject($counts);
 
 		$session = Registry::get("session");
@@ -89,7 +77,7 @@ class School extends Teachers {
 	}
 
 	/**
-	 * @before _secure
+	 * @before _secure, _school
 	 */
 	public function misc() {
 		$this->JSONView();
@@ -111,6 +99,19 @@ class School extends Teachers {
 			}
 		}
 		
+	}
+
+	/**
+	 * @protected
+	 */
+	public function _school() {
+		$this->organization = Registry::get("session")->get("organization");
+        if (!$this->organization && $this->organization->user_id != $this->user->id) {
+            self::redirect("/");
+        }
+
+        $this->defaultLayout = "layouts/school";
+        $this->setLayout();
 	}
 	
 }

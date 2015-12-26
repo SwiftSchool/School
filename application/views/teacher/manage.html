@@ -16,7 +16,7 @@
     </div>
     <!-- /Breadcrumb -->
     <div class="">
-        <a href="/teachers/add" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Teachers</a><br><br>
+        <a href="/teacher/add" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Teachers</a><br><br>
     </div>
 
     <!-- LIST -->
@@ -64,8 +64,8 @@
                                 <td><span class="label label-primary">Teacher</span></td>
                             {/else}
                             <td>
-                            <a href="/teachers/edit/{echo $t->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
-                            <a href="/teachers/delete/{echo $t->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            <a href="/teacher/edit/{echo $t->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/teacher/delete/{echo $t->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

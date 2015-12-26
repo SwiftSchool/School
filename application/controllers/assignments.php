@@ -9,7 +9,7 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class Assignments extends Teachers {
+class Assignments extends Teacher {
 	/**
 	 * @before _secure, _teacher
 	 */

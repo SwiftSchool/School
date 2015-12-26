@@ -8,76 +8,44 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 
-class Teachers extends Auth {
-    /**
-     * @protected
-     */
-    public function _admin() {
-        parent::_admin();
-
-        $this->dashboard = "/school";
-        $this->defaultLayout = "layouts/school";
-        $this->setLayout();
-    }
+class Teacher extends Auth {
     
     /**
      * @readwrite
-     * Stores the dashboard redirect url
      */
-    protected $_dashboard = "/teachers/dashboard";
+    protected $_educator;
 
     /**
      * @readwrite
      */
-    protected $_teacher;
-
-    /**
-     * @readwrite
-     */
-    protected $_school;
-
-    protected function setTeacher($teacher) {
-        $session = Registry::get("session");
-        if ($teacher) {
-            $session->set("teacher", $teacher);
-        } else {
-            $session->erase("teacher");
-        }
-        $this->_teacher = $teacher;
-        return $this;
-    }
+    protected $_organization;
 
     public function __construct($options = array()) {
         parent::__construct($options);
 
-        $session = Registry::get("session");
-        $this->teacher = $session->get("teacher");
-        $this->school = $session->get("school");
+        $this->organization = Registry::get("session")->get("organization");
+        $this->educator = Registry::get("session")->get("educator");
+        if (!$this->organization && !$this->educator) {
+            self::redirect("/");
+        }
+
+        $this->defaultLayout = "layouts/teacher";
+        $this->setLayout();
     }
 
     public function render() {
-        if ($this->teacher) {
+        if ($this->educator) {
             if ($this->actionView) {
-                $this->actionView->set("__teacher", $this->teacher);
-                $this->actionView->set("__school", $this->school);
+                $this->actionView->set("__educator", $this->educator);
+                $this->actionView->set("__organization", $this->organization);
             }
 
             if ($this->layoutView) {
-                $this->layoutView->set("__teacher", $this->teacher);
-                $this->layoutView->set("__school", $this->school);
+                $this->layoutView->set("__educator", $this->educator);
+                $this->layoutView->set("__organization", $this->organization);
             }
         }
         parent::render();
-    }
-
-    /**
-     * @protected
-     */
-    public function _teacher() {
-        if (!$this->teacher) {
-            self::redirect("/");
-        }
-        $this->changeLayout();
     }
 
     protected function _verifyInput($model, $fields) {
@@ -117,7 +85,7 @@ class Teachers extends Auth {
             if (isset($message["error"])) {
                 $view->set("success", $message["error"]);
             } else {
-                $view->set("success", 'Teachers saved successfully!! See <a href="/teachers/manage">Manage Teachers');
+                $view->set("success", 'Teachers saved successfully!! See <a href="/teacher/manage">Manage Teachers');
             }
         }
     }

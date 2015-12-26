@@ -35,7 +35,9 @@
 
   </section>
   <!-- /Main Content -->
-
+<?php if (DEBUG): ?>
+    <pre><?php print_r($e); ?></pre>
+<?php endif; ?>
 </body>
 
 </html>

@@ -29,8 +29,8 @@ $routes = array(
         "action" => "index"
     ),
     array(
-        "pattern" => "teachers/dashboard",
-        "controller" => "teachers",
+        "pattern" => "teacher/dashboard",
+        "controller" => "teacher",
         "action" => "index"
     ),
     array(
