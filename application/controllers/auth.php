@@ -86,71 +86,53 @@ class Auth extends Controller {
         
     }
 
-    protected function _saveUser($opts) {
-        $name = RequestMethods::post("name");
-        $email = RequestMethods::post("email");
-        $phone = RequestMethods::post("phone");
+    /**
+     * Creates new Users with unique username
+     * @return null
+     */
+    protected function _createUser($opts) {
+        $name = $opts["name"];
+        $email = $opts["email"];
+        $phone = $opts["phone"];
 
-        if ($opts["type"] == "scholar") {
-            $dob = RequestMethods::post("dob");
-            $address = RequestMethods::post("address");
-            $parentName = RequestMethods::post("parent");
-            $relation = RequestMethods::post("relation");
-            $parentPhone = RequestMethods::post("parent_phone");
-            $classroom = RequestMethods::post("classroom");
-        }
-
-        $last = \User::first(array(), array("id", "created"), "created", "desc");
-        $id = $last->id;
-        $prefix = strtolower(array_shift(explode(" ", $this->school->name)));
-        foreach ($name as $key => $value) {
-            if (Markup::checkValue($email["key"])) {
-                $found = \User::first(array("email = ?" => $email["key"]));
-                if ($found) {
-                    return array("error" => "Email already exists for ". $name[$key]);
-                }
+        $last = \User::first(array(), array("id"), "created", "desc");
+        $id = (int) $last->id + 1;
+        $prefix = strtolower(array_shift(explode(" ", $this->organization->name)));
+        
+        if (Markup::checkValue($email)) {
+            $found = \User::first(array("email = ?" => $email));
+            if ($found) {
+                return NULL;
             }
-            $user = new \User(array(
-                "name" => $value,
-                "email" => $email[$key],
-                "phone" => $phone[$key],
-                "username" => $prefix. "_" .(++$id),
-                "password" => Markup::encrypt("password"),
-                "type" => $opts["type"]
-            ));
-            $user->save();
-
-            if ($opts["type"] == "teacher") {
-                $teacher = new \Educator(array(
-                    "user_id" => $user->id,
-                    "organization_id" => $this->school->id
-                ));
-                $teacher->save();
-            } elseif ($opts["type"] == "scholar") {
-                $parent = new \StudentParent(array(
-                    "relation" => $relation[$key],
-                    "phone" => $parentPhone[$key],
-                    "name" => $parentName[$key]
-                ));
-                $parent->save();
-
-                $student = new \Student(array(
-                    "dob" => $dob[$key],
-                    "parent_id" => $parent->id,
-                    "address" => $address[$key],
-                    "organization_id" => $this->school->id,
-                    "roll_no" => "",
-                    "user_id" => $user->id
-                ));
-                $student->save();
-
-                $enrollment = new \Enrollment(array(
-                    "scholar_id" => $student->id,
-                    "classroom_id" => $classroom[$key]
-                ));
-                $enrollment->save();
-            }
-            
         }
+        if (empty(Markup::checkValue($name))) {
+            return NULL;
+        }
+        $user = new \User(array(
+            "name" => $name,
+            "email" => $email,
+            "phone" => $phone,
+            "username" => $prefix. "_" .$id,
+            "password" => Markup::encrypt("password")
+        ));
+        $user->save();
+
+        return $user;
     }
+
+    protected function reArray(&$array) {
+        $file_ary = array();
+        $file_keys = array_keys($array);
+        $file_count = count($array[$file_keys[0]]);
+        
+        for ($i=0; $i<$file_count; $i++) {
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $array[$key][$i];
+            }
+        }
+
+        return $file_ary;
+    }
+
+
 }

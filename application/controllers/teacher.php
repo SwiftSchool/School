@@ -8,7 +8,7 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 
-class Teacher extends Auth {
+class Teacher extends School {
     
     /**
      * @readwrite
@@ -20,31 +20,26 @@ class Teacher extends Auth {
      */
     protected $_organization;
 
-    public function __construct($options = array()) {
-        parent::__construct($options);
-
-        $this->organization = Registry::get("session")->get("organization");
-        $this->educator = Registry::get("session")->get("educator");
-        if (!$this->organization && !$this->educator) {
-            self::redirect("/");
-        }
-
-        $this->defaultLayout = "layouts/teacher";
-        $this->setLayout();
-    }
-
     public function render() {
         if ($this->educator) {
             if ($this->actionView) {
                 $this->actionView->set("__educator", $this->educator);
-                $this->actionView->set("__organization", $this->organization);
             }
 
             if ($this->layoutView) {
                 $this->layoutView->set("__educator", $this->educator);
-                $this->layoutView->set("__organization", $this->organization);
             }
         }
+
+        if ($this->organization) {
+            if ($this->actionView) {
+                $this->actionView->set("__organization", $this->organization);
+            }
+
+            if ($this->layoutView) {
+                $this->layoutView->set("__organization", $this->organization);
+            }
+        }         
         parent::render();
     }
 
@@ -74,44 +69,71 @@ class Teacher extends Auth {
 	}
 
     /**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
     public function add() {
         $this->setSEO(array("title" => "School | Add Teachers"));
         $view = $this->getActionView();
 
         if (RequestMethods::post("action") == "addTeachers") {
-            $message = $this->_saveUser(array("type" => "teacher"));
-            if (isset($message["error"])) {
-                $view->set("success", $message["error"]);
-            } else {
-                $view->set("success", 'Teachers saved successfully!! See <a href="/teacher/manage">Manage Teachers');
+            $teachers = $this->reArray($_POST);
+            foreach ($teachers as $teacher) {
+                $user = $this->_createUser($teacher);
+                if (isset($user)) {
+                    try {
+                        $educator = new Educator(array(
+                            "organization_id" => $this->organization->id,
+                            "user_id" => $user->id,
+                            "location_id" => $location->id
+                        ));
+                        $educator->save();
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+                    
+                }
             }
+
+            $view->set("success", 'Teachers saved successfully!! See <a href="/teacher/manage">Manage Teachers');
         }
     }
 
     /**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
     public function manage() {
         $this->setSEO(array("title" => "School | Manage Teachers"));
         $view = $this->getActionView();
 
-        $teachers = Educator::all(array("organization_id = ?" => $this->school->id), array("*"), "created", "desc", 30, 1);
+        $teachers = Educator::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
         $view->set("teachers", $teachers);
     }
 
     /**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
     public function allot() {
         $this->setSEO(array("title" => "School | Allot Teachers to different classes"));
         $view = $this->getActionView();
 
-        $teachers = \Educator::all(array("organization_id = ?" => $this->school->id));
+        $teachers = \Educator::all(array("organization_id = ?" => $this->organization->id));
         $view->set("teachers", $teachers);
 
         // @todo - how to store which teacher which subject to which class
+    }
+
+    /**
+     * @protected
+     */
+    public function _teacher() {
+        $this->organization = Registry::get("session")->get("organization");
+        $this->educator = Registry::get("session")->get("educator");
+        if (!$this->organization && !$this->educator) {
+            self::redirect("/");
+        }
+
+        $this->defaultLayout = "layouts/teacher";
+        $this->setLayout();
     }
 
 }

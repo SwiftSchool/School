@@ -17,6 +17,10 @@ class School extends Auth {
      */
     protected $_organization;
 
+    /**
+     * Registers new principal and school for platform access
+     * @return [type] [description]
+     */
     public function register() {
     	$this->setSEO(array("title" => "Register School"));
 		$view = $this->getActionView();
@@ -26,7 +30,7 @@ class School extends Auth {
                 "name" => RequestMethods::post("name"),
                 "email" => RequestMethods::post("email"),
                 "phone" => RequestMethods::post("phone"),
-                "username" => implode(" ", RequestMethods::post("name")),
+                "username" => strtolower(implode("", explode(" ", RequestMethods::post("name")))),
                 "password" => Markup::encrypt("password"),
                 "admin" => 0
             ));
@@ -99,6 +103,21 @@ class School extends Auth {
 			}
 		}
 		
+	}
+
+	/**
+	 * Manages all school registered
+	 * @before _secure, _school, _admin
+	 */
+	public function all() {
+		$this->setSEO(array("title" => "All Schools"));
+		$view = $this->getActionView();
+
+		$limit = RequestMethods::get("limit", 10);
+		$page = RequestMethods::get("page", 1);
+
+		$organizations = Organization::all(array(), array("name", "user_id", "created"), "created", "desc", $limit, $page);
+		$view->set("organizations", $organizations);
 	}
 
 	/**
