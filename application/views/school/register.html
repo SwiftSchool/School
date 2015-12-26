@@ -1,0 +1,72 @@
+<div class="parallax page-section bg-blue-300">
+    <div class="container parallax-layer" data-opacity="true">
+        <div class="media media-grid v-middle">
+            <div class="media-left">
+                <span class="icon-block half bg-blue-500 text-white"><i class="fa fa-graduation-cap"></i></span>
+            </div>
+            <div class="media-body">
+                <h3 class="text-display-2 text-white margin-none">School Register</h3>
+                <p class="text-white text-subhead">We are excited to have you on board, fill the form to continue.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+{if(isset($success))}
+<p>Thanks for registering, our representative will get in touch with you within 24 hours.</p>
+{/if}
+<div class="page-section parallax relative overflow-hidden">
+    <div class="container">
+        <form method="post" action="">
+            <div class="panel margin-none panel-default paper-shadow max-width-600 h-center" data-z="0.5">
+                <div class="panel-heading">
+                    <h4 class="text-headline">School Details</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group form-control-material">
+                        <input class="form-control" type="text" name="sname" id="sname" placeholder="Name" />
+                        <label for="sname">Name</label>
+                    </div>
+                    <div class="form-group form-control-material">
+                        <input class="form-control" type="tel" name="sphone" id="phone" placeholder="School Phone" />
+                        <label for="phone">School Phone</label>
+                    </div>
+                    <div class="form-group form-control-material">
+                        <textarea class="form-control" id="address" name="address" placeholder="Your address" rows="3"></textarea>
+                        <label for="address">Address</label>
+                    </div>
+                    <div class="form-group form-control-material">
+                        <input class="form-control" type="text" name="city" id="city" placeholder="City" />
+                        <label for="city">City</label>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="panel margin-none panel-default paper-shadow max-width-600 h-center" data-z="0.5">
+                <div class="panel-heading">
+                    <h4 class="text-headline">Prinicipal Details</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group form-control-material">
+                        <input class="form-control" type="text" name="name" id="name" placeholder="Name" />
+                        <label for="name">Name</label>
+                    </div>
+                    <div class="form-group form-control-material">
+                        <input class="form-control" type="email" name="email" id="email" placeholder="Email" />
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="form-group form-control-material">
+                        <input class="form-control" type="tel" name="phone" id="pphone" placeholder="Phone" />
+                        <label for="pphone">Phone:</label>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary relative paper-shadow" data-z="0.5" data-hover-z="1" data-animated>Submit</button>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <input type="hidden" name="action" value="register">
+        </form>
+    </div>
+</div>

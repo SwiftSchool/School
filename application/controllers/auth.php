@@ -10,49 +10,7 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 
 class Auth extends Controller {
-    /**
-     * @protected
-     */
-    public function _admin() {
-        if (!$this->user->admin) {
-            self::redirect("/404");
-        }
-    }
-
-    /**
-     * @protected
-     */
-    public function _session() {
-        if ($this->user && $this->user->type != 'central') {
-            self::redirect("/". $this->user->type ."s/");
-        } elseif ($this->user->type == 'central') {
-            self::redirect("/central");
-        }
-    }
-
-    /**
-     * @protected
-     */
-    public function _secure() {
-        $user = $this->getUser();
-        $which = strtolower(get_class($this));
-        if (!$user) {
-            header("Location: /$which/login");
-            exit();
-        }
-    }
     
-    protected function setUser($user) {
-        $session = Registry::get("session");
-        if ($user) {
-            $session->set("user", $user->id);
-        } else {
-            $session->erase("user");
-        }
-        $this->_user = $user;
-        return $this;
-    }
-
     /**
      * @protected
      */
@@ -66,9 +24,6 @@ class Auth extends Controller {
         $this->setLayout();
     }
 
-    /**
-     * @before _session
-     */
     public function login() {
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();
@@ -77,26 +32,6 @@ class Auth extends Controller {
         if ($return && isset($return["error"])) {
             $view->set("error", $return["error"]);
         }
-    }
-
-    public function logout() {
-        $which = strtolower(get_class($this));
-
-        switch ($which) {
-            case 'students':
-            case 'teachers':
-                $location = "/$which/login";
-                $func = "set".ucfirst($this->user->type);   
-                $this->$func(false);     
-                break;
-            
-            default:
-                $location = '/';
-                break;
-        }
-
-        $this->setUser(false);
-        self::redirect($location);
     }
 
     protected function _checkLogin() {
@@ -115,27 +50,36 @@ class Auth extends Controller {
             $session = Registry::get("session");
             $this->setUser($user);
 
-            $model = ucfirst(strtolower($user->type));
-            if ($model != 'Central') {
-                $person = $model::first(array("user_id = ?" => $user->id));
-                if ($person->organization_id) {
-                    $organization = Organization::first(array("id = ?" => $person->organization_id));
-                    $session->set('school', $organization);
-                }
-                switch ($model) {
-                    case 'Student':
-                        $session->set('scholar', $person);
-                        self::redirect("/student");
-                        break;
-                    
-                    case 'Educator':
-                        $session->set('teacher', $person);
-                        self::redirect("/teachers/dashboard");
-                        break;
-                }
-            } else {
-                self::redirect("/central");
+            if ($user->admin) {
+                self::redirect("/admin");
             }
+
+            $organization = Organization::first(array("user_id = ?" => $user->id));
+            if ($organization) {
+                $session->set('organization', $organization);
+                self::redirect("/school");
+            }
+
+            $scholar = Scholar::first(array("user_id = ?" => $user->id));
+            if ($scholar) {
+                $session->set('scholar', $scholar);
+                
+                $organization = Organization::first(array("id = ?" => $scholar->organization_id));
+                $session->set('organization', $organization);
+                self::redirect("/student");
+            }
+
+            $educator = Educator::first(array("user_id = ?" => $user->id));
+            if ($educator) {
+                $session->set('educator', $educator);
+                
+                $organization = Organization::first(array("id = ?" => $educator->organization_id));
+                $session->set('organization', $organization);
+                self::redirect("/teacher");
+            }
+
+            return array("error" => "Something went wrong please try later");
+
         } else {
             return null;
         }

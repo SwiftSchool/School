@@ -38,9 +38,35 @@ namespace Shared {
             $this->defaultExtension = "json";
         }
 
+        /**
+         * @protected
+         */
+        public function _admin() {
+            if (!$this->user->admin) {
+                $this->setUser(false);
+                throw new Router\Exception\Controller("Not a valid admin user account");
+            }
+        }
+
+        /**
+         * @protected
+         */
+        public function _secure() {
+            $user = $this->getUser();
+            if (!$user) {
+                header("Location: /auth/login.html");
+                exit();
+            }
+        }
+
         public static function redirect($url) {
             header("Location: {$url}");
             exit();
+        }
+
+        public function logout() {
+            $this->setUser(false);
+            self::redirect("/");
         }
 
         public function __construct($options = array()) {

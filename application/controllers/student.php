@@ -9,68 +9,39 @@ use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 
 class Student extends Auth {
-    /**
-     * @protected
-     */
-    public function _admin() {
-        parent::_admin();
-
-        $this->defaultLayout = "layouts/school";
-        $this->setLayout();
-    }
-
-    /**
-     * @readwrite
-     * Stores the dashboard redirect url
-     */
-    protected $_dashboard = "/student/dashboard";
 
     /**
      * @readwrite
      */
     protected $_scholar;
 
-    protected function setScholar($scholar) {
-        $session = Registry::get("session");
-        if ($scholar) {
-            $session->set("scholar", $scholar);
-        } else {
-            $session->erase("scholar");
-        }
-        $this->_scholar = $scholar;
-        return $this;
-    }
-
     public function __construct($options = array()) {
         parent::__construct($options);
 
         $this->scholar = Registry::get("session")->get("scholar");
+        if (!$this->scholar) {
+            self::redirect("/");
+        }
+
+        $this->defaultLayout = "layouts/student";
+        $this->setLayout();
     }
 
     public function render() {
         if ($this->scholar) {
             if ($this->actionView) {
-                $this->actionView->set("__student", $this->scholar);
+                $this->actionView->set("__scholar", $this->scholar);
             }
 
             if ($this->layoutView) {
-                $this->layoutView->set("__student", $this->scholar);
+                $this->layoutView->set("__scholar", $this->scholar);
             }
         }
         parent::render();
     }
 
-    /**
-     * @protected
-     */
-    public function _scholar() {
-        if (!$this->scholar) {
-            self::redirect("/");
-        }
-        $this->changeLayout();
-    }
 	/**
-	 * @before _secure, _scholar
+	 * @before _secure
 	 */
 	public function index() {
 		$this->setSEO(array("title" => "Students | Dashboard"));
@@ -88,7 +59,7 @@ class Student extends Auth {
 	}
 
     /**
-     * @before _secure, _scholar
+     * @before _secure
      */
 	public function profile() {
 		$this->setSEO(array("title" => "Students | Profile"));

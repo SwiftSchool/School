@@ -43,9 +43,9 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 10
+     * @length 15
      * 
-     * @validate numeric, min(10), max(10)
+     * @validate numeric, min(10), max(15)
      */
     protected $_phone;
 
@@ -53,10 +53,10 @@ class User extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 32
+     * @length 64
      * @index
      * 
-     * @validate required, alpha, min(8), max(32)
+     * @validate required, alpha, min(8), max(64)
      * @label password
      */
     protected $_password;
