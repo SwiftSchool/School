@@ -10,19 +10,12 @@ use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
 class Subject extends School {
+
 	/**
-	 * @protected
-	 */
-	public function changeLayout() {
-		$this->defaultLayout = "layouts/school";
-		$this->setLayout();
-	}
-	
-	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function add($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "organization_id = ?" => $this->school->id));
+		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "organization_id = ?" => $this->organization->id));
 		$this->setSEO(array("title" => "School | Add Courses"));
 		$view = $this->getActionView();
 
@@ -44,7 +37,7 @@ class Subject extends School {
 	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function manage($grade_id) {
 		if (!$grade_id) {
@@ -53,7 +46,7 @@ class Subject extends School {
 		$this->setSEO(array("title" => "School | Manage Subjects (Courses)"));
 		$view = $this->getActionView();
 
-		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "organization_id = ?" => $this->school->id));
+		$grade = $this->_verifyInput("Grade", array("id = ?" => $grade_id, "organization_id = ?" => $this->organization->id));
 		$courses = Course::all(array("grade_id = ?" => $grade_id));
 		$view->set("courses", $courses);
 		$view->set("grade", $grade);

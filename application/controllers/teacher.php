@@ -64,7 +64,7 @@ class Teacher extends School {
 	 * @before _secure, _teacher
 	 */
 	public function profile() {
-		$this->setSEO(array("title" => "Teachers | Profile"));
+		$this->setSEO(array("title" => "Profile"));
         $view = $this->getActionView();
 	}
 
@@ -72,7 +72,7 @@ class Teacher extends School {
      * @before _secure, _school
      */
     public function add() {
-        $this->setSEO(array("title" => "School | Add Teachers"));
+        $this->setSEO(array("title" => "Add Teachers"));
         $view = $this->getActionView();
 
         if (RequestMethods::post("action") == "addTeachers") {
@@ -102,7 +102,7 @@ class Teacher extends School {
      * @before _secure, _school
      */
     public function manage() {
-        $this->setSEO(array("title" => "School | Manage Teachers"));
+        $this->setSEO(array("title" => "Manage Teachers"));
         $view = $this->getActionView();
 
         $teachers = Educator::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
@@ -113,7 +113,7 @@ class Teacher extends School {
      * @before _secure, _school
      */
     public function allot() {
-        $this->setSEO(array("title" => "School | Allot Teachers to different classes"));
+        $this->setSEO(array("title" => "Allot Teachers to different classes"));
         $view = $this->getActionView();
 
         $teachers = \Educator::all(array("organization_id = ?" => $this->organization->id));
