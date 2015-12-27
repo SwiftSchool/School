@@ -15,8 +15,11 @@ class Classrooms extends School {
      * @before _secure, _school
      */
 	public function add($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("organization_id = ?" => $this->organization->id, "id = ?" => $grade_id));
-		$this->setSEO(array("title" => "School | Add Sections"));
+		$grade = \Grade::first(array("id = ?" => $grade_id), array("title", "id", "organization_id"));
+		if (!$grade || $grade->organization_id != $this->organization->id) {
+			self::redirect("/school");
+		}
+		$this->setSEO(array("title" => "Add Sections | School"));
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "addClassrooms") {
@@ -31,7 +34,8 @@ class Classrooms extends School {
 					"grade_id" => $grade_id,
 					"section" => $section[$key],
 					"remarks" => $remarks[$key],
-					"educator_id" => $teacher[$key]
+					"educator_id" => $teacher[$key],
+					"organization_id" => $this->organization->id
 				));
 				$classroom->save();
 			}
@@ -40,7 +44,7 @@ class Classrooms extends School {
 		$teachers = \Educator::all(array("organization_id = ?" => $this->organization->id), array("user_id", "id"));
 		$results = array();
 		foreach ($teachers as $t) {
-			$alloted = \Classroom::first(array("educator_id = ?" => $t->id));
+			$alloted = \Classroom::first(array("educator_id = ?" => $t->id), array("id"));
 			if ($alloted) {
 				continue;
 			}
@@ -60,7 +64,10 @@ class Classrooms extends School {
 	 * @before _secure, _school
 	 */
 	public function enrollments($classroom_id, $grade_id) {
-		$grade = $this->_verifyInput("Grade", array("organization_id = ?" => $this->organization->id));
+		$classroom = \Classroom::first(array("id = ?" => $classroom_id), array("id", "organization_id", "grade_id", "educator_id"));
+		if (!$classroom || $classroom->organization_id != $this->organization->id || $classroom->grade_id != $grade_id) {
+			self::redirect("/school");
+		}
 		$this->setSEO(array("title" => "School | View students in section"));
 		$view = $this->getActionView();
 
@@ -86,13 +93,47 @@ class Classrooms extends School {
      * @before _secure, _school
      */
 	public function manage($grade_id) {
-		$grade = $this->_verifyInput("Grade", array("organization_id = ?" => $this->organization->id, "id = ?" => $grade_id));
-		$this->setSEO(array("title" => "School | Add Sections"));
+		$grade = \Grade::first(array("id = ?" => $grade_id), array("title", "id", "organization_id"));
+		if (!$grade || $grade->organization_id != $this->organization->id) {
+			self::redirect("/school");
+		}
+		$this->setSEO(array("title" => "Manage Sections | School"));
 		$view = $this->getActionView();
 
 		$classrooms = \Classroom::all(array("grade_id = ?" => $grade_id));
 
 		$view->set("grade", $grade);
 		$view->set("classrooms", $classrooms);
+	}
+
+	/**
+	 * @before _secure, _school
+	 */
+	public function edit($classroom_id, $grade_id) {
+		$classroom = \Classroom::first(array("id = ?" => $classroom_id));
+		$grade = \Grade::first(array("id = ?" => $grade_id), array("id", "title", "organization_id"));
+		if (!$classroom || $classroom->organization_id != $this->organization->id) {
+			self::redirect("/school");
+		}
+		if (!$grade || $classroom->grade_id != $grade->id || $grade->organization_id != $this->organization->id) {
+			self::redirect("/school");
+		}
+
+		$this->setSEO(array("title" => "Edit Section | School"));
+		$view = $this->getActionView();
+
+		if (RequestMethods::post("action") == "editClassroom") {
+			$classroom->year = RequestMethods::post("year");
+			$classroom->section = RequestMethods::post("section");
+			$classroom->remarks = RequestMethods::post("remarks");
+			$classroom->educator_id = RequestMethods::post("educator");
+			$classroom->save();
+
+			$view->set("success", "Grade section edited successfully!!");
+		}
+		$teachers = \Educator::all(array("organization_id = ?" => $this->organization->id), array("user_id", "organization_id", "id"));
+		$view->set("teachers", $teachers);
+		$view->set("grade", $grade);
+		$view->set("classroom", $classroom);
 	}
 }

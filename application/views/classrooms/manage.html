@@ -4,24 +4,24 @@
     <div class="page-title">
         <div class="row">
             <div class="col s12 m9 l10">
-                <h1>Manage Classrooms</h1>
+                <h1>Manage Sections</h1>
                 <h4>Class: {echo $grade->title}</h4>
                 <ul>
                     <li>
                         <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
                     <li><a href="/grades/manage">Classes</a> <i class="fa fa-angle-right"></i></li>
-                    <li><a href="#">Class: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
-                    <li>Subjects</li>
+                    <li><a href="/grades/edit/{echo $grade->id}">Class: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Sections</li>
                 </ul>
+            </div>
+            <div class="pull-right col">
+                <a href="/classrooms/add/{echo $grade->id}" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Sections</a><br><br>
             </div>
         </div>
     </div>
     <!-- /Breadcrumb -->
-    <div class="">
-        <a href="/classrooms/add/{echo $grade->id}" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Sections</a><br><br>
-    </div>
-    <!-- LIST -->
+
     <div class="card">
         <div class="title">
             <h5><strong>Sections</strong></h5>
@@ -50,16 +50,15 @@
                             <td>{echo $grade->title}</td>
                             <td>{echo $c->section}</td>
                             <td>{echo $c->remarks}</td>
-                            {script $teacher = Teacher::first(array("id = ?" => $c->teacher_id), array("user_id"))}
+                            {script $teacher = Educator::first(array("id = ?" => $c->educator_id), array("user_id"))}
                             {script $usr = User::first(array("id = ?" => $teacher->user_id))}
                             <td>{echo $usr->name}</td>
                             <td>{echo $c->year}</td>
                             {script $enrolled = Enrollment::count(array("classroom_id = ?" => $c->id))}
                             <td>{echo $enrolled}</td>
                             <td>
-                            <a href="/classrooms/edit/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/classrooms/edit/{echo $c->id}/{echo $grade->organization_id}" class="btn btn-small lighten-1 z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
                             <a href="/classrooms/enrollments/{echo $c->id}/{echo $grade->id}" class="btn btn-small lighten-1 teal z-depth-0"><i class="fa fa-users"></i> Enrolled students</a>
-                            <a href="/classrooms/delete/{echo $c->id}/{echo $grade->school_id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i> Remove</a>
                             </td>
                         </tr>
                         {script ++$i}
@@ -68,9 +67,6 @@
                 </table>
             </div>
             {/if}
-            {else}
-            <a href="/grades/add" class="btn btn-small green z-depth-0"><i class="mdi mdi-content-add"></i> Add Classes</a>
-            {/else}
         </div>
     </div>
     <!-- /LIST -->

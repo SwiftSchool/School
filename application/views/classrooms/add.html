@@ -4,49 +4,50 @@
     <div class="page-title">
         <div class="row">
             <div class="col s12 m9 l10">
-                <h1>Add Classrooms|Sections</h1>
+                <h1>Add Sections</h1>
                 <h4>Class: {echo $grade->title}</h4>
                 <ul>
                     <li>
                         <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
                     <li><a href="/grades/manage">Classes</a> <i class="fa fa-angle-right"></i></li>
-                    <li><a href="#">Class: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="/grades/edit/{echo $grade->id}">Class: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="/classrooms/manage/{echo $grade->id}">Sections</a><i class="fa fa-angle-right"></i> </li>
                     <li>Add Section</li>
                 </ul>
             </div>
         </div>
     </div>
     <!-- /Breadcrumb -->
-    <!-- Main Form -->
     {if isset($success)}
-    <div class="alert alert-success alert-dismissible fade in" role="alert">
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
         {echo $success}
     </div>
     {/if}
+    <!-- Main Form -->
     <form action="" method="post">
         <table class="table card-panel">
             <thead>
                 <tr>
                     <th>Section *</th>
                     <th>Year *</th>
-                    <th>Remarks</th>
+                    <th>Remarks (Optional)</th>
                     <th>Class Teacher *</th>
                 </tr>
             </thead>
             <tbody>    
                 <tr>
                     <td class="input-field">
-                        <i class="mdi-social-person-add prefix"></i>
+                        <i class="mdi-action-label prefix"></i>
                         <input type="text" class="validate" required="" name="section[]">
                     </td>
                     <td class="input-field">
-                        <i class="mdi-content-content-paste prefix"></i>
+                        <i class="fa fa-calendar prefix"></i>
                         <input type="text" class="validate" required="" name="year[]">
                     </td>
                     <td class="input-field">
-                        <i class="mdi-content-content-paste prefix"></i>
+                        <i class="mdi-content-filter-list prefix"></i>
                         <input type="text" class="validate" name="remarks[]">
                     </td>
                     <td class="input-field">
