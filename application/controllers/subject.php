@@ -32,7 +32,9 @@ class Subject extends School {
 					$course = new \Course(array(
 						"title" => Markup::checkValue($value),
 						"description" => Markup::checkValue($description[$key]),
-						"grade_id" => $grade_id
+						"grade_id" => $grade_id,
+						"user_id" => $this->user->id,
+						"organization_id" => $this->organization->id
 					));
 					$course->save();
 				}
