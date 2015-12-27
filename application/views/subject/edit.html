@@ -9,9 +9,9 @@
                     <li>
                         <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
-                    <li><a href="/grades/manage">Manage Grades</a> <i class="fa fa-angle-right"></i></li>
-                    <li><a href="/grade/edit/{echo $grade->id}">Grade: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
-                    <li><a href="/subject/manage/{echo $grade->id}"></a>Manage Subjects</li>
+                    <li><a href="/grades/manage">Grades</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="/grades/edit/{echo $grade->id}">Grade: {echo $grade->title}</a> <i class="fa fa-angle-right"></i></li>
+                    <li><a href="/subject/manage/{echo $grade->id}">Subjects</a> <i class="fa fa-angle-right"></i></li>
                     <li>Edit Subject</a></li>
                 </ul>
             </div>
@@ -26,23 +26,23 @@
     </div>
     {/if}
     <div class="row">
-    <div class="col l3"></div>
-    <form action="" method="post" class="card-panel col l6">
-        <div class="input-field">
-            <i class="mdi-action-label medium prefix"></i>
-            <input type="text" name="title" value="{echo $course->title}" class="validate" required="">
-            <label for="Grades Name">Grades Name</label>
-        </div>
-        <div class="input-field">
-            <i class="mdi-action-description medium prefix"></i>
-            <textarea name="description" class="materialize-textarea">{echo $course->description}</textarea>
-            <label for="Description">Description</label>
-        </div>
-        <br><br>
-        <input type="hidden" name="action" value="editSubject">
-        <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
-        <a href="/subject/manage/{echo $grade->id}" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
-    </form>
+        <div class="col l3"></div>
+        <form action="" method="post" class="card-panel col l6">
+            <div class="input-field">
+                <i class="mdi-action-label medium prefix"></i>
+                <input type="text" name="title" value="{echo $course->title}" class="validate" required="">
+                <label for="Grades Name">Grades Name</label>
+            </div>
+            <div class="input-field">
+                <i class="mdi-action-description medium prefix"></i>
+                <textarea name="description" class="materialize-textarea">{echo $course->description}</textarea>
+                <label for="Description">Description</label>
+            </div>
+            <br><br>
+            <input type="hidden" name="action" value="editSubject">
+            <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+            <a href="/subject/manage/{echo $grade->id}" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+        </form>
     </div>
 </section>
 <!-- /Main Content -->

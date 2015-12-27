@@ -11,7 +11,7 @@ class Home extends Controller {
 
     public function index() {
         $this->seo(array(
-            "title" => "e-Learning",
+            "title" => "Cloudeducate",
             "keywords" => "school",
             "description" => "School Website",
             "view" => $this->getLayoutView()
@@ -21,7 +21,7 @@ class Home extends Controller {
 
     public function pricing() {
     	$this->seo(array(
-            "title" => "e-Learning | Pricing",
+            "title" => "Cloudeducate | Pricing",
             "keywords" => "school",
             "description" => "School Website",
             "view" => $this->getLayoutView()
@@ -31,7 +31,7 @@ class Home extends Controller {
 
     public function contact() {
     	$this->seo(array(
-            "title" => "e-Learning | Contact Us",
+            "title" => "Cloudeducate | Contact Us",
             "keywords" => "school",
             "description" => "School Website",
             "view" => $this->getLayoutView()
