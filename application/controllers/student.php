@@ -8,24 +8,17 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 
-class Student extends Auth {
+class Student extends School {
 
     /**
      * @readwrite
      */
     protected $_scholar;
 
-    public function __construct($options = array()) {
-        parent::__construct($options);
-
-        $this->scholar = Registry::get("session")->get("scholar");
-        if (!$this->scholar) {
-            self::redirect("/");
-        }
-
-        $this->defaultLayout = "layouts/student";
-        $this->setLayout();
-    }
+    /**
+     * @readwrite
+     */
+    protected $_organization;
 
     public function render() {
         if ($this->scholar) {
@@ -37,11 +30,21 @@ class Student extends Auth {
                 $this->layoutView->set("__scholar", $this->scholar);
             }
         }
+
+        if ($this->organization) {
+            if ($this->actionView) {
+                $this->actionView->set("__organization", $this->organization);
+            }
+
+            if ($this->layoutView) {
+                $this->layoutView->set("__organization", $this->organization);
+            }
+        }
         parent::render();
     }
 
 	/**
-	 * @before _secure
+	 * @before _secure, _student
 	 */
 	public function index() {
 		$this->setSEO(array("title" => "Students | Dashboard"));
@@ -67,14 +70,13 @@ class Student extends Auth {
 	}
 
     /**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
     public function add() {
-        $this->setSEO(array("title" => "School | Add Students"));
+        $this->setSEO(array("title" => "Add Students"));
         $view = $this->getActionView();
-        $session = Registry::get("session");
 
-        $grades = Grade::all(array("organization_id = ?" => $session->get("school")->id));
+        $grades = Grade::all(array("organization_id = ?" => $this->organization->id));
 
         if (RequestMethods::post("action") == "addStudents") {
             $this->_saveUser(array("type" => "scholar"));
@@ -83,7 +85,7 @@ class Student extends Auth {
     }
 
     /**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
     public function manage() {
         $this->setSEO(array("title" => "School | Manage Students"));
@@ -92,6 +94,16 @@ class Student extends Auth {
 
         $students = Scholar::all(array("organization_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
         $view->set("students", $students);
+    }
+
+    public function _student() {
+        $this->scholar = Registry::get("session")->get("scholar");
+        if (!$this->scholar) {
+            self::redirect("/");
+        }
+
+        $this->defaultLayout = "layouts/student";
+        $this->setLayout();
     }
 
 }

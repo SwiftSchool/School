@@ -9,16 +9,9 @@ use Framework\RequestMethods as RequestMethods;
 use Framework\Registry as Registry;
 
 class Events extends School {
-	/**
-	 * @protected
-	 */
-	public function changeLayout() {
-		$this->defaultLayout = "layouts/school";
-		$this->setLayout();
-	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function index() {
 		$this->seo(array("title" => "Schedule Your Appointments", "view" => $this->getLayoutView()));
@@ -55,7 +48,7 @@ class Events extends School {
 	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function schedule() {
 		if (RequestMethods::post("action") == "addEvent") {
@@ -76,7 +69,7 @@ class Events extends School {
 	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function delete($appointId) {
 		$this->noview();
@@ -110,7 +103,7 @@ class Events extends School {
 	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function display($id) {
 		$this->seo(array("title" => "Display Appointments", "view" => $this->getLayoutView()));
@@ -127,7 +120,7 @@ class Events extends School {
 
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function edit($appointId) {
 		$this->seo(array("title" => "Edit an Appointment", "view" => $this->getLayoutView()));
@@ -154,7 +147,7 @@ class Events extends School {
 	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function change() {
 		$view = $this->getActionView();

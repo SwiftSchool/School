@@ -10,16 +10,9 @@ use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
 class Grades extends School {
+	
 	/**
-	 * @protected
-	 */
-	public function changeLayout() {
-		$this->defaultLayout = "layouts/school";
-		$this->setLayout();
-	}
-
-	/**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
 	public function add() {
 		$this->setSEO(array("title" => "School | Add Grades"));
@@ -33,7 +26,7 @@ class Grades extends School {
 				$grade = new \Grade(array(
 					"title" => Markup::checkValue($value),
 					"description" => Markup::checkValue($description[$key]),
-					"organization_id" => $this->school->id
+					"organization_id" => $this->organization->id
 				));
 				$grade->save();
 			}
@@ -43,13 +36,13 @@ class Grades extends School {
 	}
 
     /**
-     * @before _secure, _admin
+     * @before _secure, _school
      */
 	public function manage() {
 		$this->setSEO(array("title" => "School | Manage Classes"));
 		$view = $this->getActionView();
 
-		$grades = \Grade::all(array("organization_id = ?" => $this->school->id), array("*"), "title", "asc");
+		$grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("*"), "title", "asc");
 		$view->set("grades", $grades);
 	}
 }

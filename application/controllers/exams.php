@@ -19,7 +19,7 @@ class Exams extends School {
 	}
 
 	/**
-	 * @before _secure, _admin
+	 * @before _secure, _school
 	 */
 	public function create() {
 		$this->setSEO(array("title" => "School | Add Courses"));
