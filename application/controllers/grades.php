@@ -45,4 +45,26 @@ class Grades extends School {
 		$grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("*"), "title", "asc");
 		$view->set("grades", $grades);
 	}
+
+	/**
+	 * @before _secure, _school
+	 */
+	public function edit($grade_id) {
+		$this->setSEO(array("title" => "School | Edit Class"));
+		$view = $this->getActionView();
+
+		$grade = \Grade::first(array("id = ?" => $grade_id));
+		if (!$grade || $grade->organization_id != $this->organization->id) {
+			self::redirect("/school");
+		}
+
+		if (RequestMethods::post("action") == "editGrade") {
+			$grade->title = RequestMethods::post("title");
+			$grade->description = RequestMethods::post("description");
+
+			$grade->save();
+			$view->set("success", "Grade edited successfully!");
+		}
+		$view->set("grade", $grade);
+	}
 }

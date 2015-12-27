@@ -4,24 +4,24 @@
     <div class="page-title">
         <div class="row">
             <div class="col s12 m9 l10">
-                <h1>Manage Classes</h1>
+                <h1>Manage Grades</h1>
                 <ul>
                     <li>
                         <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
-                    <li><a href="#">Manage Classes</a></li>
+                    <li><a href="#">Manage Grades</a></li>
                 </ul>
+            </div>
+            <div class="pull-right col">
+                <a href="/grades/add" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Grades</a><br><br>
             </div>
         </div>
     </div>
     <!-- /Breadcrumb -->
-    <div class="">
-        <a href="/grades/add" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Classes</a><br><br>
-    </div>
     <!-- LIST -->
     <div class="card">
         <div class="title">
-            <h5><strong>Classes</strong></h5>
+            <h5><strong>Grades</strong></h5>
         </div>
         <div class="content">
         	{if count($grades) > 0}
@@ -30,7 +30,7 @@
                     <thead>
                         <tr>
                             <th>S. No.</th>
-                            <th>Class</th>
+                            <th>Grade</th>
                             <th>Description</th>
                             <th>Created</th>
                             <th>Courses</th>
@@ -52,10 +52,10 @@
                             <td>{echo $sections}</td>
                             <td>
                             {if $courses == 0}
-                            <a href="/courses/add/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Courses</a>
+                            <a href="/subject/add/{echo $g->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Subjects</a>
                             {/if}
                             {else}
-                            <a href="/courses/manage/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Courses</a>
+                            <a href="/subject/manage/{echo $g->id}" class="btn btn-small teal z-depth-0"><i class="mdi mdi-action-assignment"></i> Manage Subject</a>
                             {/else}
                             {if $sections == 0}
                             <a href="/classrooms/add/{echo $g->id}" class="btn btn-small purple darken-1 z-depth-0"><i class="mdi mdi-content-add-circle"></i> Add Sections</a>
@@ -72,9 +72,6 @@
                 </table>
             </div>
             {/if}
-            {else}
-            <a href="/add/grades" class="btn btn-small green z-depth-0"><i class="mdi mdi-content-add"></i> Add Classes</a>
-            {/else}
         </div>
     </div>
     <!-- /LIST -->
