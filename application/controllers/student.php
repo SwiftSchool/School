@@ -76,12 +76,31 @@ class Student extends School {
         $this->setSEO(array("title" => "Add Students"));
         $view = $this->getActionView();
 
-        $grades = Grade::all(array("organization_id = ?" => $this->organization->id));
-
         if (RequestMethods::post("action") == "addStudents") {
-            $this->_saveUser(array("type" => "scholar"));
+            $students = $this->reArray($_POST);
+            foreach ($students as $student) {
+                $user = $this->_createUser($student);
+                if (isset($user)) {
+                    $location = new \Location(array(
+                        "user_id" => $user->id,
+                        "address" => $student["address"],
+                        "city" => $student["city"],
+                        "latitude" => "",
+                        "longitude" => ""
+                    ));
+                    $location->save();
+                    $scholar = new \Scholar(array(
+                        "user_id" => $user->id,
+                        "dob" => $student["dob"],
+                        "location_id" => $location->id,
+                        "organization_id" => $this->organization->id,
+                        "roll_no" => ""
+                    ));
+                    $scholar->save();
+                }
+            }
+            $view->set("success", "Students have been saved successfully!!");
         }
-        $view->set("grades", $grades);
     }
 
     /**
@@ -92,7 +111,7 @@ class Student extends School {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $students = Scholar::all(array("organization_id = ?" => $session->get("school")->id), array("*"), "created", "desc", 30, 1);
+        $students = Scholar::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
         $view->set("students", $students);
     }
 

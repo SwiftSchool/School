@@ -26,6 +26,7 @@ class Scholar extends Shared\Model {
      * @column
      * @readwrite
      * @type integer
+     * @index
      */
     protected $_location_id;
 
@@ -41,10 +42,10 @@ class Scholar extends Shared\Model {
      * @column
      * @readwrite
      * @type text
-     * @length 100
+     * @length 50
      * @index
      * 
-     * @validate required, min(5), max(100)
+     * @validate required, min(5), max(50)
      */
     protected $_roll_no;
 }

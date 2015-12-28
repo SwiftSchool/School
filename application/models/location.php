@@ -26,7 +26,8 @@ class Location extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type text
+     * @length 50
      * @index
      */
     protected $_city;

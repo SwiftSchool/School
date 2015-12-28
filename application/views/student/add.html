@@ -9,26 +9,29 @@
                     <li>
                         <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
-                    <li><a href="#">Add Student</a>
-                    </li>
+                    <li><a href="/student/manage">Students</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Add Student</li>
                 </ul>
             </div>
         </div>
     </div>
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
     <!-- /Breadcrumb -->
     <form action="" method="post">
         <table class="table card-panel">
             <thead>
                 <tr>
                     <th>Name *</th>
-                    <th>Phone </th>
-                    <th>Parent Name *</th>
-                    <th>Parent Relation *</th>
-                    <th>Parent Phone *</th>
+                    <th>Phone (Optional)</th>
+                    <th>Email (Optional)</th>
                     <th>DOB *</th>
                     <th>Address *</th>
-                    <th>Class *</th>
-                    <th>Section *</th>
+                    <th>City *</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,49 +40,136 @@
                         <i class="mdi-social-person-add prefix"></i>
                         <input type="text" class="validate" required="" name="name[]">
                     </td>
-                    <input type="hidden" class="" name="email[]" value="">
                     <td class="input-field">
                         <i class="mdi-communication-phone prefix"></i>
-                        <input type="text" class="validate" name="phone[]">
+                        <input type="text" pattern="[7-9]{1}[0-9]{9}" maxlength="10" class="validate" name="phone[]">
                     </td>
                     <td class="input-field">
-                        <i class="mdi-social-person prefix"></i>
-                        <input type="text" class="validate" name="parent[]">
-                    </td>
-                    <td class="input-field">
-                        <input type="text" class="validate" name="relation[]">
-                    </td>
-                    <td class="input-field">
-                        <i class="mdi-communication-stay-current-portrait prefix"></i>
-                        <input type="text" class="validate" name="parent_phone[]">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input type="text" class="" name="email[]" value="">
                     </td>
                     <td class="input-field">
                         <i class="fa fa-calendar prefix"></i>
-                        <input type="text" class="validate" name="dob[]">
+                        <input type="text" required="" class="validate" name="dob[]">
                     </td>
                     <td class="input-field">
                         <i class="mdi-action-home prefix"></i>
-                        <input type="text" class="validate" name="address[]">
+                        <input type="text" required="" class="validate" name="address[]">
                     </td>
                     <td class="input-field">
-                        <select required="" name="class[]" class="selectClass">
-                            <option>Select</option>
-                            {foreach $g in $grades}
-                            <option value="{echo $g->id}">{echo $g->title}</option>
-                            {/foreach}
-                        </select>
+                        <i class="mdi-social-location-city prefix"></i>
+                        <input type="text" required="" class="validate" name="city[]">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <i class="mdi-social-person-add prefix"></i>
+                        <input type="text" class="validate" required="" name="name[]">
                     </td>
                     <td class="input-field">
-                        <select required="" name="classroom[]" class="selectSection">
-                            <option value="">Select</option>
-                        </select>
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input type="text" pattern="[7-9]{1}[0-9]{9}" maxlength="10" class="validate" name="phone[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input type="text" class="" name="email[]" value="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="text" required="" class="validate" name="dob[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-home prefix"></i>
+                        <input type="text" required="" class="validate" name="address[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-social-location-city prefix"></i>
+                        <input type="text" required="" class="validate" name="city[]">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <i class="mdi-social-person-add prefix"></i>
+                        <input type="text" class="validate" required="" name="name[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input type="text" pattern="[7-9]{1}[0-9]{9}" maxlength="10" class="validate" name="phone[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input type="text" class="" name="email[]" value="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="text" required="" class="validate" name="dob[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-home prefix"></i>
+                        <input type="text" required="" class="validate" name="address[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-social-location-city prefix"></i>
+                        <input type="text" required="" class="validate" name="city[]">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <i class="mdi-social-person-add prefix"></i>
+                        <input type="text" class="validate" required="" name="name[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input type="text" pattern="[7-9]{1}[0-9]{9}" maxlength="10" class="validate" name="phone[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input type="text" class="" name="email[]" value="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="text" required="" class="validate" name="dob[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-home prefix"></i>
+                        <input type="text" required="" class="validate" name="address[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-social-location-city prefix"></i>
+                        <input type="text" required="" class="validate" name="city[]">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <i class="mdi-social-person-add prefix"></i>
+                        <input type="text" class="validate" required="" name="name[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-phone prefix"></i>
+                        <input type="text" pattern="[7-9]{1}[0-9]{9}" maxlength="10" class="validate" name="phone[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-communication-email prefix"></i>
+                        <input type="text" class="" name="email[]" value="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="text" required="" class="validate" name="dob[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-home prefix"></i>
+                        <input type="text" required="" class="validate" name="address[]">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-social-location-city prefix"></i>
+                        <input type="text" required="" class="validate" name="city[]">
                     </td>
                 </tr>
             </tbody>
         </table>
         <input type="hidden" name="action" value="addStudents">
         <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
-        <a href="/school" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+        <a href="/student/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
     </form>
 </section>
 <!-- /Main Content -->

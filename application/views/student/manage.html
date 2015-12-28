@@ -9,16 +9,16 @@
                     <li>
                         <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
                     </li>
-                    <li><a href="/manage">Manage</a> <i class="fa fa-angle-right"></i></li>
-                    <li><a href="#">Students</a></li>
+                    <li><a href="/student/manage">Students</a></li>
                 </ul>
+            </div>
+            <div class="pull-right col">
+                <a href="/student/add" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Students</a><br><br>
             </div>
         </div>
     </div>
     <!-- /Breadcrumb -->
-    <div class="">
-        <a href="/add/students" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Add Students</a><br><br>
-    </div>
+
     <!-- LIST -->
     <div class="card">
         <div class="title">
@@ -32,9 +32,8 @@
                             <th>S. No.</th>
                             <th>Student</th>
                             <th>Username</th>
-                            <th>Class</th>
                             <th>Created</th>
-                            <th>Status</th>
+                            <th>Account</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -46,8 +45,7 @@
                             {script $usr = User::first(array("id = ?" => $s->user_id), array("name", "username"))}
                             <td>{echo $usr->name}</td>
                             <td>{echo $usr->username}</td>
-                            <td>{echo $s->class}</td>
-                            <td>{echo Framework\StringMethods::datetime_to_text($s->created)}</td>
+                            <td>{echo Framework\StringMethods::only_date($s->created)}</td>
                             {script $live = $s->live}
                             {if $live}
                             <td class="green-text">Active</td>
