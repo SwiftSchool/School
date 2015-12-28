@@ -43,15 +43,6 @@ class Teacher extends School {
         parent::render();
     }
 
-    protected function _verifyInput($model, $fields) {
-        $check = $model::first($fields);
-        if (!$check) {
-            self::redirect($this->dashboard);
-        } else {
-            return $check;
-        }
-    }
-
 	/**
 	 * @before _secure, _teacher
 	 */
@@ -107,6 +98,45 @@ class Teacher extends School {
 
         $teachers = Educator::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
         $view->set("teachers", $teachers);
+    }
+
+    /**
+     * @before _secure, _school
+     */
+    public function edit($teacher_id) {
+        $teacher = \Educator::first(array("id = ?" => $teacher_id), array("user_id", "organization_id"));
+        if (!$teacher || $teacher->organization_id != $this->organization->id) {
+            self::redirect("/school");
+        }
+
+        $this->setSEO(array("title" => "Profile"));
+        $view = $this->getActionView();
+
+        $usr = \User::first(array("id = ?" => $teacher->user_id));
+        if (RequestMethods::post("action") == "editTeacher") {
+            $email = RequestMethods::post("email");
+            $phone = RequestMethods::post("phone");
+
+            $emailExist = ($email != $usr->email) ? \User::first(array("email = ?" => $email), array("id")) : false;
+            $phoneExist = ($phone != $usr->phone) ? \User::first(array("phone = ?" => $phone), array("id")) : false;
+
+            if ($emailExist) {
+                $view->set("error", true);
+                $view->set("message", "Failed to edit the teacher! Email already exists");
+            } elseif ($phoneExist) {
+                $view->set("error", true);
+                $view->set("message", "Phone number already exists!! Enter different phone");
+            } else {
+                $usr->name = RequestMethods::post("name");
+                $usr->email = $email;
+                $usr->phone = $phone;
+
+                $usr->save();
+                $view->set("message", "Teacher edited successfully!!");    
+            }
+        }
+
+        $view->set("teacher", $usr);
     }
 
     /**
