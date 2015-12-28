@@ -4,12 +4,12 @@
 include("seo.php");
 
 $seo = new SEO(array(
-    "title" => "SwiftDetectr",
-    "keywords" => "Triggers action for users",
-    "description" => "Welcome to Our Trigger Network",
+    "title" => "CloudEducate - School Management ERP",
+    "keywords" => "School management system, erp",
+    "description" => "CloudEducate is an online School Management System that adapts to your school management system, automating the system",
     "author" => "CloudStuff.Tech",
     "robots" => "INDEX,FOLLOW",
-    "photo" => CDN . "img/logo.png"
+    "photo" => CDN . "images/logo.png"
 ));
 
 Framework\Registry::set("seo", $seo);

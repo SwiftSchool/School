@@ -11,19 +11,6 @@ use Framework\Registry as Registry;
 
 class Auth extends Controller {
     
-    /**
-     * @protected
-     */
-    public function changeLayout() {
-        $which = strtolower(get_class($this));
-        $check = substr($which, -1);
-        if ($check == "s") {
-            $which = substr($which, 0, -1);
-        }
-        $this->defaultLayout = "layouts/$which";
-        $this->setLayout();
-    }
-
     public function login() {
         $this->willRenderLayoutView = false;
         $view = $this->getActionView();

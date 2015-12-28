@@ -15,59 +15,73 @@
 </head>
 
 <body>
-    {include layouts/navigation/standard.html}
-    {ayield action}
-    
-    <section class="footer-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6 col-md-3">
-                    <h4 class="text-headline text-light">Corporate</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="index.html#">About the company</a></li>
-                        <li><a href="index.html#">Company offices</a></li>
-                        <li><a href="index.html#">Partners</a></li>
-                        <li><a href="index.html#">Terms of use</a></li>
-                        <li><a href="index.html#">Privacy</a></li>
-                        <li><a href="index.html#">Contact us</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-6 col-md-3">
-                    <h4 class="text-headline text-light">Explore</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="index.html">Courses</a></li>
-                        <li><a href="index.html">Tutors</a></li>
-                        <li><a href="index.html">Pricing</a></li>
-                        <li><a href="index.html">Become Tutor</a></li>
-                        <li><a href="index.html">Sign Up</a></li>
-                    </ul>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                    <h4 class="text-headline text-light">Newsletter</h4>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Enter email here...">
-                            <span class="input-group-btn">
-                            <button class="btn btn-grey-800" type="button">Subscribe</button>
-                            </span>
+    {if($scholar !== NULL)}
+        {include layouts/navigation/student.html}
+        {ayield action}
+    {/if}
+    {else}
+        {if($educator !== NULL)}
+            {include layouts/navigation/teacher.html}
+            {ayield action}
+        {/if}
+        {else}
+            {include layouts/navigation/standard.html}
+            {ayield action}
+            <section class="footer-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <h4 class="text-headline text-light">Corporate</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="index.html#">About the company</a></li>
+                                <li><a href="index.html#">Company offices</a></li>
+                                <li><a href="index.html#">Partners</a></li>
+                                <li><a href="index.html#">Terms of use</a></li>
+                                <li><a href="index.html#">Privacy</a></li>
+                                <li><a href="index.html#">Contact us</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <h4 class="text-headline text-light">Explore</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="index.html">Courses</a></li>
+                                <li><a href="index.html">Tutors</a></li>
+                                <li><a href="index.html">Pricing</a></li>
+                                <li><a href="index.html">Become Tutor</a></li>
+                                <li><a href="index.html">Sign Up</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h4 class="text-headline text-light">Newsletter</h4>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Enter email here...">
+                                    <span class="input-group-btn">
+                                    <button class="btn btn-grey-800" type="button">Subscribe</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <br/>
+                            <p>
+                                <a href="index.html#" class="btn btn-indigo-500 btn-circle"><i class="fa fa-facebook"></i></a>
+                                <a href="index.html#" class="btn btn-pink-500 btn-circle"><i class="fa fa-dribbble"></i></a>
+                                <a href="index.html#" class="btn btn-blue-500 btn-circle"><i class="fa fa-twitter"></i></a>
+                                <a href="index.html#" class="btn btn-danger btn-circle"><i class="fa fa-google-plus"></i></a>
+                            </p>
+                            <p class="text-subhead">
+                                &copy; 2016 CloudStuff.Tech (SWIFTDEAL ONLINE LLP)
+                            </p>
                         </div>
                     </div>
-                    <br/>
-                    <p>
-                        <a href="index.html#" class="btn btn-indigo-500 btn-circle"><i class="fa fa-facebook"></i></a>
-                        <a href="index.html#" class="btn btn-pink-500 btn-circle"><i class="fa fa-dribbble"></i></a>
-                        <a href="index.html#" class="btn btn-blue-500 btn-circle"><i class="fa fa-twitter"></i></a>
-                        <a href="index.html#" class="btn btn-danger btn-circle"><i class="fa fa-google-plus"></i></a>
-                    </p>
-                    <p class="text-subhead">
-                        &copy; 2016 CloudStuff.Tech (SWIFTDEAL ONLINE LLP)
-                    </p>
                 </div>
-            </div>
-        </div>
-    </section>
-    
+            </section>
+        {/else}
+    {/else}
+
+    <footer class="footer">
+        <strong>CloudEducate</strong> v1.1.0 &copy; Copyright 2016
+    </footer>
+
     <script src="{echo CDN}js/all.js"></script>
 </body>
-
 </html>

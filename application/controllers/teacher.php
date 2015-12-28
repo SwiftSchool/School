@@ -23,21 +23,21 @@ class Teacher extends School {
     public function render() {
         if ($this->educator) {
             if ($this->actionView) {
-                $this->actionView->set("__educator", $this->educator);
+                $this->actionView->set("educator", $this->educator);
             }
 
             if ($this->layoutView) {
-                $this->layoutView->set("__educator", $this->educator);
+                $this->layoutView->set("educator", $this->educator);
             }
         }
 
         if ($this->organization) {
             if ($this->actionView) {
-                $this->actionView->set("__organization", $this->organization);
+                $this->actionView->set("organization", $this->organization);
             }
 
             if ($this->layoutView) {
-                $this->layoutView->set("__organization", $this->organization);
+                $this->layoutView->set("organization", $this->organization);
             }
         }         
         parent::render();
@@ -161,9 +161,6 @@ class Teacher extends School {
         if (!$this->organization && !$this->educator) {
             self::redirect("/");
         }
-
-        $this->defaultLayout = "layouts/teacher";
-        $this->setLayout();
     }
 
 }

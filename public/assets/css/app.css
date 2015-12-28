@@ -34980,7 +34980,6 @@ fieldset[disabled] .btn-yellow-A700.btn-stroke.active {
   margin: 0 -20px;
 }
 [class*="bottom-footer"] .footer {
-  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -34993,9 +34992,6 @@ fieldset[disabled] .btn-yellow-A700.btn-stroke.active {
 }
 .ls-bottom-footer body {
   padding-bottom: 65px;
-}
-.bottom-footer body {
-  padding-bottom: 45px;
 }
 html.app-mobile {
   height: 100%;

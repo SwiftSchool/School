@@ -120,9 +120,6 @@ class Student extends School {
         if (!$this->scholar) {
             self::redirect("/");
         }
-
-        $this->defaultLayout = "layouts/student";
-        $this->setLayout();
     }
 
 }
