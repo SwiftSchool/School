@@ -87,13 +87,20 @@ class Auth extends Controller {
         $prefix = strtolower(array_shift(explode(" ", $this->organization->name)));
         
         if (Markup::checkValue($email)) {
-            $found = \User::first(array("email = ?" => $email));
+            $found = \User::first(array("email = ?" => $email), array("id"));
             if ($found) {
-                return NULL;
+                throw new \Exception("Email already exists");
+            }
+        }
+        if (Markup::checkValue($phone)) {
+            $found = \User::first(array("phone = ?" => $phone), array("id"));
+            if ($found) {
+                throw new \Exception("Phone number already exists");
             }
         }
         if (empty(Markup::checkValue($name))) {
             return NULL;
+            // throw new \Exception("Please provide a name");
         }
         $user = new \User(array(
             "name" => $name,

@@ -4,7 +4,7 @@
 }(window, window.Model));
 
 $(document).ready(function() {
-    $('.selectClass').on('change', function (e) {
+    $('#selectGrade').on('change', function (e) {
         e.preventDefault();
         var val = $(this).val(),
             opts = {
@@ -13,15 +13,21 @@ $(document).ready(function() {
                     where: 'grade_id = ?',
                     value: val
                 }]
-            };
+            },
+            sections = $("#gradeSections");
+
         request.create({
-            action: 'school_admin/misc',
+            action: 'school/misc',
             data: {action: 'process', opts: opts},
             callback: function (data) {
                 if (data.results) {
-                    console.log(data.results);
+                    sections.html('');
+                    var classrooms = data.results, i, max;
+                    for (i = 0, max = classrooms.length; i < max; ++i) {
+                        sections.append('<option value="' + classrooms[i]._id + '">' + classrooms[i]._section + '</option>');
+                    }
                 } else {
-                    console.log(data.error);
+                    sections.html('<option>No Sections for this grade</option>');
                 }
             }
         });

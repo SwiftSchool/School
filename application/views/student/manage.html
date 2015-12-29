@@ -32,6 +32,8 @@
                             <th>S. No.</th>
                             <th>Student</th>
                             <th>Username</th>
+                            <th>Parent</th>
+                            <th>Classroom</th>
                             <th>Created</th>
                             <th>Account</th>
                             <th>Action</th>
@@ -45,17 +47,34 @@
                             {script $usr = User::first(array("id = ?" => $s->user_id), array("name", "username"))}
                             <td>{echo $usr->name}</td>
                             <td>{echo $usr->username}</td>
+                            
+                            <!-- Guardian Info -->
+                            {script $guardian = \Guardian::first(array("scholar_user_id = ?" => $s->user_id), array("user_id", "id", "relation"))}
+                            {if $guardian}
+                                {script $g = \User::first(array("id = ?" => $guardian->user_id), array("name"))}
+                                <td>{echo $g->name} - ({echo $guardian->relation})</td>
+                            {/if} {else}
+                                <td><a href="/student/addGuardian/{echo $s->user_id}"><i class="fa fa-plus"></i> Add Guardian</a></td>
+                            {/else}
+                            
+                            <!-- Classroom Info -->
+                            {script $enrolled = \Enrollment::first(array("user_id = ?" => $s->user_id), array("classroom_id"))}
+                            {if $enrolled}
+                                {script $class = \Classroom::first(array("id = ?" => $enrolled->classroom_id), array("section", "grade_id"))}
+                                <td>{echo $grades[$class->grade_id] . " - " . $class->section}</td>
+                            {/if} {else}
+                                <td><a href="/student/addToClass/{echo $s->user_id}"><i class="fa fa-plus-circle"></i> Add to Classroom</a></td>
+                            {/else}
                             <td>{echo Framework\StringMethods::only_date($s->created)}</td>
                             {script $live = $s->live}
                             {if $live}
                             <td class="green-text">Active</td>
-                            {/if}
-                            {else}
+                            {/if} {else}
                             <td class="red-text">Disabled</td>
                             {/else}
                             <td>
-                            <a href="/school/editStudent/{echo $s->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
-                            <a href="/school/deleteStudent/{echo $s->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            <a href="/student/edit/{echo $s->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/student/remove/{echo $s->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

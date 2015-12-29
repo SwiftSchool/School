@@ -15,12 +15,12 @@
 </head>
 
 <body>
-    {if($scholar !== NULL)}
+    {if (@$scholar !== NULL)}
         {include layouts/navigation/student.html}
         {ayield action}
     {/if}
     {else}
-        {if($educator !== NULL)}
+        {if (@$educator !== NULL)}
             {include layouts/navigation/teacher.html}
             {ayield action}
         {/if}

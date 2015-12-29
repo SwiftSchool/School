@@ -1,0 +1,84 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Add Guardian</h1>
+                <ul>
+                    <li>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/student/manage">Students</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Add Guardian</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+    <!-- Main Form -->
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
+
+    <form action="" method="post" class="">
+        <div class="row">
+            <div class="col l3"></div>
+            <div class="col l6 card-panel">
+                <div class="input-field">
+                    <i class="mdi-social-person prefix"></i>
+                    <input type="text" class="validate" required="" name="name">
+                    <label for="Name">Name</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-communication-email prefix"></i>
+                    <input type="text" class="validate" required="" name="email">
+                    <label for="Email">Email</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-communication-phone prefix"></i>
+                    <input type="text" class="validate" maxlength="10" pattern="[9]{1}[0-9]{9}" required="" name="phone">
+                    <label for="Phone">Phone</label>
+                </div>
+                <div class="input-field">
+                    <select name="relation" class="">
+                        <option value="father">Father</option>
+                        <option value="mother">Mother</option>
+                        <option value="guardian">Guardian</option>
+                    </select>
+                    <label for="Relation">Relation</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-action-home prefix"></i>
+                    <input type="text" required="" class="validate" name="address">
+                    <label for="Address">Address</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-social-location-city prefix"></i>
+                    <input type="text" required="" class="validate" name="city">
+                    <label for="City">City</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-action-work prefix"></i>
+                    <input type="text" required="" class="validate" name="occupation">
+                    <label for="Occupation">Occupation</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-social-school prefix"></i>
+                    <input type="text" required="" class="validate" name="qualification">
+                    <label for="Qualification">Qualification</label>
+                </div>
+                <br>
+                <input type="hidden" name="action" value="saveParent">
+                <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+                <a href="/student/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+            </div>
+        </div>
+        <div class="row"><br></div>
+    </form>    
+
+</section>
+<!-- /Main Content -->

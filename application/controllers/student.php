@@ -7,6 +7,8 @@
  */
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
+use Framework\ArrayMethods as ArrayMethods;
+use Shared\Markup as Markup;
 
 class Student extends School {
 
@@ -111,10 +113,96 @@ class Student extends School {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $students = Scholar::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
+        $students = \Scholar::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
+        $grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("title", "id"));
+        
+        $setGrades = array();
+        foreach ($grades as $g) {
+            $setGrades["$g->id"] = $g->title;
+        }
+        $view->set("grades", $setGrades);
         $view->set("students", $students);
     }
 
+    /**
+     * @before _secure, _school
+     */
+    public function addGuardian($scholar_user_id) {
+        $usr = \User::first(array("id = ?" => $scholar_user_id), array("id"));
+        if (!$usr) {
+            self::redirect("/school");
+        }
+        $this->setSEO(array("title" => "Parent Info | Student | School"));
+        $view = $this->getActionView();
+
+        if (RequestMethods::post("action") == "saveParent") {
+            $opts = array();
+            $opts["name"] = RequestMethods::post("name");
+            $opts["email"] = RequestMethods::post("email");
+            $opts["phone"] = RequestMethods::post("phone");
+
+            try {
+                $user = $this->_createUser($opts);
+                $loc = new Location(array(
+                    "address" => RequestMethods::post("address"),
+                    "city" => RequestMethods::post("city"),
+                    "latitude" => "",
+                    "longitude" => "",
+                    "user_id" => $user->id
+                ));
+                $loc->save();
+                $guardian = new Guardian(array(
+                    "user_id" => $user->id,
+                    "scholar_user_id" => $scholar_user_id,
+                    "relation" => RequestMethods::post("relation"),
+                    "occupation" => RequestMethods::post("occupation"),
+                    "qualification" => RequestMethods::post("qualification"),
+                    "location_id" => $loc->id
+                ));
+                $guardian->save();
+
+                $view->set("success", $guardian->relation . " info saved successfully!!");
+            } catch (\Exception $e) {
+                $view->set("error", true);
+                $view->set("message", $e->getMessage());
+            }
+
+        }
+    }
+
+    /**
+     * @before _secure, _school
+     */
+    public function addToClass($user_id) {
+        $usr = \User::first(array("id = ?" => $user_id), array("id"));
+        if (!$usr) {
+            self::redirect("/school");
+        }
+        $this->setSEO(array("title" => "Parent Info | Student | School"));
+        $view = $this->getActionView();
+
+        $grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
+        if (RequestMethods::post("action") == "addToClass") {
+            $classroom = Markup::checkValue(RequestMethods::post("classroom"));
+            if ($classroom) {
+                $enrollment = new \Enrollment(array(
+                    "user_id" => $usr->id,
+                    "classroom_id" => $classroom,
+                    "organization_id" => $this->organization->id
+                ));
+                $enrollment->save();
+                $view->set("success", "Student successfully added to classroom");
+            } else {
+                $view->set("success", "ERROR");
+            }
+        }
+
+        $view->set("grades", $grades);
+    }
+
+    /**
+     * @protected
+     */
     public function _student() {
         $this->scholar = Registry::get("session")->get("scholar");
         if (!$this->scholar) {
