@@ -27,7 +27,7 @@
         <div class="col l3"></div>
         <form action="" method="post" class="card-panel col l6">
             <div>
-                <select class="browser-default" required="" id="selectGrade">
+                <select class="findSections browser-default" required="" data-id="0">
                     <option>Select</option>
                     {foreach $g in $grades}
                     <option value="{echo $g->id}">{echo $g->title}</option>
@@ -36,7 +36,7 @@
                 <label for="Grade">Grade</label>
             </div><br><br>
             <div class="">
-                <select class="browser-default" name="classroom" id="gradeSections" required="">
+                <select class="gradeSections browser-default" name="classroom" required="">
                     <option value="">Select a grade</option>
                 </select>
                 <label for="Section">Section</label>

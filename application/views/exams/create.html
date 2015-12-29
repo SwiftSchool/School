@@ -1,0 +1,249 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Create Exam</h1>
+                <ul>
+                    <li>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/exams/manage">Exams</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Create Exam</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
+    <!-- /Breadcrumb -->
+    <form action="" method="post">
+        <table class="table card-panel">
+            <thead>
+                <tr>
+                    <th>Grade *</th>
+                    <th>Course *</th>
+                    <th>Type *</th>
+                    <th>Start Date * </th>
+                    <th>Start Time *</th>
+                    <th>End Time *</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="input-field">
+                        <select data-id="0" name="grade[]" required="" class="findCourses browser-default">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select name="course[]" required="" class="gradeSections browser-default">
+                            <option>Select</option>
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-label prefix"></i>
+                        <input type="text" name="type[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="date" name="start_date[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-image-timer prefix"></i>
+                        <input type="text" name="start_time[]" value="10:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-device-access-time prefix"></i>
+                        <input type="text" name="end_time[]" value="14:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field" style="width: 5%">
+                        <i class="small mdi-content-clear"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <select data-id="1" name="grade[]" required="" class="findCourses browser-default">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select name="course[]" required="" class="gradeSections browser-default">
+                            <option>Select</option>
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-label prefix"></i>
+                        <input type="text" name="type[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="date" name="start_date[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-image-timer prefix"></i>
+                        <input type="text" name="start_time[]" value="10:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-device-access-time prefix"></i>
+                        <input type="text" nammdi-device-access-timee="end_time[]" value="14:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field" style="width: 5%">
+                        <i class="small mdi-content-clear"></i>
+                    </td>
+                </tr>
+                <!--<tr>
+                    <td class="input-field">
+                        <select data-id="2" name="grade[]" required="" class="findCourses browser-default">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select name="course[]" required="" class="gradeSections browser-default">
+                            <option>Select</option>
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-label prefix"></i>
+                        <input type="text" name="type[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="date" name="start_date[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-image-timer prefix"></i>
+                        <input type="text" name="start_time[]" value="10:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-device-access-time prefix"></i>
+                        <input type="text" nammdi-device-access-timee="end_time[]" value="14:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field" style="width: 5%">
+                        <i class="small mdi-content-clear"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <select data-id="3" name="grade[]" required="" class="findCourses browser-default">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select name="course[]" required="" class="gradeSections browser-default">
+                            <option>Select</option>
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-label prefix"></i>
+                        <input type="text" name="type[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="date" name="start_date[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-image-timer prefix"></i>
+                        <input type="text" name="start_time[]" value="10:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-device-access-time prefix"></i>
+                        <input type="text" nammdi-device-access-timee="end_time[]" value="14:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field" style="width: 5%">
+                        <i class="small mdi-content-clear"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <select data-id="4" name="grade[]" required="" class="findCourses browser-default">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select name="course[]" required="" class="gradeSections browser-default">
+                            <option>Select</option>
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-label prefix"></i>
+                        <input type="text" name="type[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="date" name="start_date[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-image-timer prefix"></i>
+                        <input type="text" name="start_time[]" value="10:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-device-access-time prefix"></i>
+                        <input type="text" nammdi-device-access-timee="end_time[]" value="14:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field" style="width: 5%">
+                        <i class="small mdi-content-clear"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="input-field">
+                        <select data-id="5" name="grade[]" required="" class="findCourses browser-default">
+                            <option>Select</option>
+                            {foreach $g in $grades}
+                            <option value="{echo $g->id}">{echo $g->title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <select name="course[]" required="" class="gradeSections browser-default">
+                            <option>Select</option>
+                        </select>
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-action-label prefix"></i>
+                        <input type="text" name="type[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="fa fa-calendar prefix"></i>
+                        <input type="date" name="start_date[]" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-image-timer prefix"></i>
+                        <input type="text" name="start_time[]" value="10:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field">
+                        <i class="mdi-device-access-time prefix"></i>
+                        <input type="text" nammdi-device-access-timee="end_time[]" value="14:00" pattern="[0-9]{2}:[0-5]{1}[0-9]{1}" placeholder="HH:MM (24 hours)" class="validate" required="">
+                    </td>
+                    <td class="input-field" style="width: 5%">
+                        <i class="small mdi-content-clear"></i>
+                    </td>
+                </tr>-->
+            </tbody>
+        </table>
+        <input type="hidden" name="action" value="createExam">
+        <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+        <a href="/exams/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+    </form>
+</section>
+<!-- /Main Content -->

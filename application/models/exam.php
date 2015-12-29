@@ -17,8 +17,7 @@ class Exam extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 30
+     * @type integer
      * @index
      */
     protected $_course_id;
@@ -26,8 +25,7 @@ class Exam extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 30
+     * @type integer
      * @index
      */
     protected $_organization_id;
@@ -48,5 +46,29 @@ class Exam extends Shared\Model {
      * @readwrite
      * @type date
      */
-    protected $_commence;
+    protected $_start_date;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 8
+     */
+    protected $_start_time;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 8
+     */
+    protected $_end_time;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_grade_id;
 }

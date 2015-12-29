@@ -33,4 +33,11 @@ class ExamResult extends Shared\Model {
      */
     protected $_marks;
 
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_grade_id;
 }

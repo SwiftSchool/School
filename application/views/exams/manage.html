@@ -1,0 +1,74 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Manage Exams</h1>
+                <ul>
+                    <li>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/exams/manage">Exams</a></li>
+                </ul>
+            </div>
+            <div class="pull-right col">
+                <a href="/exams/create" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Create Exam</a><br><br>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+
+    <!-- LIST -->
+    <div class="card">
+        <div class="title">
+            <h5><strong>Exams</strong></h5>
+        </div>
+        <div class="content">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Grade</th>
+                            <th>Course</th>
+                            <th>Start Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {script $i = 1}
+                        {foreach $e in $exams}
+                        <tr>
+                            <td>{echo $i}</td>
+                            <td>Class: {echo $grades["$e->grade_id"]}</td>
+                            {script $course = Course::first(array("id = ?" => $e->course_id), array("title"))}
+                            <td>{echo $course->title}</td>
+                            <td>{echo Framework\StringMethods::only_date($e->start_date)}</td>
+                            <td>{echo $e->start_time}</td>
+                            <td>{echo $e->end_time}</td>
+                            
+                            {script $live = $e->live}
+                            {if $live}
+                            <td class="green-text">Published</td>
+                            {/if} {else}
+                            <td class="red-text">Inactive</td>
+                            {/else}
+                            <td>
+                            <a href="/exams/edit/{echo $e->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/exams/remove/{echo $e->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            </td>
+                        </tr>
+                        {script ++$i}
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- /LIST -->
+</section>
+<!-- /Main Content -->
