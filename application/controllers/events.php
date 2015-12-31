@@ -54,8 +54,9 @@ class Events extends School {
 		if (RequestMethods::post("action") == "addEvent") {
 			$date = RequestMethods::post("date");
 			$date = explode("T", $date);
-			$apptmt = new Event(array(
+			$event = new Event(array(
 				"user_id" => $this->user->id,
+				"organization_id" => $this->organization->id,
 				"title" => RequestMethods::post("title"),
 				"start" => $date[0]." 00:00:00",
 				"end" => $date[0]. " 23:59:59",
@@ -63,30 +64,33 @@ class Events extends School {
 				"live" => true,
 				"deleted" => false
 			));
-			$apptmt->save();
+			$event->save();
 		}
-		self::redirect("/appointments");
+		self::redirect("/events");
 	}
 
 	/**
 	 * @before _secure, _school
 	 */
-	public function delete($appointId) {
-		$this->noview();
-		$apptmt = Event::first(array("id = ?" => $appointId));
-		if ($apptmt->delete()) {
-			echo true;
-		} else {
-			echo false;
+	public function delete($event_id) {
+		$this->JSONView();
+		$view = $this->getActionView();
+		$event = Event::first(array("id = ?" => $event_id));
+		if (!$event || $event->organization_id != $this->organization->id) {
+			$view->set("error", true);
+			return;
 		}
+
+		$event->delete();
+		$view->set("success", true);
 	}
 
 	/**
-	 * @before _secure
+	 * @before _secure, _school
 	 */
 	public function all() {
 		$this->noview();
-		$results = Event::all();
+		$results = Event::all(array("organization_id = ?" => $this->organization->id));
 		$events = array();
 
 		foreach ($results as $r) {
@@ -98,7 +102,6 @@ class Events extends School {
 				"id" => $r->id
 			);
 		}
-
 		echo json_encode($events);
 	}
 
@@ -106,15 +109,15 @@ class Events extends School {
 	 * @before _secure, _school
 	 */
 	public function display($id) {
-		$this->seo(array("title" => "Display Appointments", "view" => $this->getLayoutView()));
+		$this->JSONView();
 		$view = $this->getActionView();
-		$apptmt = Event::first(array("id = ?" => $id), array("title", "id"));
-		$usr = User::first(array("id = ?" => $apptmt->user_id), array("name", "email", "phone"));
-		if (!$apptmt) {
+		$event = Event::first(array("id = ?" => $id), array("title", "id", "user_id"));
+		$usr = User::first(array("id = ?" => $event->user_id), array("name", "email", "phone"));
+		if (!$event) {
 			$view->set("err", "Invalid ID");
 		} else {
 			$view->set("usr", $usr);
-			$view->set("e", $apptmt);
+			$view->set("e", $event);
 		}
 	}
 
@@ -122,22 +125,21 @@ class Events extends School {
 	/**
 	 * @before _secure, _school
 	 */
-	public function edit($appointId) {
-		$this->seo(array("title" => "Edit an Appointment", "view" => $this->getLayoutView()));
+	public function edit($event_id) {
+		$this->seo(array("title" => "Edit the Event", "view" => $this->getLayoutView()));
 		$view = $this->getActionView();
 
-		$apptmt = Event::first(array("id = ?" => $appointId));
+		$event = Event::first(array("id = ?" => $event_id));
 		
-		if (RequestMethods::post("action") == "editApptmt") {
-			$apptmt->title = RequestMethods::post("title");
-			$apptmt->save();
+		if (RequestMethods::post("action") == "editEvent") {
+			$event->title = RequestMethods::post("title");
+			$event->description = RequestMethods::post("description");
+			$event->save();
 
-			$view->set("message", "Appointment Updated Successfully");
+			$view->set("success", "Event Updated Successfully");
 		}
 
-		$view->set("apptmt", $apptmt);
-
-
+		$view->set("event", $event);
 	}
 
 	private function returnTime($date) {
@@ -150,12 +152,13 @@ class Events extends School {
 	 * @before _secure, _school
 	 */
 	public function change() {
+		$this->JSONView();
 		$view = $this->getActionView();
 
 		if (RequestMethods::post("action") == "changeAppointment") {
-			$apptmt = Event::first(array("id = ?" => RequestMethods::post("id")));
-			$apptmt->start = RequestMethods::post("start");
-			$apptmt->save();
+			$event = Event::first(array("id = ?" => RequestMethods::post("id")));
+			$event->start = RequestMethods::post("start");
+			$event->save();
 
 			$view->set("success", "Appointment has been saved");
 		}
