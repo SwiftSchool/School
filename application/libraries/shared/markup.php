@@ -41,6 +41,19 @@ namespace Shared {
             return "";
         }
 
+        public static function models() {
+            $model = array();
+            $path = APP_PATH . "/application/models";
+            $iterator = new \DirectoryIterator($path);
+
+            foreach ($iterator as $item) {
+                if (!$item->isDot()) {
+                    array_push($model, substr($item->getFilename(), 0, -4));
+                }
+            }
+            return $model;
+        }
+
         public static function encrypt($string) {
             $hash_format = "$2y$10$";  //tells PHP to use Blowfish with a "cost" of 10
             $salt = self::uniqueString();
