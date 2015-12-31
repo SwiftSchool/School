@@ -12,6 +12,17 @@
     <title>{echo $seo->getTitle()}</title>
     <link rel="stylesheet" type="text/css" href="{echo CDN}css/all.css">
     <link rel="stylesheet" type="text/css" href="{echo CDN}css/app.css">
+
+    {if isset($cal)}
+    <link href="{echo CDN}plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" />
+    <link href="{echo CDN}plugins/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print" />
+    <style>
+    #calendar {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    </style>
+    {/if}
 </head>
 
 <body>
@@ -83,5 +94,12 @@
     </footer>
 
     <script src="{echo CDN}js/all.js"></script>
+    <script src="{echo CDN}js/app.js"></script>
+    <script src="{echo CDN}js/model.js"></script>
+    {if isset($cal)}
+    <script src="{echo CDN}plugins/fullcalendar/moment.min.js"></script>
+    <script src="{echo CDN}plugins/fullcalendar/fullcalendar.min.js"></script>
+    <script src="{echo CDN}js/calendar.js"></script>
+    {/if}
 </body>
 </html>

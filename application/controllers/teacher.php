@@ -48,6 +48,7 @@ class Teacher extends School {
 	 */
 	public function index() {
 		$this->setSEO(array("title" => "Teachers | Dashboard"));
+        $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
 	}
 

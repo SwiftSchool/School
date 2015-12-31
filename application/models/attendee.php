@@ -1,11 +1,11 @@
 <?php
 
 /**
- * The Attendance Model
+ * The Attendee Model
  *
  * @author Hemant Mann
  */
-class Attendance extends Shared\Model {
+class Attendee extends Shared\Model {
 
     /**
      * @column
