@@ -3,7 +3,7 @@
     window.opts = {};
 }(window, window.Model));
 
-(function (window, request, $, bootbox) {
+(function (window, request, $) {
 	var Cal = (function () {
 		function Cal() {
 			var now = new Date(),
@@ -114,7 +114,7 @@
 		return Cal;
 	}());
 	window.Cal = new Cal();
-}(window, window.request, jQuery, bootbox));
+}(window, window.request, jQuery));
 
 var now = new Date();
 now = now.toISOString();
