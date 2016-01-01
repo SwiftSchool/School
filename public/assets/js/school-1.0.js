@@ -9,7 +9,7 @@
 
         School.prototype = {
             _find: function (opts) {
-                var find = $(opts.selectorId), target;
+                var find = $(opts.selector), target;
                 if (find.length > 1) {
                     target = find[opts.index];
                 } else {
@@ -68,7 +68,7 @@ $(document).ready(function() {
         e.preventDefault();
         var val = $(this).val(),
             opts = {
-                selectorId: '.gradeSections',
+                selector: '.gradeSections',
                 index: $(this).data('id'),
                 model: 'Classroom',
                 query: [{
@@ -84,7 +84,7 @@ $(document).ready(function() {
         e.preventDefault();
         var val = $(this).val(),
             opts = {
-                selectorId: '.gradeSections',
+                selector: '.gradeCourses',
                 index: $(this).data('id'),
                 model: 'Course',
                 query: [{

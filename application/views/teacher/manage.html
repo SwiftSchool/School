@@ -63,8 +63,9 @@
                                 <td><span class="label label-primary">Teacher</span></td>
                             {/else}
                             <td>
-                            <a href="/teacher/edit/{echo $t->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
-                            <a href="/teacher/delete/{echo $t->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            <a href="/teacher/assign/{echo $t->user_id}" class="btn btn-small cyan darken-1 z-depth-0"><i class="mdi-action-assignment-turned-in"></i> Assign Subjects</a>
+                            <a href="/teacher/edit/{echo $t->id}" class="btn btn-small z-depth-0"><i class="mdi-editor-mode-edit"></i></a>
+                            <a href="/teacher/delete/{echo $t->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi-action-delete"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

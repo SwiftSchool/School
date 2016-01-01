@@ -141,16 +141,36 @@ class Teacher extends School {
     }
 
     /**
+     * Assign which course will the teacher will teach
      * @before _secure, _school
      */
-    public function allot() {
-        $this->setSEO(array("title" => "Allot Teachers to different classes"));
+    public function assign($user_id) {
+        $usr = \User::first(array("id = ?" => $user_id), array("id"));
+        if (!$usr) {
+            self::redirect("/school");
+        }
+        $this->setSEO(array("title" => "Assign Teachers for different subjects"));
         $view = $this->getActionView();
 
-        $teachers = \Educator::all(array("organization_id = ?" => $this->organization->id));
-        $view->set("teachers", $teachers);
-
-        // @todo - how to store which teacher which subject to which class
+        $grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
+        $view->set("grades", $grades);
+        if (RequestMethods::post("action") == "assignTeacher") {
+            $teaches = $this->reArray($_POST);
+            foreach ($teaches as $t) {
+                if (!isset($t["section"]) || !isset($t["course"])) {
+                    continue;
+                }
+                $teach = new \Teach(array(
+                    "grade_id" => $t["grade"],
+                    "classroom_id" => $t["section"],
+                    "course_id" => $t["course"],
+                    "user_id" => $usr->id,
+                    "organization_id" => $this->organization->id
+                ));
+                $teach->save();
+            }
+            $view->set("success", "Subjects assigned!!");
+        }
     }
 
     /**

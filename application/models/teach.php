@@ -6,7 +6,22 @@
  * @author Hemant Mann
  */
 class Teach extends Shared\Model {
-    
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_grade_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     */
+    protected $_classroom_id;    
+
     /**
      * @column
      * @readwrite
