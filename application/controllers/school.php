@@ -125,7 +125,7 @@ class School extends Auth {
 	 */
 	public function _school() {
 		$this->organization = Registry::get("session")->get("organization");
-        if (!$this->organization && $this->organization->user_id != $this->user->id) {
+        if (!$this->organization || $this->organization->user_id != $this->user->id) {
             self::redirect("/");
         }
 

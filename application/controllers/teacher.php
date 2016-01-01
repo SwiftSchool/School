@@ -159,7 +159,7 @@ class Teacher extends School {
     public function _teacher() {
         $this->organization = Registry::get("session")->get("organization");
         $this->educator = Registry::get("session")->get("educator");
-        if (!$this->organization && !$this->educator) {
+        if (!$this->organization || !$this->educator) {
             self::redirect("/");
         }
     }
