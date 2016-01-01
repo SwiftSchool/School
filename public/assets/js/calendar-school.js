@@ -23,17 +23,17 @@
 				var self = this;
 				$('#sendDate').attr("value", date.format());
 				$('#addEvent').openModal('show');
-				$('#addAppointment').on('submit', function () {
+				$('#addEventForm').on('submit', function () {
 					self._reload();
 				});
 			},
 			_show: function (opts) {
 				if (opts.event) {
 					var evtModal = {
-						location: $('#appointLocation'),
-						title: $('#appointTitle'),
-						edit: $('#appointEdit'),
-						del: $('#appointDel'),
+						description: $('#eventDescription'),
+						title: $('#eventTitle'),
+						edit: $('#eventEdit'),
+						del: $('#eventDel'),
 						display: $('#displayEvent')
 					},
 					usr = {
@@ -42,10 +42,10 @@
 						phone: $('#usrPhone')
 					};
 
-					evtModal.location.html(opts.event._location);
+					evtModal.description.html(opts.event._description);
 					evtModal.title.html(opts.event._title);
 					evtModal.edit.attr("href", this.controller + "/edit/" + opts.event._id);
-					evtModal.del.attr("data-appointId", opts.event._id);
+					evtModal.del.attr("data-eventId", opts.event._id);
 					
 					usr.name.html(opts.user._name);
 					usr.email.html(opts.user._email);
@@ -84,7 +84,7 @@
 				
 				request.create({
 					action: self.controller + '/change',
-					data: {action: "changeAppointment", id: apptmtId, start: start},
+					data: {action: "reschedule", id: apptmtId, start: start},
 					callback: function (data) {
 						if (data.success) {
 							alert("The event has been rescheduled");
@@ -143,9 +143,9 @@ $(document).ready(function () {
 		eventSources: ["/events/all"]
 	});
 
-	$('#appointDel').on('click', function (e) {
+	$('#eventDel').on('click', function (e) {
 		e.preventDefault();
-		var id = $(this).attr("data-appointId");
+		var id = $(this).attr("data-eventId");
 		Cal.deleteEvent(id);
 	});
 

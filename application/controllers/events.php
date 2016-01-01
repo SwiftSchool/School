@@ -57,6 +57,7 @@ class Events extends School {
 			$event = new Event(array(
 				"user_id" => $this->user->id,
 				"organization_id" => $this->organization->id,
+				"description" => RequestMethods::post("description"),
 				"title" => RequestMethods::post("title"),
 				"start" => $date[0]." 00:00:00",
 				"end" => $date[0]. " 23:59:59",
@@ -111,7 +112,7 @@ class Events extends School {
 	public function display($id) {
 		$this->JSONView();
 		$view = $this->getActionView();
-		$event = Event::first(array("id = ?" => $id), array("title", "id", "user_id"));
+		$event = Event::first(array("id = ?" => $id), array("title", "id", "user_id", "description"));
 		$usr = User::first(array("id = ?" => $event->user_id), array("name", "email", "phone"));
 		if (!$event) {
 			$view->set("err", "Invalid ID");
@@ -155,12 +156,12 @@ class Events extends School {
 		$this->JSONView();
 		$view = $this->getActionView();
 
-		if (RequestMethods::post("action") == "changeAppointment") {
+		if (RequestMethods::post("action") == "reschedule") {
 			$event = Event::first(array("id = ?" => RequestMethods::post("id")));
 			$event->start = RequestMethods::post("start");
 			$event->save();
 
-			$view->set("success", "Appointment has been saved");
+			$view->set("success", "Event has been rescheduled");
 		}
 	}
 }
