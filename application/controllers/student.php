@@ -25,21 +25,21 @@ class Student extends School {
     public function render() {
         if ($this->scholar) {
             if ($this->actionView) {
-                $this->actionView->set("__scholar", $this->scholar);
+                $this->actionView->set("scholar", $this->scholar);
             }
 
             if ($this->layoutView) {
-                $this->layoutView->set("__scholar", $this->scholar);
+                $this->layoutView->set("scholar", $this->scholar);
             }
         }
 
         if ($this->organization) {
             if ($this->actionView) {
-                $this->actionView->set("__organization", $this->organization);
+                $this->actionView->set("organization", $this->organization);
             }
 
             if ($this->layoutView) {
-                $this->layoutView->set("__organization", $this->organization);
+                $this->layoutView->set("organization", $this->organization);
             }
         }
         parent::render();

@@ -9,6 +9,24 @@ use Shared\Controller as Controller;
 use Framework\Registry as Registry;
 
 class Home extends Controller {
+    /**
+     * Will set variables to all the views of a controller
+     */
+    public function render() {
+        $session = Registry::get("session");
+        if ($this->actionView) {
+            $this->actionView->set("educator", $session->get("educator"))
+                            ->set("scholar", $session->get("scholar"))
+                            ->set("organization", $session->get("organization"));
+        }
+
+        if ($this->layoutView) {
+            $this->layoutView->set("educator", $session->get("educator"))
+                            ->set("scholar", $session->get("scholar"))
+                            ->set("organization", $session->get("organization"));
+        }
+        parent::render();
+    }
 
     public function index() {
         $this->getLayoutView()->set("seo", Framework\Registry::get("seo"));
