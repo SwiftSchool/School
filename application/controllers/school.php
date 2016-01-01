@@ -17,6 +17,11 @@ class School extends Auth {
      */
     protected $_organization;
 
+    public function logout() {
+    	Registry::get("session")->erase("organization");
+    	parent::logout();
+    }
+
     /**
      * Registers new principal and school for platform access
      * @return [type] [description]

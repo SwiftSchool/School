@@ -17,10 +17,10 @@ class Student extends School {
      */
     protected $_scholar;
 
-    /**
-     * @readwrite
-     */
-    protected $_organization;
+    public function logout() {
+        Registry::get("session")->erase("scholar");
+        parent::logout();
+    }
 
     public function render() {
         if ($this->scholar) {

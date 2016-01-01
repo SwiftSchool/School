@@ -15,10 +15,10 @@ class Teacher extends School {
      */
     protected $_educator;
 
-    /**
-     * @readwrite
-     */
-    protected $_organization;
+    public function logout() {
+        Registry::get("session")->erase("educator");
+        parent::logout();
+    }
 
     public function render() {
         if ($this->educator) {
