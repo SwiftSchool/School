@@ -7,6 +7,7 @@
  */
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
+use Framework\ArrayMethods as ArrayMethods;
 
 class Teacher extends School {
     
@@ -171,6 +172,34 @@ class Teacher extends School {
             }
             $view->set("success", "Subjects assigned!!");
         }
+    }
+
+    /**
+     * @before _secure, _teacher
+     */
+    public function courses() {
+        $this->setSEO(array("title" => "Profile"));
+        $view = $this->getActionView();
+
+        $teaches = \Teach::all(array("user_id = ?" => $this->educator->user_id));
+        
+        $result = array();
+        foreach ($teaches as $t) {
+            $grade = \Grade::first(array("id = ?" => $t->grade_id), array("title"));
+            $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("section", "year"));
+            $course = \Course::first(array("id = ?" => $t->course_id), array("title"));
+
+            $result[] = array(
+                "grade" => $grade->title,
+                "grade_id" => $t->grade_id,
+                "section" => $class->section,
+                "course" => $course->title,
+                "course_id" => $t->course_id
+            );
+        }
+        $result = ArrayMethods::toObject($result);
+
+        $view->set("courses", $result);
     }
 
     /**
