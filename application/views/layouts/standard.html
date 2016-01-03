@@ -12,16 +12,18 @@
     <title>{echo $seo->getTitle()}</title>
     <link href="{echo CDN}css/vendor/bootstrap.min.css" rel="stylesheet"> 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link href="{echo CDN}css/vendor/picto.css" rel="stylesheet"> 
-    <link href="{echo CDN}css/vendor/material-design-iconic-font.css" rel="stylesheet"> 
-    <link href="{echo CDN}css/vendor/jquery.minicolors.css" rel="stylesheet"> 
     <link href="{echo CDN}css/vendor/railscasts.css" rel="stylesheet"> 
-    <link href="{echo CDN}css/vendor/owl.carousel.css" rel="stylesheet"> 
-    <link href="{echo CDN}css/vendor/slick.css" rel="stylesheet"> 
     <link href="{echo CDN}css/vendor/jquery.bootstrap-touchspin.css" rel="stylesheet"> 
     <link href="{echo CDN}css/vendor/select2.css" rel="stylesheet"> 
-    <link href="{echo CDN}css/vendor/jquery.countdown.css" rel="stylesheet"> 
-    <link rel="stylesheet" type="text/css" href="{echo CDN}css/app.css">
+
+    <link href="{echo CDN}css/app/essentials.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/material.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/layout.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/navbar.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/colors-alerts.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/colors-background.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/colors-buttons.css" rel="stylesheet" />
+    <link href="{echo CDN}css/app/colors-text.css" rel="stylesheet" />
 
     {if isset($cal)}
     <link href="{echo CDN}plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" />
@@ -103,8 +105,14 @@
         <strong>CloudEducate</strong> v1.1.0 &copy; Copyright 2016
     </footer>
 
-    <script src="{echo CDN}js/all.js"></script>
-    <script src="{echo CDN}js/app.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="{echo CDN}js/vendor/core/jquery-ui.custom.js"></script>
+    <script src="{echo CDN}js/vendor/core/modernizr.js"></script>
+    <script src="{echo CDN}js/vendor/core/velocity.js"></script>
+    <script src="{echo CDN}js/vendor/forms/all.js"></script>
+
+    <script src="{echo CDN}js/app/material.js"></script>
     <script src="{echo CDN}js/model.js"></script>
     {if isset($cal)}
     <script src="{echo CDN}plugins/fullcalendar/moment.min.js"></script>
