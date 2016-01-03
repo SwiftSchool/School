@@ -1,0 +1,47 @@
+<div class="st-pusher" id="content">
+    <!-- sidebar effects INSIDE of st-pusher: -->
+    <!-- st-effect-3, st-effect-6, st-effect-7, st-effect-8, st-effect-14 -->
+    <!-- this is the wrapper for the content -->
+    <div class="st-content">
+        <!-- extra div for emulating position:fixed of the menu -->
+        <div class="st-content-inner padding-none">
+            <div class="container-fluid">
+                <div class="page-section">
+                    <h1 class="text-display-1">My Courses</h1>
+                </div>
+                <div class="row" data-toggle="isotope">
+                    {foreach $c in $courses}
+                    <div class="item col-xs-12 col-sm-6 col-lg-4">
+                        <div class="panel panel-default paper-shadow" data-z="0.5">
+                            <div class="panel-body">
+                                {script $count = Assignment::count(array("course_id = ?" => $c->course_id))}
+                                <div class="pull-right">
+                                    {if $count == 0}
+                                    <a class="label label-info" href="/assignments/create/{echo $c->course_id}/{echo $c->classroom_id}"><i class="fa fa-plus"></i> Create Assignment</a>
+                                    {/if} {else}
+                                    <a class="label label-warning" href="/assignments/manage/{echo $c->course_id}"><i class="fa fa-list"></i> Manage Assignments</a>
+                                    {/else}    
+                                </div>
+                                <h4 class="text-headline margin-v-0-10"><a href="#">{echo $c->course}</a></h4>
+                            </div>
+                            <hr class="margin-none" />
+                            <div class="panel-body">
+                                <p><strong>Grade: </strong><span class="label label-primary">{echo $c->grade}</span> <strong>Section: </strong><span class="label label-success">{echo $c->section}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+                <ul class="pagination margin-top-none">
+                    <li class="disabled"><a href="app-instructor-courses.html#">&laquo;</a></li>
+                    <li class="active"><a href="app-instructor-courses.html#">1</a></li>
+                    <li><a href="app-instructor-courses.html#">2</a></li>
+                    <li><a href="app-instructor-courses.html#">3</a></li>
+                    <li><a href="app-instructor-courses.html#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- /st-content-inner -->
+    </div>
+    <!-- /st-content -->
+</div>

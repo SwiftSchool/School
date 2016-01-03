@@ -175,10 +175,11 @@ class Teacher extends School {
     }
 
     /**
+     * Find all the courses to which the teacher is assigned
      * @before _secure, _teacher
      */
     public function courses() {
-        $this->setSEO(array("title" => "Profile"));
+        $this->setSEO(array("title" => "Manage Your Courses | Teacher"));
         $view = $this->getActionView();
 
         $teaches = \Teach::all(array("user_id = ?" => $this->educator->user_id));
@@ -186,7 +187,7 @@ class Teacher extends School {
         $result = array();
         foreach ($teaches as $t) {
             $grade = \Grade::first(array("id = ?" => $t->grade_id), array("title"));
-            $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("section", "year"));
+            $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("id", "section", "year"));
             $course = \Course::first(array("id = ?" => $t->course_id), array("title"));
 
             $result[] = array(
@@ -194,7 +195,8 @@ class Teacher extends School {
                 "grade_id" => $t->grade_id,
                 "section" => $class->section,
                 "course" => $course->title,
-                "course_id" => $t->course_id
+                "course_id" => $t->course_id,
+                "classroom_id" => $class->id
             );
         }
         $result = ArrayMethods::toObject($result);

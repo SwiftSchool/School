@@ -13,12 +13,38 @@ class Assignments extends Teacher {
 	/**
 	 * @before _secure, _teacher
 	 */
-	public function create() {
+	public function create($course_id, $classroom_id) {
+		$teach = \Teach::first(array("course_id = ?" => $course_id, "user_id = ?" => $this->user->id));
+		if (!$teach || $teach->classroom_id != $classroom_id) {
+			self::redirect("/teacher");
+		}
+
 		$this->setSEO(array("title" => "Teacher | Create Assignments"));
 		$view = $this->getActionView();
 
-		if (RequestMethods::post("action") == "createAssign") {
-			// @todo - process data
+		$grade = Grade::first(array("id = ?" => $teach->grade_id), array("title", "id"));
+		$classroom = Classroom::first(array("id = ?" => $classroom_id), array("section", "id"));
+
+		$view->set("grade", $grade);
+		$view->set("classroom", $classroom);
+		
+		if (RequestMethods::post("action") == "assignment") {
+			$assignment = new \Assignment(array(
+				"title" => RequestMethods::post("title"),
+				"description" => RequestMethods::post("description"),
+				"deadline" => RequestMethods::post("deadline"),
+				"user_id" => $this->user->id,
+				"organization_id" => $this->organization->id,
+				"classroom_id" => $classroom_id,
+				"course_id" => $course_id
+			));
+
+			if (!$assignment->validate()) {
+				$view->set("success", "Invalid Request");
+				return;
+			}
+			$assignment->save();
+			$view->set("success", "Assignment Saved successfully!!");
 		}
 	}
 
@@ -26,7 +52,7 @@ class Assignments extends Teacher {
 	 * @before _secure, _teacher
 	 */
 	public function manage() {
-		$this->setSEO(array("title" => "Teacher | Manage Your assignments"));
+		$this->setSEO(array("title" => "Manage Your assignments | Teacher"));
 		$view = $this->getActionView();
 
 		$assignments = \Assignment::all(array("educator_id = ?" => $this->teacher->id), array("title", "created", "course_id", "classroom_id", "submission_date"));
