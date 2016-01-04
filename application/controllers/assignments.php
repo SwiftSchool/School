@@ -55,19 +55,23 @@ class Assignments extends Teacher {
 		$this->setSEO(array("title" => "Manage Your assignments | Teacher"));
 		$view = $this->getActionView();
 
-		$assignments = \Assignment::all(array("educator_id = ?" => $this->teacher->id), array("title", "created", "course_id", "classroom_id", "submission_date"));
+		$assignments = \Assignment::all(array("user_id = ?" => $this->user->id), array("title", "created", "course_id", "classroom_id", "deadline", "live", "id"));
 		$results = array();
 		foreach ($assignments as $a) {
-			$course = \Course::first(array("id = ?" => $a->course_id), array("name", "grade_id"));
-			$grade = \Grade::first(array("id = ?" => $course->grade_id), array("name"));
+			$course = \Course::first(array("id = ?" => $a->course_id), array("title", "grade_id"));
+			$grade = \Grade::first(array("id = ?" => $course->grade_id), array("title"));
 			$classroom = \Classroom::first(array("id = ?" => $a->classroom_id), array("section"));
 
 			$results[] = array(
+				"id" => $a->id,
 				"title" => $a->title,
-				"class" => $grade->name,
+				"class" => $grade->title,
+				"live" => $a->live,
 				"section" => $classroom->section,
-				"submission_date" => $a->submission_date,
-				"created" => $a->created
+				"deadline" => $a->deadline,
+				"created" => $a->created,
+				"course_id" => $a->course_id,
+				"classroom_id" => $a->classroom_id
 			);
 		}
 		$results = ArrayMethods::toObject($results);
@@ -120,10 +124,10 @@ class Assignments extends Teacher {
 	 */
 	public function submissions($assi_id) {
 		$assignment = \Assignment::first(array("id = ?" => $assi_id));
-		if (!$assignment) {
+		if (!$assignment || $assignment->user_id != $this->user->id) {
 			self::redirect("/404");
 		}
-		$this->setSEO(array("title" => "Teacher | View Assignment Submissions"));
+		$this->setSEO(array("title" => "View Assignment Submissions | Teacher"));
 		$view = $this->getActionView();
 		
 		$classroom = \Classroom::first(array("id = ?" => $assignment->classroom_id), array("section", "year", "grade_id"));
@@ -132,8 +136,8 @@ class Assignments extends Teacher {
 		$find = \Submission::all(array("assignment_id = ?" => $assi_id));
 		$submissions = array();
 		foreach ($find as $f) {
-			$student = \Scholar::first(array("id = ?" => $f->scholar_id), array("user_id", "roll_no"));
-			$usr = \User::first(array("id = ?" => $student->user_id), array("name"));
+			$usr = \User::first(array("id = ?" => $f->user_id), array("name"));
+			$student = \Scholar::first(array("user_id = ?" => $f->user_id), array("roll_no"));
 
 			$submissions[] = array(
 				"student" => $usr->name,

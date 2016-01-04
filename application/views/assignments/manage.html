@@ -1,0 +1,66 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <h3 class="page-heading">Manage Assignments</h3>
+                    <div class="panel">
+                        <table class="table text-center table-hover">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Title</th>
+                                    <th>Classroom</th>
+                                    <th>Status</th>
+                                    <th>Deadline</th>
+                                    <th>Submissions</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="panel-body">
+                                {script $i = 1} {foreach $a in $assignments}
+                                <tr>
+                                    <td>{echo $i}</td>
+                                    <td>{echo $a->title}</td>
+                                    <td>{echo $a->class . " -  ". $a->section}</td>
+                                    {script $status = $a->live}
+                                    <td>
+                                        {if $status}
+                                        <span class="label label-success">Active</span>
+                                        {/if} {else}
+                                        <span class="label-label-warning">Disapproved</span>
+                                        {/else}
+                                    </td>
+                                    <td>{echo $a->deadline}</td>
+                                    {script $submissions = Submission::count(array("assignment_id = ?" => $a->id))}
+                                    <td><a class="badge" href="/assignments/submissions/{echo $a->id}">{echo $submissions}</a></td>
+                                    <td>
+                                        <a href="/assignments/create/{echo $a->course_id}/{echo $a->classroom_id}"><i class="fa fa-plus"></i> Create</a>
+                                    </td>
+                                </tr>
+                                {script ++$i} {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    <div class="panel-body list-group">
+                        <ul class="list-group list-group-menu">
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher">Dashboard</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Manage Attendance</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Messages</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Student Marks</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/assignments/manage">Assignments</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher/courses">Courses</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

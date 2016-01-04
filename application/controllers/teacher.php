@@ -51,6 +51,9 @@ class Teacher extends School {
 		$this->setSEO(array("title" => "Teachers | Dashboard"));
         $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
+
+        $courses = Teach::all(array("user_id = ?" => $this->user->id));
+        $view->set("courses", $courses);
 	}
 
 	/**
