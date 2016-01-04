@@ -167,7 +167,7 @@ namespace Framework\Database\Connector {
                             break;
                         }
                     case "decimal": {
-                            $lines[] = "`{$name}` float DEFAULT NULL";
+                            $lines[] = "`{$name}` DECIMAL({$length}) DEFAULT NULL";
                             break;
                         }
                     case "boolean": {
@@ -178,6 +178,14 @@ namespace Framework\Database\Connector {
                             $lines[] = "`{$name}` datetime DEFAULT NULL";
                             break;
                         }
+                    case "date": {
+                        $lines[] = "`{$name}` date DEFAULT NULL";
+                        break;
+                    }
+                    case "time": {
+                        $lines[] = "`{$name}` time DEFAULT NULL";
+                        break;
+                    }
                 }
             }
 
