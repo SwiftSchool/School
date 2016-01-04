@@ -11,9 +11,10 @@
                                 <p class="text-subhead text-light">Your recent courses</p>
                             </div>
                             <ul class="list-group">
+                                {foreach $c in $courses}
                                 <li class="list-group-item media v-middle">
                                     <div class="media-body">
-                                        <a href="website-take-course.html" class="text-subhead list-group-link">Basics of HTML</a>
+                                        <a href="#" class="text-subhead list-group-link">{echo $c->title}</a>
                                     </div>
                                     <div class="media-right">
                                         <div class="progress progress-mini width-100 margin-none">
@@ -22,28 +23,7 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li class="list-group-item media v-middle">
-                                    <div class="media-body">
-                                        <a href="website-take-course.html" class="text-subhead list-group-link">Angular in Steps</a>
-                                    </div>
-                                    <div class="media-right">
-                                        <div class="progress progress-mini width-100 margin-none">
-                                            <div class="progress-bar progress-bar-green-300" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:75%;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item media v-middle">
-                                    <div class="media-body">
-                                        <a href="website-take-course.html" class="text-subhead list-group-link">Bootstrap Foundations</a>
-                                    </div>
-                                    <div class="media-right">
-                                        <div class="progress progress-mini width-100 margin-none">
-                                            <div class="progress-bar progress-bar-green-300" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width:25%;">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
+                                {/foreach}
                             </ul>
                             <div class="panel-footer text-right">
                                 <a href="website-student-courses.html" class="btn btn-white paper-shadow relative" data-z="0" data-hover-z="1" data-animated href="website-student-dashboard.html#"> View all</a>
@@ -250,9 +230,6 @@
                     <div class="panel-body list-group">
                         <ul class="list-group list-group-menu">
                             <li class="list-group-item"><a class="link-text-color" href="/student.html">Dashboard</a></li>
-                            {foreach $course in $courses}
-                            <li class="list-group-item"><a class="link-text-color" href="/subject/{$course->name}/{$course->id}">{$course->name}</a></li>
-                            {/foreach}
                         </ul>
                     </div>
                 </div>

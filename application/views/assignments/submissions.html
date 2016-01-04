@@ -1,0 +1,68 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <h4 class="pull-right"><strong></strong></h4>
+                    <h3 class="page-heading">Submissions ({echo $class->title} - {echo $class->section})</h3>
+                    <div class="panel">
+                        <table class="table text-center table-hover">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Student</th>
+                                    <th>Roll No</th>
+                                    <th>Response</th>
+                                    <th>Status</th>
+                                    <th>Submitted On</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="panel-body">
+                                {script $i = 1} {foreach $s in $submissions}
+                                <tr>
+                                    <td>{echo $i}</td>
+                                    <td>{echo $s->student}</td>
+                                    <td>{echo $s->student_roll_no}</td>
+                                    <td><a href="{echo CDN}uploads/assignments/{echo $s->response}" target="_blank">View Response</a></td>
+                                    {script $status = $s->live}
+                                    <td>
+                                        {if $status}
+                                        <span class="label label-success">Approved</span>
+                                        {/if} {else}
+                                        <span class="label-label-warning">Disapproved</span>
+                                        {/else}
+                                    </td>
+                                    <td>{echo Framework\StringMethods::only_date($s->submitted_on)}</td>
+                                    <td>
+                                        {if !$status}
+                                        <a href="#" class="btn btn-xs btn-primary"><i class="fa fa-check"></i> Approve</a>
+                                        {/if}
+                                    </td>
+                                </tr>
+                                {script ++$i} {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    <div class="panel-body list-group">
+                        <ul class="list-group list-group-menu">
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher">Dashboard</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Manage Attendance</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Messages</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Student Marks</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/assignments/manage">Assignments</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher/courses">Courses</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="row">
+                    <h3 class="page-heading">Submit Your Response</h3>
+                    {if !isset($error)}
+                    <div class="panel panel-default">
+                        {if isset($success)}
+                        <div class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            {echo $success}
+                        </div>
+                        {/if}
+                        <form action="" method="post" enctype="multipart/form-data" class="panel-body">
+                            <div class="form-group">
+                                <label for="Assignment Title">Assignment Title</label>
+                                <input type="text" class="form-control" name="title" value="{echo $assignment->title}" disabled="">
+                            </div>
+                            <div class="form-group">
+                                <label for="Assignment Description">Assignment Description</label>
+                                <textarea name="description" disabled="" class="form-control" rows="7">{echo $assignment->description}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="Response">Response</label>
+                                <input type="file" class="" name="response" required=""> (.doc or .pdf files only.  Max file size 6MB)
+                            </div>
+                            <input type="hidden" name="maxSize" value="{echo $maxSize}">
+                            <input type="hidden" name="action" value="submitAssignment">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                            <a href="/student" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</a>
+                        </form>
+                    </div>
+                    {/if} {else}
+                    <div class="panel-body">
+                        <h4 class="page-heading">{echo $error}</h4>
+                    </div>
+                    {/else}
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

@@ -48,3 +48,6 @@ sftp-config.json
 
 # logs
 logs/
+
+# uploads
+public/assets/uploads

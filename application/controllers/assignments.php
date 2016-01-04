@@ -79,51 +79,10 @@ class Assignments extends Teacher {
 	}
 
 	/**
-	 * @before _secure
-	 */
-	public function submit($assi_id) {
-		if ($this->user->type != "student") {
-			self::redirect("/404");
-		}
-		$this->defaultLayout = "layouts/student";
-		$this->setLayout();
-
-		$assignment = \Assignment::first(array("id = ?" => $assi_id));
-		if (!$assignment) {
-			self::redirect("/404");
-		}
-		$allowed = strtotime($assignment->submission_date);
-		$today = date('Y-m-d');
-		if ($today < $allowed) {
-			$this->setSEO(array("title" => "Teacher | Create Assignments"));
-			$view = $this->getActionView();
-
-			if (RequestMethods::post("action") == "submitAssignment") {
-				$response = Markup::checkValue(RequestMethods::post("response"));
-				if (!$response) {
-					$view->set("error", "Invalid response!");
-					return;
-				}
-
-				$submission = new \Submission(array(
-					"response" => $response,
-					"scholar_id" => Registry::get("session")->get("student")->id,
-					"assignment_id" => $assignment->id
-				));
-				$submission->save();
-				$view->set("success", "You have successfully submitted the assignment!");
-			}
-		} else {
-			$view->set("error", "Last Date of submission is over");
-		}
-		
-	}
-
-	/**
 	 * @before _secure, _teacher
 	 */
-	public function submissions($assi_id) {
-		$assignment = \Assignment::first(array("id = ?" => $assi_id));
+	public function submissions($assgmt_id) {
+		$assignment = \Assignment::first(array("id = ?" => $assgmt_id));
 		if (!$assignment || $assignment->user_id != $this->user->id) {
 			self::redirect("/404");
 		}
@@ -133,7 +92,7 @@ class Assignments extends Teacher {
 		$classroom = \Classroom::first(array("id = ?" => $assignment->classroom_id), array("section", "year", "grade_id"));
 		$grade = \Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
 
-		$find = \Submission::all(array("assignment_id = ?" => $assi_id));
+		$find = \Submission::all(array("assignment_id = ?" => $assgmt_id));
 		$submissions = array();
 		foreach ($find as $f) {
 			$usr = \User::first(array("id = ?" => $f->user_id), array("name"));
@@ -142,13 +101,15 @@ class Assignments extends Teacher {
 			$submissions[] = array(
 				"student" => $usr->name,
 				"student_roll_no" => $student->roll_no,
-				"response" => $f->response
+				"response" => $f->response,
+				"live" => $f->live,
+				"submitted_on" => $f->created
 			);
 		}
 		$submissions = ArrayMethods::toObject($submissions);
 
 		$klass = array();
-		$klass["name"] = $grade->title;
+		$klass["title"] = $grade->title;
 		$klass["section"] = $classroom->section;
 		$klass["year"] = $classroom->year;
 		$klass = ArrayMethods::toObject($klass);

@@ -128,5 +128,41 @@ class Auth extends Controller {
         return $file_ary;
     }
 
+    /**
+     * The method checks whether a file has been uploaded. If it has, the method attempts to move the file to a permanent location.
+     * @param string $name
+     * @param array $opts
+     *
+     * @return string|boolean Returns the file name on moving the file successfully else return false
+     */
+    protected function _upload($name, $opts = array()) {
+        $type = isset($opts["type"]) ? $opts["type"] : "images";
+        if (isset($_FILES[$name])) {
+            $file = $_FILES[$name];
+            
+            /*** Create Directory if not present ***/
+            $path = APP_PATH . "/public/assets/uploads/{$type}";
+            exec("mkdir -p $path");
+            $path .= "/";
 
+            $extension = pathinfo($file["name"], PATHINFO_EXTENSION);
+            if (empty($extension)) {
+                return false;
+            }
+            /*** Check mime type before moving ***/
+            if (isset($opts["mimes"])) {
+                if (!preg_match("/^{$opts['mimes']}$/", $extension)) {
+                    return false;
+                }
+            }
+            $filename = Markup::uniqueString() . ".{$extension}";
+            if (move_uploaded_file($file["tmp_name"], $path . $filename)) {
+                return $filename;
+            } else {
+                return FALSE;
+            }
+        } else {
+            return false;
+        }
+    }
 }

@@ -52,10 +52,10 @@ class Student extends School {
 		$this->setSEO(array("title" => "Students | Dashboard"));
         $view = $this->getActionView();
 
-        $enrollment = Enrollment::first(array("scholar_id = ?" => $this->scholar->id), array("classroom_id"));
+        $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
         $classroom = Classroom::first(array("id = ?" => $enrollment->classroom_id));
         $grade = Grade::first(array("id = ?" => $classroom->grade_id));
-        $courses = Course::first(array("grade_id = ?" => $classroom->grade_id));
+        $courses = Course::all(array("grade_id = ?" => $classroom->grade_id));
 
         $view->set("enrollment", $enrollment);
         $view->set("classroom", $classroom);
@@ -201,10 +201,69 @@ class Student extends School {
     }
 
     /**
+     * @before _secure, _student
+     */
+    public function submitAssignment($assgmt_id) {
+        $assignment = \Assignment::first(array("id = ?" => $assgmt_id));
+        if (!$assignment || $assignment->organization_id != $this->organization->id) {
+            self::redirect("/404");
+        }
+        $this->setSEO(array("title" => "Submit Assignment"));
+        $view = $this->getActionView();
+
+        $maxSize = "6291456";
+        $view->set("maxSize", $maxSize);
+        $view->set("assignment", $assignment);
+        
+        $allowed = strtotime($assignment->deadline);
+        $today = date('Y-m-d');
+        if ($today > $allowed) {
+            $view->set("error", "Last Date of submission is over");
+            return;
+        }
+
+        $submission = \Submission::first(array("user_id = ?" => $this->user->id));
+        if ($submission) {
+            $view->set("success", "Assignment already submitted! Your response will be updated");
+        }
+
+        if (RequestMethods::post("action") == "submitAssignment") {
+            if (RequestMethods::post("maxSize") != $maxSize) {
+                $view->set("success", "Invalid Response");
+                return;
+            }
+
+            $response = $this->_upload("response", array("type" => "assignments", "mimes" => "doc|docx|pdf"));
+            if (!$response) {
+                $view->set("success", "File Upload failed!");
+                return;
+            }
+            if (!$submission) {
+                $submission = new \Submission(array(
+                    "user_id" => $this->user->id,
+                    "assignment_id" => $assignment->id
+                ));
+            } else {
+                unlink(APP_PATH ."/public/assets/uploads/assignments/". $submission->response);
+            }
+            $submission->response = $response;
+
+            if (!$submission->validate()) {
+                $view->set("success", "Invalid Response! Validation Failed");
+                return;
+            }
+            $submission->save();
+            $view->set("success", "You have successfully submitted the assignment!");
+        }
+    }
+
+    /**
      * @protected
      */
     public function _student() {
-        $this->scholar = Registry::get("session")->get("scholar");
+        $session = Registry::get("session");
+        $this->organization = $session->get("organization");
+        $this->scholar = $session->get("scholar");
         if (!$this->scholar) {
             self::redirect("/");
         }
