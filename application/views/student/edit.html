@@ -1,0 +1,76 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Add Guardian</h1>
+                <ul>
+                    <li>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/student/manage">Students</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Add Guardian</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Breadcrumb -->
+    <!-- Main Form -->
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
+
+    <form action="" method="post" class="">
+        <div class="row">
+            <div class="col l3"></div>
+            <div class="col l6 card-panel">
+                <div class="input-field">
+                    <i class="mdi-social-person prefix"></i>
+                    <input type="text" class="validate" value="{echo $usr->name}" required="" name="name">
+                    <label for="Name">Name</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-communication-email prefix"></i>
+                    <input type="text" class="validate" value="{echo $usr->email}" name="email">
+                    <label for="Email">Email</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-communication-phone prefix"></i>
+                    <input type="text" class="validate" value="{echo $usr->phone}" maxlength="10" name="phone">
+                    <label for="Phone">Phone</label>
+                </div>
+                <div class="input-field">
+                    <i class="fa fa-calendar prefix"></i>
+                    <input type="text" class="validate" value="{echo $scholar->dob}" placeholder="YYY-MM-DD" name="dob">
+                    <label for="Date of Birth">Date of Birth</label>
+                </div>
+                <div class="input-field">
+                    <i class="fa fa-label"></i>
+                    <input type="text" class="validate" value="{echo $scholar->roll_no}" maxlength="50" name="roll_no">
+                    <label for="Roll NO">Roll No</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-action-home prefix"></i>
+                    <input type="text" required="" class="validate" value="{echo $location->address}" name="address">
+                    <label for="Address">Address</label>
+                </div>
+                <div class="input-field">
+                    <i class="mdi-social-location-city prefix"></i>
+                    <input type="text" required="" class="validate" value="{echo $location->city}" name="city">
+                    <label for="City">City</label>
+                </div>
+                <br>
+                <input type="hidden" name="action" value="updateInfo">
+                <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+                <a href="/student/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+            </div>
+        </div>
+        <div class="row"><br></div>
+    </form>    
+
+</section>
+<!-- /Main Content -->

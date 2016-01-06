@@ -30,13 +30,16 @@
                 <select class="findSections browser-default" required="" data-id="0">
                     <option>Select</option>
                     {foreach $g in $grades}
-                    <option value="{echo $g->id}">{echo $g->title}</option>
+                    <option value="{echo $g->id}" {if isset($enrollment) && $g->id == $grade}selected{/if}>{echo $g->title}</option>
                     {/foreach}
                 </select>
                 <label for="Grade">Grade</label>
             </div><br><br>
             <div class="">
                 <select class="gradeSections browser-default" name="classroom" required="">
+                    {if isset($enrollment)}
+                    <option value="{echo $class->id}">{echo $class->section}</option>
+                    {/if}
                     <option value="">Select a grade</option>
                 </select>
                 <label for="Section">Section</label>

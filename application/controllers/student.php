@@ -113,13 +113,25 @@ class Student extends School {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $students = \Scholar::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
         $grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("title", "id"));
-        
+        if (RequestMethods::post("action") == "findStudents") {
+            $classroom_id = RequestMethods::post("classroom_id");
+            $enrollment = \Enrollment::all(array("classroom_id = ?" => $classroom_id));
+
+            $students = array();
+            foreach ($enrollment as $e) {
+                $s = Scholar::first(array("user_id = ?" => $e->user_id));
+                $students[] = $s;
+            }
+        } else {
+            $students = \Scholar::all(array("organization_id = ?" => $this->organization->id), array("*"), "created", "desc", 30, 1);
+        }
         $setGrades = array();
         foreach ($grades as $g) {
             $setGrades["$g->id"] = $g->title;
         }
+        
+        $view->set("defGrades", $grades);
         $view->set("grades", $setGrades);
         $view->set("students", $students);
     }
@@ -182,21 +194,40 @@ class Student extends School {
         $view = $this->getActionView();
 
         $grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
+        $enrollment = Enrollment::first(array("user_id = ?" => $user_id));
+        if ($enrollment) {
+            $view->set("success", "Student has already been added! Response will be updated");
+        }
         if (RequestMethods::post("action") == "addToClass") {
             $classroom = Markup::checkValue(RequestMethods::post("classroom"));
-            if ($classroom) {
-                $enrollment = new \Enrollment(array(
-                    "user_id" => $usr->id,
-                    "classroom_id" => $classroom,
-                    "organization_id" => $this->organization->id
-                ));
+            if (!$enrollment) {
+                $enrollment = new Enrollment(array());
+            }
+            $enrollment->user_id = $usr->id;
+            $enrollment->classroom_id = $classroom;
+            $enrollment->organization_id = $this->organization->id;
+            
+            if ($enrollment->validate()) {
                 $enrollment->save();
                 $view->set("success", "Student successfully added to classroom");
-            } else {
-                $view->set("success", "ERROR");
             }
         }
+        if ($enrollment) {
+            $class = Classroom::first(array("id = ?" => $enrollment->classroom_id), array("id", "grade_id", "section"));
+            foreach ($grades as $g) {
+                if ($g->id == $class->grade_id) {
+                    $grade = $g->id;
+                    break;
+                }
+            }
+            $view->set("class", $class);
+        }
+        if (!isset($grade)) {
+            $grade = null;
+        }
 
+        $view->set("grade", $grade);
+        $view->set("enrollment", $enrollment);
         $view->set("grades", $grades);
     }
 
@@ -255,6 +286,71 @@ class Student extends School {
             $submission->save();
             $view->set("success", "You have successfully submitted the assignment!");
         }
+    }
+
+    /**
+     * @before _secure, _school
+     */
+    public function remove($user_id) {
+        $this->noview();
+
+        $scholar = Scholar::first(array("user_id = ?" => $user_id));
+        if (!$scholar || $scholar->organization_id != $this->organization->id) {
+            self::redirect("/404");
+        }
+        $user = User::first(array("id = ?" => $user_id));
+        if (!$user) {
+            self::redirect("/404");   
+        }
+        $enrollment = Enrollment::first(array("user_id = ?" => $user->id));
+        $submissions = Submission::all(array("user_id = ?" => $user->id));
+        $examResults = ExamResult::all(array("user_id = ?" => $user->id));
+
+        foreach ($examResults as $r) {
+            // $r->delete();
+        }
+        foreach ($submissions as $s) {
+            // $s->delete();
+        }
+        // $enrollment->delete();
+        // $user->delete();
+        // $scholar->delete();
+
+        self::redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    /**
+     * @before _secure, _school
+     */
+    public function edit($user_id) {
+        $this->setSEO(array("title" => "Edit Student Info | School"));
+        $view = $this->getActionView();
+
+        $user = User::first(array("id = ?" => $user_id));
+        $scholar = Scholar::first(array("user_id = ?" => $user->id));
+        if (!$scholar || $scholar->organization_id != $this->organization->id) {
+            self::redirect("/404");
+        }
+        $location = Location::first(array("user_id = ?" => $user->id));
+
+        if (RequestMethods::post("action") == "updateInfo") {
+            $user->name = RequestMethods::post("name");
+            $user->email = RequestMethods::post("email");
+            $user->phone = RequestMethods::post("phone");
+            $user->save();
+
+            $location->address = RequestMethods::post("address");
+            $location->city = RequestMethods::post("city");
+            $location->save();
+
+            $scholar->dob = RequestMethods::post("dob");
+            $scholar->roll_no = RequestMethods::post("roll_no");
+            $scholar->save();
+        }
+
+        $view->set("usr", $user);
+        $view->set("scholar", $scholar);
+        $view->set("location", $location);
     }
 
     /**

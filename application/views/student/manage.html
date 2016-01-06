@@ -18,7 +18,30 @@
         </div>
     </div>
     <!-- /Breadcrumb -->
-
+    <form action="" method="post" class="">
+        <div class="row">
+            <div class="col l3">
+                <label for="Grade"><strong style="font-size: 17px;">Grade</strong></label>
+                <select name="grade" required="" class="browser-default findSections">
+                    <option>Select</option>
+                    {foreach $g in $defGrades}
+                    <option value="{echo $g->id}">{echo $g->title}</option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="col l3">
+                <label for="Section"><strong style="font-size: 17px;">Section</strong></label>
+                <select name="classroom_id" class="browser-default gradeSections">
+                    <option>Select</option>
+                </select>
+            </div>
+            <div class="col l3">
+                <label for="Section"><strong style="font-size: 17px;">Go</strong></label>
+                <input type="hidden" name="action" value="findStudents">
+                <button class="waves-effect btn teal" type="submit" style="display: block;"><i class="fa fa-send"></i> Go</button>
+            </div>
+        </div>
+    </form><br>
     <!-- LIST -->
     <div class="card">
         <div class="title">
@@ -61,7 +84,7 @@
                             {script $enrolled = \Enrollment::first(array("user_id = ?" => $s->user_id), array("classroom_id"))}
                             {if $enrolled}
                                 {script $class = \Classroom::first(array("id = ?" => $enrolled->classroom_id), array("section", "grade_id"))}
-                                <td>{echo $grades[$class->grade_id] . " - " . $class->section}</td>
+                                <td><a href="/student/addToClass/{echo $s->user_id}">{echo $grades[$class->grade_id] . " - " . $class->section}</a></td>
                             {/if} {else}
                                 <td><a href="/student/addToClass/{echo $s->user_id}"><i class="fa fa-plus-circle"></i> Add to Classroom</a></td>
                             {/else}
@@ -73,8 +96,8 @@
                             <td class="red-text">Disabled</td>
                             {/else}
                             <td>
-                            <a href="/student/edit/{echo $s->id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
-                            <a href="/student/remove/{echo $s->id}" class="btn btn-small red lighten-1 z-depth-0"><i class="mdi mdi-action-delete"></i></a>
+                            <a href="/student/edit/{echo $s->user_id}" class="btn btn-small z-depth-0"><i class="mdi mdi-editor-mode-edit"></i></a>
+                            <a href="/student/remove/{echo $s->user_id}" class="btn btn-small red lighten-1 z-depth-0" onclick="return confirm('Are you sure?');"><i class="mdi mdi-action-delete"></i></a>
                             </td>
                         </tr>
                         {script ++$i}

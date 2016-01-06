@@ -12,6 +12,8 @@ class Scholar extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_user_id;
     
@@ -19,6 +21,8 @@ class Scholar extends Shared\Model {
      * @column
      * @readwrite
      * @type date
+     *
+     * @validate required
      */
     protected $_dob;
 
@@ -27,6 +31,8 @@ class Scholar extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_location_id;
 
@@ -35,6 +41,8 @@ class Scholar extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_organization_id;
 
@@ -45,7 +53,7 @@ class Scholar extends Shared\Model {
      * @length 50
      * @index
      * 
-     * @validate required, min(5), max(50)
+     * @validate min(5), max(50)
      */
     protected $_roll_no;
 }
