@@ -53,7 +53,7 @@ class Scholar extends Shared\Model {
      * @length 50
      * @index
      * 
-     * @validate min(5), max(50)
+     * @validate
      */
     protected $_roll_no;
 }

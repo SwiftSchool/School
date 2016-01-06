@@ -56,7 +56,7 @@ class User extends Shared\Model {
      * @length 64
      * @index
      * 
-     * @validate required, alpha, min(8), max(64)
+     * @validate required, min(8), max(64)
      * @label password
      */
     protected $_password;

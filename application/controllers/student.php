@@ -341,11 +341,17 @@ class Student extends School {
 
             $location->address = RequestMethods::post("address");
             $location->city = RequestMethods::post("city");
-            $location->save();
+            if ($location->validate()) {
+                $location->save();
+            }
 
             $scholar->dob = RequestMethods::post("dob");
             $scholar->roll_no = RequestMethods::post("roll_no");
-            $scholar->save();
+            if ($scholar->validate()) {
+                $scholar->save();
+            }
+
+            $view->set("success", "Saved successfully!!");
         }
 
         $view->set("usr", $user);
