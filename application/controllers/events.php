@@ -63,7 +63,7 @@ class Events extends School {
 				"end" => $date[0]. " 23:59:59",
 				"allDay" => true,
 				"live" => true,
-				"deleted" => false
+				
 			));
 			$event->save();
 		}

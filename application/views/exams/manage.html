@@ -3,17 +3,16 @@
     <!-- Breadcrumb -->
     <div class="page-title">
         <div class="row">
-            <div class="col s12 m9 l10">
+            <div class="col s8 m8 l8">
                 <h1>Manage Exams</h1>
                 <ul>
-                    <li>
-                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
-                    </li>
+                    <li><a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i></li>
                     <li><a href="/exams/manage">Exams</a></li>
                 </ul>
             </div>
-            <div class="pull-right col">
-                <a href="/exams/create" class="btn btn-large green lighten-1 z-depth-0"><i class="mdi mdi-content-add-box"></i> Create Exam</a><br><br>
+            <div class="s4 l4 m4 pull-right col">
+                <a href="/exams/result" class="btn blue lighten-1"><i class="fa fa-bar-chart"></i> Exam Results</a>
+                <a href="/exams/create" class="btn green lighten-1"><i class="mdi mdi-content-add-box"></i> Create Exam</a>
             </div>
         </div>
     </div>
@@ -48,8 +47,8 @@
                             {script $course = Course::first(array("id = ?" => $e->course_id), array("title"))}
                             <td>{echo $course->title}</td>
                             <td>{echo Framework\StringMethods::only_date($e->start_date)}</td>
-                            <td>{echo $e->start_time}</td>
-                            <td>{echo $e->end_time}</td>
+                            <td>{echo Framework\StringMethods::only_time($e->start_time)}</td>
+                            <td>{echo Framework\StringMethods::only_time($e->end_time)}</td>
                             
                             {script $live = $e->live}
                             {if $live}
