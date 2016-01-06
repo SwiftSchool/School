@@ -10444,8 +10444,6 @@ hr {
 }
 .page-section {
   padding: 40px 0;
-  max-width: 700px;
-  display: inline-block;
 }
 .page-section.half {
   padding: 16px 0;
