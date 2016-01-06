@@ -11,6 +11,8 @@ class Teach extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_grade_id;
 
@@ -19,6 +21,8 @@ class Teach extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_classroom_id;    
 
@@ -27,6 +31,8 @@ class Teach extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_course_id;
 
@@ -35,6 +41,8 @@ class Teach extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_user_id;
 
@@ -43,6 +51,8 @@ class Teach extends Shared\Model {
      * @readwrite
      * @type integer
      * @index
+     *
+     * @validate required, numeric
      */
     protected $_organization_id;
 }

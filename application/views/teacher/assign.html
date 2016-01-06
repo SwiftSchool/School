@@ -153,5 +153,45 @@
         <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
         <a href="/teacher/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
     </form>
+    <br><br>
+    <div class="card">
+        <div class="title">
+            <h5><strong>Assigned Courses</strong></h5>
+        </div>
+        <div class="content">
+            {if count($teaches) > 0}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Subject</th>
+                            <th>Class</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {script $i = 1}
+                        {foreach $t in $teaches}
+                        <tr>
+                            <td>{echo $i}</td>
+                            {script $course = Course::first(array("id = ?" => $t->course_id), array("title"))}
+                            <td>{echo $course->title}</td>
+
+                            {script $classroom = Classroom::first(array("id = ?" => $t->classroom_id), array("section"))}
+                            {script $grade = Grade::first(array("id = ?" => $t->grade_id), array("title"))}
+                            <td>{echo $grade->title . " - " . $classroom->section}</td>
+                            <td>
+                                <!-- <a href="/teacher/removeCourse/{echo $t->id}" class="btn btn-small lighten-1 red z-depth-0"><i class="fa fa-trash"></i></a> -->
+                            </td>
+                        </tr>
+                        {script ++$i}
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            {/if}
+        </div>
+    </div>
 </section>
 <!-- /Main Content -->

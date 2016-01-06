@@ -52,7 +52,7 @@ class Teacher extends School {
         $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
 
-        $courses = Teach::all(array("user_id = ?" => $this->user->id));
+        $courses = Teach::all(array("user_id = ?" => $this->user->id, "live = ?" => true));
         $view->set("courses", $courses);
 	}
 
@@ -161,7 +161,7 @@ class Teacher extends School {
         if (RequestMethods::post("action") == "assignTeacher") {
             $teaches = $this->reArray($_POST);
             foreach ($teaches as $t) {
-                if (!isset($t["section"]) || !isset($t["course"])) {
+                if (!empty($t["section"]) || !empty($t["course"])) {
                     continue;
                 }
                 $teach = new \Teach(array(
@@ -171,10 +171,14 @@ class Teacher extends School {
                     "user_id" => $usr->id,
                     "organization_id" => $this->organization->id
                 ));
-                $teach->save();
+                if ($teach->validate()) {
+                    $teach->save();
+                }
             }
             $view->set("success", "Subjects assigned!!");
         }
+        $teaches = Teach::all(array("user_id = ?" => $usr->id, "live = ?" => true));
+        $view->set("teaches", $teaches);
     }
 
     /**
@@ -185,7 +189,7 @@ class Teacher extends School {
         $this->setSEO(array("title" => "Manage Your Courses | Teacher"));
         $view = $this->getActionView();
 
-        $teaches = \Teach::all(array("user_id = ?" => $this->educator->user_id));
+        $teaches = \Teach::all(array("user_id = ?" => $this->educator->user_id, "live = ?" => true));
         
         $result = array();
         foreach ($teaches as $t) {
@@ -205,6 +209,20 @@ class Teacher extends School {
         $result = ArrayMethods::toObject($result);
 
         $view->set("courses", $result);
+    }
+
+    /**
+     * @before _secure, _school
+     */
+    public function removeCourse($teach_id) {
+        $this->noview();
+
+        $teach = Teach::first(array("id = ?" => $teach_id));
+        if ($teach->organization_id == $this->organization->id) {
+            $teach->live = false;
+            $teach->save();
+        }
+        self::redirect($_SERVER['HTTP_REFERER']);
     }
 
     /**
