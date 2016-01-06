@@ -19,14 +19,7 @@
 			_reload: function () {
 				window.location.href = '/' + this.controller;
 			},
-			addEvent: function (date) {
-				var self = this;
-				$('#sendDate').attr("value", date.format());
-				$('#addEvent').modal('show');
-				$('#addAppointment').on('submit', function () {
-					self._reload();
-				});
-			},
+
 			_show: function (opts) {
 				if (opts.event) {
 					var evtModal = {
@@ -35,21 +28,12 @@
 						edit: $('#eventEdit'),
 						del: $('#eventDel'),
 						display: $('#displayEvent')
-					},
-					usr = {
-						name: $('#usrName'),
-						email: $('#usrEmail'),
-						phone: $('#usrPhone')
 					};
 
 					evtModal.description.html(opts.event._description);
 					evtModal.title.html(opts.event._title);
 					evtModal.edit.attr("href", this.controller + "/edit/" + opts.event._id);
 					evtModal.del.attr("data-eventId", opts.event._id);
-					
-					usr.name.html(opts.user._name);
-					usr.email.html(opts.user._email);
-					usr.phone.html(opts.user._phone);
 
 					evtModal.display.modal('show');
 				} else {
@@ -63,50 +47,10 @@
 					data: '',
 					callback: function (data) {
 						if (data.e) {
-							self._show({event: data.e, user: data.usr});
+							self._show({event: data.e});
 						} else if (data.err) {
 							self._show({event: null});
 						} 
-					}
-				});
-			},
-			changeEvent: function (e, revertFunc) {
-				if (!confirm("Are you sure about this change?")) {
-					this._reload();
-				}
-				var apptmtId = e.id,
-					date = e.start._d,
-					start,
-					self = this;
-
-				start = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-				start += " 00:00:00";
-				
-				request.create({
-					action: self.controller + '/change',
-					data: {action: "reschedule", id: apptmtId, start: start},
-					callback: function (data) {
-						if (data.success) {
-							alert("The event has been rescheduled");
-						}
-					}
-				});
-			},
-			deleteEvent: function (id) {
-				if (!confirm("Are you sure, you want to delete this object?")) {
-					return false;
-				}
-				var self = this;
-				request.read({
-					action: self.controller + '/delete/' + id,
-					data: '',
-					callback: function (data) {
-						if (data.success) {
-							alert("Event deleted successfully!");
-						} else {
-							alert("Failed to delete the event!!");
-						}
-						self._reload();
 					}
 				});
 			}
@@ -127,26 +71,14 @@ $(document).ready(function () {
 			center: 'title',
 			right: 'month,agendaWeek,agendaDay'
 		},
-		dayClick: function (date) {
-			Cal.addEvent(date);
-		},
 		defaultDate: today,
 		timezone: 'Asia/Kolkata',
 		editable: true,
-		eventDrop: function (event, delta, revertFunc) {
-			Cal.changeEvent(event, revertFunc);
-		},
 		eventClick: function (event) {
 			Cal.showEvent(event.id);
 		},
 		eventLimit: true, // allow "more" link when too many events
 		eventSources: ["/events/all"]
-	});
-
-	$('#eventDel').on('click', function (e) {
-		e.preventDefault();
-		var id = $(this).attr("data-eventId");
-		Cal.deleteEvent(id);
 	});
 
 });

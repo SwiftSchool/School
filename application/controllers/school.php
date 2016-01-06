@@ -17,6 +17,19 @@ class School extends Auth {
      */
     protected $_organization;
 
+    public function render() {
+        if ($this->organization) {
+            if ($this->actionView) {
+                $this->actionView->set("organization", $this->organization);
+            }
+
+            if ($this->layoutView) {
+                $this->layoutView->set("organization", $this->organization);
+            }
+        }
+        parent::render();
+    }
+
     public function logout() {
     	Registry::get("session")->erase("organization");
     	parent::logout();

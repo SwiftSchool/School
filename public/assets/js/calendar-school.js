@@ -35,11 +35,6 @@
 						edit: $('#eventEdit'),
 						del: $('#eventDel'),
 						display: $('#displayEvent')
-					},
-					usr = {
-						name: $('#usrName'),
-						email: $('#usrEmail'),
-						phone: $('#usrPhone')
 					};
 
 					evtModal.description.html(opts.event._description);
@@ -47,9 +42,6 @@
 					evtModal.edit.attr("href", this.controller + "/edit/" + opts.event._id);
 					evtModal.del.attr("data-eventId", opts.event._id);
 					
-					usr.name.html(opts.user._name);
-					usr.email.html(opts.user._email);
-					usr.phone.html(opts.user._phone);
 
 					evtModal.display.openModal('show');
 				} else {
@@ -63,7 +55,7 @@
 					data: '',
 					callback: function (data) {
 						if (data.e) {
-							self._show({event: data.e, user: data.usr});
+							self._show({event: data.e});
 						} else if (data.err) {
 							self._show({event: null});
 						} 

@@ -19,34 +19,6 @@ class Events extends School {
         $view = $this->getActionView();
 	}
 
-	public function success() {
-		$this->seo(array("title" => "Schedule Your Appointments", "view" => $this->getLayoutView()));
-        $view = $this->getActionView();
-
-        if (RequestMethods::post("action") == "appointment") {
-            $user = new User(array(
-                "name" => RequestMethods::post("name"),
-                "email" => RequestMethods::post("email"),
-                "password" => sha1(rand(100000, 9999999)),
-                "phone" => RequestMethods::post("contact"),
-                "admin" => FALSE,
-                "gender" => RequestMethods::post("gender")
-            ));
-            $user->save();
-            $view->set("user", $user);
-            
-            $appointment = new Event(array(
-                "user_id" => $user->id,
-                "title" => RequestMethods::post("service"), 
-                "start" => RequestMethods::post("date"),
-                "end" => RequestMethods::post("date"),
-                "allDay" => "1"
-            ));
-            $appointment->save();
-            $view->set("appointment", $appointment);
-        }
-	}
-
 	/**
 	 * @before _secure, _school
 	 */
@@ -87,11 +59,11 @@ class Events extends School {
 	}
 
 	/**
-	 * @before _secure, _school
+	 * @before _secure
 	 */
 	public function all() {
 		$this->noview();
-		$results = Event::all(array("organization_id = ?" => $this->organization->id));
+		$results = Event::all(array("organization_id = ?" => Registry::get("session")->get("organization")->id));
 		$events = array();
 
 		foreach ($results as $r) {
@@ -107,17 +79,18 @@ class Events extends School {
 	}
 
 	/**
-	 * @before _secure, _school
+	 * @before _secure
 	 */
 	public function display($id) {
 		$this->JSONView();
 		$view = $this->getActionView();
 		$event = Event::first(array("id = ?" => $id), array("title", "id", "user_id", "description"));
-		$usr = User::first(array("id = ?" => $event->user_id), array("name", "email", "phone"));
+		if($event->organization_id!=$this->organization->id){
+			self::redirect('/');
+		}
 		if (!$event) {
 			$view->set("err", "Invalid ID");
 		} else {
-			$view->set("usr", $usr);
 			$view->set("e", $event);
 		}
 	}
