@@ -209,8 +209,13 @@ namespace Framework {
                 return "Not Specified";
             } else {
                 $unixdatetme = strtotime($datetime);
-                return strftime("%B %d %Y at %I:%M %p", $unixdatetme);
+                return strftime("%B %d, %Y at %I:%M %p", $unixdatetme);
             }
+        }
+
+        public static function only_time($datetime = "") {
+            $unixdatetme = strtotime($datetime);
+            return strftime("%I:%M %p", $unixdatetme);
         }
 
         public static function only_date($datetime = "") {
@@ -218,7 +223,7 @@ namespace Framework {
                 return 'Not Specified';
             } else {
                 $unixdatetme = strtotime($datetime);
-                return strftime("%B %d %Y", $unixdatetme);
+                return strftime("%B %d, %Y", $unixdatetme);
             }
         }
 

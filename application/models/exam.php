@@ -51,16 +51,14 @@ class Exam extends Shared\Model {
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 8
+     * @type time
      */
     protected $_start_time;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 8
+     * @type time
      */
     protected $_end_time;
 
@@ -71,4 +69,12 @@ class Exam extends Shared\Model {
      * @index
      */
     protected $_grade_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 4
+     */
+    protected $_year;
 }

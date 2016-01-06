@@ -85,4 +85,70 @@ class Exams extends School {
 		}
 
 	}
+
+	/**
+	 * @before _secure, _school
+	 */
+	public function result() {
+		$this->setSEO(array("title" => "Exam Results | School"));
+		$view = $this->getActionView();
+		$session = Registry::get("session");
+
+		$grades = Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
+		$view->set("grades", $grades);
+		$view->set("courses", array());
+		$view->set("enrollments", array());
+
+		if (RequestMethods::post("action") == "findStudents") {
+			$classroom_id = RequestMethods::post("classroom_id");
+			$grade_id = RequestMethods::post("grade");
+			$exam_title = RequestMethods::post("exam");
+			$enrollments = Enrollment::all(array("classroom_id = ?" => $classroom_id));
+			$exams = Exam::all(array("grade_id = ?" => $grade_id, "type = ?" => $exam_title), array("id", "grade_id", "course_id"));
+
+			$courses = array();
+			foreach ($exams as $e) {
+				$c = Course::first(array("id = ?" => $e->course_id), array("title"));
+				$courses[] = array(
+					"title" => $c->title,
+					"id" => $e->course_id
+				);
+			}
+			$courses = ArrayMethods::toObject($courses);
+			$session->set('Exams\Result:$exams', $exams);
+			$session->set('Exams\Result:$grade_id', $grade_id);
+
+			$view->set("courses", $courses);
+			$view->set("exams", $exams);
+			$view->set("enrollments", $enrollments);
+		}
+
+		if (RequestMethods::post("action") == "saveMarks") {
+			$exams = $session->get('Exams\Result:$exams');
+			$grade_id = $session->get('Exams\Result:$grade_id');
+			
+			$ids = RequestMethods::post("user_id");
+			$user_id = RequestMethods::post("user_id");
+			$marks = '';
+			
+			$total = count($exams);
+			foreach ($user_id as $key => $value) {
+				for ($i = 0; $i < $total; ++$i) {
+					$marks = RequestMethods::post($exams[$i]->id."_marks");
+					$result = new ExamResult(array(
+						"exam_id" => $exams[$i]->id,
+						"grade_id" => $grade_id,
+						"user_id" => $user_id[$key],
+						"marks" => $marks[$key]
+					));
+
+					if ($result->validate()) {
+						$result->save();
+					}
+				}
+			}
+
+			$view->set("success", "Result saved");
+		}
+	}
 }

@@ -55,6 +55,26 @@
                         target.html('<option>No Courses for this grade</option>');
                     }
                 });
+            },
+            findExams: function (opts) {
+                var target = this._find(opts);
+                this._fetch(opts, function (data) {
+                    if (data.results) {
+                        target.html('');
+                        var exams = data.results, i, max, str, unique = [];
+
+                        for (i = 0, max = exams.length; i < max; ++i) {
+                            str = exams[i]._type + ' (' + exams[i]._year + ')';
+                            
+                            if ($.inArray(str, unique) == -1) {
+                                unique.push(str);
+                                target.append('<option value="' + exams[i]._type + '">' + str + '</option>');
+                            }
+                        }
+                    } else {
+                        target.html('<option>No Exams for this grade</option>');
+                    }
+                });
             }
         }
 
@@ -94,6 +114,22 @@ $(document).ready(function() {
             };
             
         School.findCourses(opts);
+    });
+
+    $('.findExams').on('change', function (e) {
+        e.preventDefault();
+        var val = $(this).val(),
+            opts = {
+                selector: '.gradeExams',
+                index: $(this).data('id'),
+                model: 'Exam',
+                query: [{
+                    where: 'grade_id = ?',
+                    value: val
+                }]
+            };
+            
+        School.findExams(opts);
     });
 
     $('#addMore').on('click', function(event) {
