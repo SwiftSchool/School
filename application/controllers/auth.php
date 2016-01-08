@@ -19,8 +19,18 @@ class Auth extends Controller {
         $view = $this->getActionView();
         $return = $this->_checkLogin();
 
-        if ($return && isset($return["error"])) {
-            $view->set("error", $return["error"]);
+        if ($return) {
+            if (isset($return["error"])) {
+                $view->set("error", $return["error"]);
+            } elseif (isset($return["success"])) {
+                $session = Registry::get("session");
+                $view->set("success", $return["success"]);
+                if ($session->get("educator")) {
+                    $view->set("educator", $session->get("educator"));
+                } elseif ($session->get("scholar")) {
+                    $view->set("scholar", $session->get("scholar"));
+                }
+            }
         }
     }
 
@@ -44,13 +54,18 @@ class Auth extends Controller {
                 self::redirect("/admin");
             }
 
+            $headers = getallheaders();
             $scholar = Scholar::first(array("user_id = ?" => $user->id));
             if ($scholar) {
                 $session->set('scholar', $scholar);
                 
                 $organization = Organization::first(array("id = ?" => $scholar->organization_id));
                 $session->set('organization', $organization);
-                self::redirect("/student");
+                if ($headers["X-Student-App"]) {
+                    return array("success" => true);
+                } else {
+                    self::redirect("/student");
+                }
             }
 
             $organization = Organization::first(array("user_id = ?" => $user->id));
@@ -65,7 +80,11 @@ class Auth extends Controller {
                 
                 $organization = Organization::first(array("id = ?" => $educator->organization_id));
                 $session->set('organization', $organization);
-                self::redirect("/teacher");
+                if ($headers["X-Teacher-App"]) {
+                    return array("success" => true);
+                } else {
+                    self::redirect("/teacher");
+                }
             }
 
             return array("error" => "Something went wrong please try later");
