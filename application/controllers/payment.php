@@ -20,6 +20,10 @@ class Payment extends School {
 
 		$grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
 		$view->set("grades", $grades);
+
+		if (RequestMethods::post("action") == "createFee") {
+			
+		}
 	}
 
 	/**
