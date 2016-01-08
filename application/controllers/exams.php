@@ -151,4 +151,69 @@ class Exams extends School {
 			$view->set("success", "Result saved");
 		}
 	}
+
+	/**
+	 * @before _secure, _school
+	 */
+	public function marks() {
+		$this->setSEO(array("title" => "View Marks | School"));
+		$view = $this->getActionView();
+		$session = Registry::get("session");
+
+		$view->set("results", array());
+		$grades = Grade::all(array("organization_id = ?" => $this->organization->id));
+		
+		if (RequestMethods::post("action") == "findStudents") {
+			$grade = RequestMethods::post("grade");
+			$exam_type = RequestMethods::post("exam");
+			$classroom_id = RequestMethods::post("classroom_id");
+
+			/*** Stores courses in an array ***/
+			$courses = Course::all(array("grade_id = ?" => $grade), array("id", "title"));
+			$setCourses = array();
+			foreach ($courses as $c) {
+				$setCourses["$c->id"] = $c->title;
+			}
+
+			/*** Store exams in an array ***/
+			$exams = Exam::all(array("type = ?" => $exam_type, "grade_id = ?" => $grade));
+			foreach ($exams as $e) {
+				$setExams["$e->id"] = array("course_id" => $e->course_id);
+			}
+
+			/*** Find all students in class and store his details in an array ***/
+			$users = Enrollment::all(array("classroom_id = ?" => $classroom_id));
+			$results = array();
+			foreach ($users as $u) {
+				$usr = User::first(array("id = ?" => $u->user_id), array("name"));
+				$scholar = Scholar::first(array("user_id = ?" => $u->user_id), array("roll_no"));
+				$result = ExamResult::all(array("user_id = ?" => $u->user_id));
+				
+				/*** We need to find marks of the all the subject ***/
+				$marks = array();
+				foreach ($result as $r) {
+					if (!array_key_exists($r->exam_id, $setExams)) {
+						continue;
+					}
+					$c_id = $setExams["$r->exam_id"]["course_id"];
+					$marks[] = array(
+						"subject" => $setCourses["$c_id"],
+						"marks" => $r->marks
+					);
+				}
+				$results[] = array(
+					"name" => $usr->name,
+					"roll_no" => $scholar->roll_no,
+					"results" => $marks
+				);
+			}
+			
+			$session->set('Exams\Marks:$marks', ArrayMethods::toObject($marks));
+			$session->set('Exams\Marks:$results', ArrayMethods::toObject($results));
+		}
+
+		$view->set("marks", $session->get('Exams\Marks:$marks'));
+		$view->set("results", $session->get('Exams\Marks:$results'));
+		$view->set("grades", $grades);
+	}
 }

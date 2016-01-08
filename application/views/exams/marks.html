@@ -1,0 +1,92 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Filter Your Results</h1>
+                <ul>
+                    <li>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/exams/manage">Exams</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Results</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
+    <form action="" method="post" class="">
+        <div class="row">
+            <div class="col l3 m3">
+                <label for="Grade"><strong style="font-size: 17px;">Grade</strong></label>
+                <select name="grade" required="" class="browser-default findExams findSections">
+                    <option>Select</option>
+                    {foreach $g in $grades}
+                    <option value="{echo $g->id}">{echo $g->title}</option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="col l3 m3">
+                <label for="Exam"><strong style="font-size: 17px;">Exam</strong></label>
+                <select name="exam" class="browser-default gradeExams">
+                    <option>Select</option>
+                </select>
+            </div>
+            <div class="col l3 m3">
+                <label for="Section"><strong style="font-size: 17px;">Section</strong></label>
+                <select name="classroom_id" class="browser-default gradeSections">
+                    <option>Select</option>
+                </select>
+            </div>
+            <div class="col l3 m3">
+                <label for="Section"><strong style="font-size: 17px;">Go</strong></label>
+                <input type="hidden" name="action" value="findStudents">
+                <button class="waves-effect btn teal" type="submit" style="display: block;"><i class="fa fa-send"></i> Go</button>
+            </div>
+        </div>
+    </form>
+    <!-- /Breadcrumb -->
+    <br>
+    <div class="card">
+        <div class="title">
+            <h5><strong>Your Results</strong></h5>
+        </div>
+        <div class="content">
+            {if count($results) > 0}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Student</th>
+                            <th>Roll No.</th>
+                            {foreach $m in $marks}
+                            <th>{echo $m->subject}</th>
+                            {/foreach}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {script $i = 1} {foreach $r in $results}
+                        <tr>
+                            <td>{echo $i}</td>
+                            <td>{echo $r->name}</td>
+                            <td>{echo $r->roll_no}</td>
+                            {foreach $m in $r->results}
+                            <td>{echo $m->marks}</td>
+                            {/foreach}
+                        </tr>
+                        {script ++$i} {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            {/if}
+        </div>
+    </div>
+</section>
+<!-- /Main Content -->
