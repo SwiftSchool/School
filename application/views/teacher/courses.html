@@ -14,7 +14,7 @@
                     <div class="item col-xs-12 col-sm-6 col-lg-4">
                         <div class="panel panel-default paper-shadow" data-z="0.5">
                             <div class="panel-body">
-                                {script $count = Assignment::count(array("course_id = ?" => $c->course_id))}
+                                {script $count = $c->assignments}
                                 <div class="pull-right">
                                     {if $count == 0}
                                     <a class="label label-info" href="/assignments/create/{echo $c->course_id}/{echo $c->classroom_id}"><i class="fa fa-plus"></i> Create Assignment</a>

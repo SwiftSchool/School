@@ -32,16 +32,6 @@ class Student extends School {
                 $this->layoutView->set("scholar", $this->scholar);
             }
         }
-
-        if ($this->organization) {
-            if ($this->actionView) {
-                $this->actionView->set("organization", $this->organization);
-            }
-
-            if ($this->layoutView) {
-                $this->layoutView->set("organization", $this->organization);
-            }
-        }
         parent::render();
     }
 

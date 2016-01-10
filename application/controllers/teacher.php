@@ -31,16 +31,6 @@ class Teacher extends School {
                 $this->layoutView->set("educator", $this->educator);
             }
         }
-
-        if ($this->organization) {
-            if ($this->actionView) {
-                $this->actionView->set("organization", $this->organization);
-            }
-
-            if ($this->layoutView) {
-                $this->layoutView->set("organization", $this->organization);
-            }
-        }         
         parent::render();
     }
 
@@ -196,14 +186,15 @@ class Teacher extends School {
             $grade = \Grade::first(array("id = ?" => $t->grade_id), array("title"));
             $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("id", "section", "year"));
             $course = \Course::first(array("id = ?" => $t->course_id), array("title"));
-
+            $asgmnt = \Assignment::count(array("course_id = ?" => $t->course_id));
             $result[] = array(
                 "grade" => $grade->title,
                 "grade_id" => $t->grade_id,
                 "section" => $class->section,
                 "course" => $course->title,
                 "course_id" => $t->course_id,
-                "classroom_id" => $class->id
+                "classroom_id" => $class->id,
+                "assignments" => $asgmnt
             );
         }
         $result = ArrayMethods::toObject($result);

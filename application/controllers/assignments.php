@@ -51,11 +51,17 @@ class Assignments extends Teacher {
 	/**
 	 * @before _secure, _teacher
 	 */
-	public function manage() {
+	public function manage($course_id = null) {
 		$this->setSEO(array("title" => "Manage Your assignments | Teacher"));
 		$view = $this->getActionView();
 
-		$assignments = \Assignment::all(array("user_id = ?" => $this->user->id), array("title", "created", "course_id", "classroom_id", "deadline", "live", "id"));
+		$where = array("user_id = ?" => $this->user->id);
+		$fields = array("title", "created", "course_id", "classroom_id", "deadline", "live", "id");
+		if ($course_id) {
+			$assignments = \Assignment::all(array_merge($where, array("course_id = ?" => $course_id)), $fields);
+		} else {
+			$assignments = \Assignment::all($where, $fields);
+		}
 		$results = array();
 		foreach ($assignments as $a) {
 			$course = \Course::first(array("id = ?" => $a->course_id), array("title", "grade_id"));
