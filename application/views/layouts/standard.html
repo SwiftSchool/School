@@ -41,13 +41,10 @@
     {if (@$scholar !== NULL)}
         {include layouts/navigation/student.html}
         {ayield action}
-    {/if}
-    {else}
-        {if (@$educator !== NULL)}
-            {include layouts/navigation/teacher.html}
-            {ayield action}
-        {/if}
-        {else}
+    {/if} {elseif (@$educator !== NULL)}
+        {include layouts/navigation/teacher.html}
+        {ayield action}
+    {/elseif} {else}
             {include layouts/navigation/standard.html}
             {ayield action}
             <section class="footer-section">
@@ -119,7 +116,7 @@
     {/if} {elseif isset($educator)}
     <script src="{echo CDN}js/teacher-1.0.js"></script>
     {/elseif}
-    
+
     {if isset($cal)}
     <script src="{echo CDN}plugins/fullcalendar/moment.min.js"></script>
     <script src="{echo CDN}plugins/fullcalendar/fullcalendar.min.js"></script>

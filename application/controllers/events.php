@@ -72,7 +72,8 @@ class Events extends School {
 				"start" => $this->returnTime($r->start),
 				"end" => $this->returnTime($r->start),
 				"allDay" => ($r->allDay) ? true : false,
-				"id" => $r->id
+				"id" => $r->id,
+				"className" => "event"
 			);
 		}
 		echo json_encode($events);

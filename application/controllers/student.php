@@ -353,17 +353,24 @@ class Student extends School {
      * @before _secure, _student
      */
     public function attendance() {
-        $this->setSEO(array("title" => "Edit Student Info | School"));
-        $view = $this->getActionView();
+        $this->noview();
 
         $mongo = Registry::get("MongoDB");
         $attendance = $mongo->selectCollection("attendance");
         $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));
-        $results = array();
+
+        $i = 1; $results = array();
         foreach ($records as $r) {
-            $results[] = $r;
+            $results[] = array(
+                "title" => ($r["presence"]) ? "Present" : "Absent",
+                "start" => $r["date"] . "T00:00:00",
+                "end" => $r["date"] . "T23:59:59",
+                "allDay" => true,
+                "className" => "attendance"
+            );
+            ++$i;
         }
-        $view->set("attendances", $results);
+        echo json_encode($results);
     }
 
     /**

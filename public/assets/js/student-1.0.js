@@ -19,7 +19,6 @@
 			_reload: function () {
 				window.location.href = '/' + this.controller;
 			},
-
 			_show: function (opts) {
 				if (opts.event) {
 					var evtModal = {
@@ -72,10 +71,12 @@ $(document).ready(function () {
 			timezone: 'Asia/Kolkata',
 			editable: true,
 			eventClick: function (event) {
-				Cal.showEvent(event.id);
+				if ($.inArray("event", event.className) !== -1) {
+					Cal.showEvent(event.id);
+				}
 			},
 			eventLimit: true, // allow "more" link when too many events
-			eventSources: ["/events/all"]
+			eventSources: ["/events/all", "/student/attendance"]
 		});
 	}
 });

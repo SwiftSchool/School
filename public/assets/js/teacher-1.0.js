@@ -71,7 +71,9 @@ $(document).ready(function () {
 			timezone: 'Asia/Kolkata',
 			editable: true,
 			eventClick: function (event) {
-				Cal.showEvent(event.id);
+				if ($.inArray("event", event.className) !== -1) {
+					Cal.showEvent(event.id);
+				}
 			},
 			eventLimit: true, // allow "more" link when too many events
 			eventSources: ["/events/all"]
