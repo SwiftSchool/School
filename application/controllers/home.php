@@ -29,26 +29,17 @@ class Home extends Controller {
     }
 
     public function index() {
-        $this->getLayoutView()->set("seo", Framework\Registry::get("seo"));
+        $this->setSEO(array("title" => "School | ERP"));
+        $view = $this->getActionView();
     }
 
     public function pricing() {
-    	$this->seo(array(
-            "title" => "Pricing",
-            "keywords" => "school",
-            "description" => "School Website",
-            "view" => $this->getLayoutView()
-        ));
+    	$this->setSEO(array("title" => "Pricing"));
         $view = $this->getActionView();
     }
 
     public function contact() {
-    	$this->seo(array(
-            "title" => "Contact Us",
-            "keywords" => "school",
-            "description" => "School Website",
-            "view" => $this->getLayoutView()
-        ));
+    	$this->setSEO(array("title" => "Contact Us"));
         $view = $this->getActionView();
     }
 

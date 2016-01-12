@@ -14,7 +14,7 @@ class Admin extends Auth {
      * @before _secure, changeLayout, _admin
      */
     public function index() {
-        $this->seo(array("title" => "Dashboard", "view" => $this->getLayoutView()));
+        $this->setSEO(array("title" => "Dashboard"));
         $view = $this->getActionView();
         $now = strftime("%Y-%m-%d", strtotime('now'));
     }

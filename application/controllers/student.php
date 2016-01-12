@@ -350,6 +350,23 @@ class Student extends School {
     }
 
     /**
+     * @before _secure, _student
+     */
+    public function attendance() {
+        $this->setSEO(array("title" => "Edit Student Info | School"));
+        $view = $this->getActionView();
+
+        $mongo = Registry::get("MongoDB");
+        $attendance = $mongo->selectCollection("attendance");
+        $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));
+        $results = array();
+        foreach ($records as $r) {
+            $results[] = $r;
+        }
+        $view->set("attendances", $results);
+    }
+
+    /**
      * @protected
      */
     public function _student() {

@@ -14,7 +14,7 @@ class Events extends School {
 	 * @before _secure, _school
 	 */
 	public function index() {
-		$this->seo(array("title" => "Schedule Your Appointments", "view" => $this->getLayoutView()));
+		$this->setSEO(array("title" => "Schedule Your Appointments"));
         $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
 	}
@@ -100,7 +100,7 @@ class Events extends School {
 	 * @before _secure, _school
 	 */
 	public function edit($event_id) {
-		$this->seo(array("title" => "Edit the Event", "view" => $this->getLayoutView()));
+		$this->setSEO(array("title" => "Edit the Event"));
 		$view = $this->getActionView();
 
 		$event = Event::first(array("id = ?" => $event_id));

@@ -60,25 +60,22 @@
 	window.Cal = new Cal();
 }(window, window.request, jQuery));
 
-var now = new Date();
-now = now.toISOString();
-var today = now.split("T")[0];	// today: '2015-09-14'
-
 $(document).ready(function () {
-	$("#calendar").fullCalendar({
-		header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'month,agendaWeek,agendaDay'
-		},
-		defaultDate: today,
-		timezone: 'Asia/Kolkata',
-		editable: true,
-		eventClick: function (event) {
-			Cal.showEvent(event.id);
-		},
-		eventLimit: true, // allow "more" link when too many events
-		eventSources: ["/events/all"]
-	});
-
+	if ($("#calendar").length !== 0) {
+		$("#calendar").fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			defaultDate: Cal.today,
+			timezone: 'Asia/Kolkata',
+			editable: true,
+			eventClick: function (event) {
+				Cal.showEvent(event.id);
+			},
+			eventLimit: true, // allow "more" link when too many events
+			eventSources: ["/events/all"]
+		});
+	}
 });

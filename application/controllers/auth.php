@@ -12,10 +12,7 @@ use Framework\Registry as Registry;
 class Auth extends Controller {
     
     public function login() {
-        $this->seo(array(
-            "title" => "Login",
-            "view" => $this->getLayoutView()
-        ));
+        $this->setSEO(array("title" => "Login"));
         $view = $this->getActionView();
         $return = $this->_checkLogin();
 
