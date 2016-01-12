@@ -51,4 +51,13 @@ class Home extends Controller {
         ));
         $view = $this->getActionView();
     }
+
+    public function test() {
+        $this->JSONView();
+        $view = $this->getActionView();
+
+        foreach ($_POST as $key => $value) {
+            $view->set($key, $value);
+        }
+    }
 }

@@ -211,9 +211,84 @@ class Teacher extends School {
         $teach = Teach::first(array("id = ?" => $teach_id));
         if ($teach->organization_id == $this->organization->id) {
             $teach->live = false;
-            $teach->save();
+            // $teach->delete();
         }
         self::redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    /**
+     * @before _secure, _teacher
+     */
+    public function manageAttendance() {
+        $this->setSEO(array("title" => "Manage Your Courses | Teacher"));
+        $view = $this->getActionView();
+
+        $classroom = Classroom::first(array("educator_id = ?" => $this->educator->id), array("id", "section", "grade_id"));
+        $grade = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
+        $enrollments = Enrollment::all(array("classroom_id = ?" => $classroom->id), array("user_id"));
+
+        $students = array();
+        foreach ($enrollments as $e) {
+            $usr = User::first(array("id = ?" => $e->user_id), array("name"));
+            $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));
+
+            $students[] = array(
+                "user_id" => $e->user_id,
+                "name" => $usr->name,
+                "roll_no" => $scholar->roll_no
+            );
+        }
+        $students = ArrayMethods::toObject($students);
+
+        $response = $this->_saveAttendances($classroom);
+        if (isset($response["success"])) {
+            $view->set("message", "Attendance Saved successfully!!");
+        } elseif (isset($response["saved"])) {
+            $view->set("message", "Attendance Already saved for today");
+        }
+        $view->set("class", $grade->title . " - ". $classroom->section);
+        $view->set("students", $students);
+    }
+
+    /**
+     * Save attendances into Mongo DB
+     */
+    protected function _saveAttendances(&$classroom) {
+        $mongo = Registry::get("MongoDB");
+        $attendance = $mongo->attendance;
+        
+        if (RequestMethods::post("action") == "saveAttendance") {
+            $attendances = $this->reArray($_POST);
+
+            foreach ($attendances as $a) {
+                if (!is_numeric($a["user_id"]) || !is_numeric($a["presence"])) {
+                    return false;
+                }
+                $doc = array(
+                    "user_id" => (int) $a["user_id"],
+                    "classroom_id" => (int) $classroom->id,
+                    "organization_id" => (int) $this->organization->id,
+                    "date" => date('Y-m-d'),
+                    "presence" => (int) $a["presence"],
+                    "live" => true
+                );
+
+                $record = $attendance->findOne(array('user_id' => (int) $a["user_id"], 'date' => date('Y-m-d')));
+                if (isset($record)) {
+                    $attendance->update(array('user_id' => (int) $a["user_id"], 'date' => date('Y-m-d')), array('$set' => $doc));
+                } else {
+                    $attendance->insert($doc);
+                }
+            }
+            return array("success" => true);
+        } else {
+            $record = $attendance->findOne(array('classroom_id' => (int) $classroom->id, 'date' => date('Y-m-d')));
+            if (isset($record)) {
+                return array("saved" => true);
+            } else {
+                return array("empty" => true);
+            }
+        }
     }
 
     /**

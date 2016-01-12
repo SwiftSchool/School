@@ -1,0 +1,62 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <h3 class="page-heading">Attendance: {echo $class}</h3>
+                    <form action="" method="post">
+                        {if isset($message)}
+                        <div class="alert alert-info alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            {echo $message}
+                        </div><br>
+                        {/if}
+                        <table class="panel table panel-default">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Roll No</td>
+                                    <td>Attendance</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach $s in $students}
+                                <tr>
+                                    <td>{echo $s->name}</td>
+                                    <td>{echo $s->roll_no}</td>
+                                    <td class="form-group" style="width: 30%">
+                                        <select name="presence[]" class="form-control" required="">
+                                            <option value="1" selected="">Present</option>
+                                            <option value="0">Absent</option>
+                                        </select>
+                                    </td>
+                                    <input type="hidden" name="user_id[]" value="{echo $s->user_id}">
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                        <input type="hidden" name="action" value="saveAttendance">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    <div class="panel-body list-group">
+                        <ul class="list-group list-group-menu">
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher">Dashboard</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Manage Attendance</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Messages</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Student Marks</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/assignments/manage">Assignments</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher/courses">Courses</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

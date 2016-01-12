@@ -25,6 +25,7 @@ class Auth extends Controller {
             } elseif (isset($return["success"])) {
                 $session = Registry::get("session");
                 $view->set("success", $return["success"]);
+                
                 if ($session->get("educator")) {
                     $view->set("educator", $session->get("educator"));
                 } elseif ($session->get("scholar")) {
