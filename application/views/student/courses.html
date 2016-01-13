@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <h2 class="page-heading">Subjects</h2>
+                    <div class="row" data-toggle="isotope">
+                        {foreach $c in $courses}
+                        <div class="item col-xs-12 col-sm-6 col-lg-4">
+                            <div class="panel panel-default paper-shadow" data-z="0.5">
+                                <div class="panel-body">
+                                    <h4 class="text-headline margin-v-0-10">{echo $c->title}</h4>
+                                </div>
+                                <hr class="margin-none" />
+                                <div class="panel-body">
+                                    <a href="/student/assignments/{echo $c->id}" class="btn btn-primary btn-xs">Assignments</a>
+                                    <a href="/student/result/{echo $c->id}" class="btn btn-info btn-xs">Result</a>
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    <div class="panel-body list-group">
+                        <ul class="list-group list-group-menu">
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher">Dashboard</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Messages</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student/assignments">Assignments</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student/courses">Courses</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student/result">Results</a></li>                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

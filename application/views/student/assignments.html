@@ -3,6 +3,22 @@
         <div class="row">
             <div class="col-md-9">
                 <div class="row">
+                    <div class="container">
+                        <form class="form form-inline" method="post">
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <select class="form-control" name="course">
+                                    {foreach $c in $courses}
+                                    <option value="{echo $c->id}">{echo $c->title}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Go</button>
+                        </form>
+                    </div>
+                    
+                </div><br>
+                <div class="row">
                     <h3 class="page-heading">Assignments</h3>
                     <table class="panel table panel-default">
                         <thead>

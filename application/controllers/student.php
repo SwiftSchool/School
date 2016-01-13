@@ -243,6 +243,7 @@ class Student extends School {
         $classroom = $session->get('Student:$classroom');
         $courses = $session->get('Student:$courses');
 
+        $course_id = RequestMethods::post("course");
         if ($course_id) {
             $assignments = \Assignment::all(array("course_id = ?" => $course_id, "live = ?" => true));
         } else {
@@ -277,7 +278,8 @@ class Student extends School {
         }
         $result = ArrayMethods::toObject($result);
 
-        $view->set("assignments", $result);
+        $view->set("assignments", $result)
+            ->set("courses", $courses);
 
     }
 
@@ -437,7 +439,7 @@ class Student extends School {
     /**
      * @before _secure, _student
      */
-    public function result() {
+    public function result($course_id = null) {
         $this->setSEO(array("title" => "Result | Student"));
         $view = $this->getActionView();
         $session = Registry::get("session");
@@ -445,7 +447,7 @@ class Student extends School {
         $classroom = $session->get('Student:$classroom');
         $courses = $session->get('Student:$courses');
         
-        $course_id = RequestMethods::post("course");
+        $course_id = RequestMethods::post("course", $course_id);
         if (!$course_id) {
             $course_id = $courses[0]->id;
             $subject = $courses[0]->title;
