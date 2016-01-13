@@ -69,6 +69,7 @@
                             {foreach $m in $marks}
                             <th>{echo $m->subject}</th>
                             {/foreach}
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,6 +81,7 @@
                             {foreach $m in $r->results}
                             <td>{echo $m->marks}</td>
                             {/foreach}
+                            <td><a href="/exams/editResult/{echo $r->user_id}/{echo $exam['grade_id']}/{echo $exam['type']}/{echo $exam['year']}" class="btn btn-small z-depth-0" target="_blank"><i class="mdi mdi-editor-mode-edit"></i></a></td>
                         </tr>
                         {script ++$i} {/foreach}
                     </tbody>

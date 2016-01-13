@@ -99,56 +99,14 @@ class Exams extends School {
 		$view->set("courses", array());
 		$view->set("enrollments", array());
 
-		if (RequestMethods::post("action") == "findStudents") {
-			$classroom_id = RequestMethods::post("classroom_id");
-			$grade_id = RequestMethods::post("grade");
-			$exam_title = RequestMethods::post("exam");
-			$enrollments = Enrollment::all(array("classroom_id = ?" => $classroom_id));
-			$exams = Exam::all(array("grade_id = ?" => $grade_id, "type = ?" => $exam_title), array("id", "grade_id", "course_id"));
-
-			$courses = array();
-			foreach ($exams as $e) {
-				$c = Course::first(array("id = ?" => $e->course_id), array("title"));
-				$courses[] = array(
-					"title" => $c->title,
-					"id" => $e->course_id
-				);
-			}
-			$courses = ArrayMethods::toObject($courses);
-			$session->set('Exams\Result:$exams', $exams);
-			$session->set('Exams\Result:$grade_id', $grade_id);
-
-			$view->set("courses", $courses);
-			$view->set("exams", $exams);
-			$view->set("enrollments", $enrollments);
+		$response = $this->_findStudents();
+		if ($response) {
+			$view->set($response);
 		}
 
-		if (RequestMethods::post("action") == "saveMarks") {
-			$exams = $session->get('Exams\Result:$exams');
-			$grade_id = $session->get('Exams\Result:$grade_id');
-			
-			$ids = RequestMethods::post("user_id");
-			$user_id = RequestMethods::post("user_id");
-			$marks = '';
-			
-			$total = count($exams);
-			foreach ($user_id as $key => $value) {
-				for ($i = 0; $i < $total; ++$i) {
-					$marks = RequestMethods::post($exams[$i]->id."_marks");
-					$result = new ExamResult(array(
-						"exam_id" => $exams[$i]->id,
-						"grade_id" => $grade_id,
-						"user_id" => $user_id[$key],
-						"marks" => $marks[$key]
-					));
-
-					if ($result->validate()) {
-						$result->save();
-					}
-				}
-			}
-
-			$view->set("success", "Result saved");
+		$response = $this->_saveMarks();
+		if ($response) {
+			$view->set($response);
 		}
 	}
 
@@ -164,8 +122,12 @@ class Exams extends School {
 		$grades = Grade::all(array("organization_id = ?" => $this->organization->id));
 		
 		if (RequestMethods::post("action") == "findStudents") {
+			$exam = RequestMethods::post("exam");
+			preg_match("/(.*);(.*)/", $exam, $matches);
+			$exam_type = $matches[1];
+			$exam_year = $matches[2];
+
 			$grade = RequestMethods::post("grade");
-			$exam_type = RequestMethods::post("exam");
 			$classroom_id = RequestMethods::post("classroom_id");
 
 			/*** Stores courses in an array ***/
@@ -203,17 +165,150 @@ class Exams extends School {
 				}
 				$results[] = array(
 					"name" => $usr->name,
+					"user_id" => $u->user_id,
 					"roll_no" => $scholar->roll_no,
 					"results" => $marks
 				);
 			}
 			
+			$session->set('Exams\Marks:$exam', array("type" => $exam_type, "year" => $exam_year, "grade_id" => $grade));
 			$session->set('Exams\Marks:$marks', ArrayMethods::toObject($marks));
 			$session->set('Exams\Marks:$results', ArrayMethods::toObject($results));
 		}
 
-		$view->set("marks", $session->get('Exams\Marks:$marks'));
-		$view->set("results", $session->get('Exams\Marks:$results'));
-		$view->set("grades", $grades);
+		$view->set('exam', $session->get('Exams\Marks:$exam'))
+			->set("marks", $session->get('Exams\Marks:$marks'))
+			->set("results", $session->get('Exams\Marks:$results'))
+			->set("grades", $grades);
+	}
+
+	/**
+	 * @before _secure, _school
+	 */
+	public function editResult($user_id, $grade_id, $type, $year) {
+		$this->setSEO(array("title" => "Edit Result | School"));
+		$view = $this->getActionView();
+
+		$user = User::first(array("id = ?" => $user_id));
+		$exams = Exam::all(array("type = ?" => $type, "year" => $year, "grade_id = ?" => $grade_id, "organization_id = ?" => $this->organization->id), array("id", "course_id"));
+		
+		$courses = Course::all(array("grade_id = ?" => $grade_id));
+		$setCourses = array();
+		foreach ($courses as $c) {
+			$setCourses["$c->id"] = $c->title;
+		}
+
+		$response = $this->_findMarks(array("exams" => $exams, "user_id" => $user_id, "setCourses" => $setCourses));
+		$results = $response["results"];
+		$setResults = $response["setResults"];
+
+		if (RequestMethods::post("action") == "updateMarks") {
+			$obj = $this->reArray($_POST);
+			foreach ($obj as $o) {
+				if (isset($setResults["$o->result"])) {
+					$result = $setResults["$o->result"];
+					$result->marks = $o->marks;
+
+					if ($result->validate()) {
+						$result->save();
+					}
+				}
+			}
+			$response = $this->_findMarks(array("exams" => $exams, "user_id" => $user_id, "setCourses" => $setCourses));
+			$results = $response["results"];
+			$view->set("success", "Marks updated successfully!!");
+		}
+
+		$view->set("usr", $user);
+		$view->set("results", $results);
+	}
+
+	private function _findStudents() {
+		$session = Registry::get("session");
+		if (RequestMethods::post("action") == "findStudents") {
+			$exam = RequestMethods::post("exam");
+			preg_match("/(.*);(.*)/", $exam, $matches);
+			$exam_type = $matches[1];
+			$exam_year = $matches[2];
+
+			$classroom_id = RequestMethods::post("classroom_id");
+			$grade_id = RequestMethods::post("grade");
+			
+			$enrollments = Enrollment::all(array("classroom_id = ?" => $classroom_id));
+			$exams = Exam::all(array("grade_id = ?" => $grade_id, "type = ?" => $exam_type), array("id", "grade_id", "course_id"));
+			$courses = Course::all(array("organization_id = ?" => $this->organization->id), array("title", "id"));
+
+			$arr = array();
+			foreach ($courses as $c) {
+				$arr["$c->id"] = $c->title;
+			}
+
+			$courses = array();
+			foreach ($exams as $e) {
+				$courses[] = array(
+					"title" => $arr["$e->course_id"],
+					"id" => $e->course_id
+				);
+			}
+			$courses = ArrayMethods::toObject($courses);
+			$session->set('Exams\Result:$exams', $exams);
+			$session->set('Exams\Result:$grade_id', $grade_id);
+
+			return array("courses" => $courses, "exams" => $exams, "enrollments" => $enrollments);
+		}
+		return false;
+	}
+
+	private function _saveMarks() {
+		$session = Registry::get("session");
+		if (RequestMethods::post("action") == "saveMarks") {
+			$exams = $session->get('Exams\Result:$exams');
+			$grade_id = $session->get('Exams\Result:$grade_id');
+			
+			$ids = RequestMethods::post("user_id");
+			$user_id = RequestMethods::post("user_id");
+			$marks = '';
+			
+			$total = count($exams);
+			foreach ($user_id as $key => $value) {
+				for ($i = 0; $i < $total; ++$i) {
+					$marks = RequestMethods::post($exams[$i]->id."_marks");
+					$result = new ExamResult(array(
+						"exam_id" => $exams[$i]->id,
+						"grade_id" => $grade_id,
+						"user_id" => $user_id[$key],
+						"marks" => $marks[$key]
+					));
+
+					if ($result->validate()) {
+						$result->save();
+					}
+				}
+			}
+
+			return array("success" => "Result saved");
+		}
+		return false;
+	}
+
+	private function _findMarks($opts = array()) {
+		$setCourses = $opts["setCourses"];
+		$exams = $opts["exams"];
+
+		$results = array(); $setResults = array();
+		foreach ($exams as $e) {
+			$result = ExamResult::first(array("exam_id = ?" => $e->id, "user_id = ?" => $opts["user_id"]));
+			$setResults["$result->id"] = $result;
+			$data = array(
+				"course" => $setCourses["$e->course_id"],
+				"marks" => $result->marks,
+				"course_id" => $e->course_id,
+				"result_id" => $result->id
+			);
+
+			$data = ArrayMethods::toObject($data);
+			$results[] = $data;
+		}
+		return array("results" => $results, "setResults" => $setResults);
 	}
 }

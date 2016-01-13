@@ -1,0 +1,55 @@
+<!-- Main Content -->
+<section class="content-wrap">
+    <!-- Breadcrumb -->
+    <div class="page-title">
+        <div class="row">
+            <div class="col s12 m9 l10">
+                <h1>Edit Result</h1>
+                <ul>
+                    <li>
+                        <a href="/school"><i class="fa fa-home"></i> Home</a>  <i class="fa fa-angle-right"></i>
+                    </li>
+                    <li><a href="/exams/manage">Exams</a> <i class="fa fa-angle-right"></i></li>
+                    <li>Edit Result</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {if isset($success)}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="background-color: #BCED91; color: green;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {echo $success}
+    </div>
+    {/if}
+
+    <div class="row">
+        <div class="col l2 m2"></div>
+        <form class="card-panel col l8 m8" method="post">
+            <div class="title">
+                <h5>Marks: <strong>{echo $usr->name}</strong></h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <tbody>
+                        {script $i = 1} {foreach $r in $results}
+                        <tr>
+                            <td>{echo $i}</td>
+                            <th>{echo $r->course}</th>
+                            <td class="input-field">
+                                <input type="text" name="marks[]" class="validate" value="{echo $r->marks}" pattern="[0-9]{2,3}\.?[0-9]{0,2}" required="">
+                            </td>
+                            <input type="hidden" name="result[]" value="{echo $r->result_id}">
+                        </tr>
+                        {script ++$i} {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <input type="hidden" name="action" value="updateMarks">
+            <button class="waves-effect btn" type="submit"><i class="mdi-action-done"></i> Submit</button>
+            <a href="/exams/manage" class="waves-effect red btn"><i class="mdi-content-clear"></i> Cancel</a>
+        </form>
+    </div>
+    
+
+</section>
+<!-- /Main Content -->

@@ -69,7 +69,7 @@
                             
                             if ($.inArray(str, unique) == -1) {
                                 unique.push(str);
-                                target.append('<option value="' + exams[i]._type + '">' + str + '</option>');
+                                target.append('<option value="' + exams[i]._type + ';' + exams[i]._year + '">' + str + '</option>');
                             }
                         }
                     } else {
