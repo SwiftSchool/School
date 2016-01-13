@@ -490,7 +490,18 @@ class Student extends School {
         $view->set("subject", $subject)
             ->set("results", $result)
             ->set("courses", $courses);
+    }
 
+    /**
+     * @before _secure, _student
+     */
+    public function courses() {
+        $this->setSEO(array("title" => "Result | Student"));
+        $view = $this->getActionView();
+        $session = Registry::get("session");
+
+        $courses = $session->get('Student:$courses');
+        $view->set("courses", $courses);
     }
 
     /**
