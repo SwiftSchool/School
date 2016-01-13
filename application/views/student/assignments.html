@@ -1,0 +1,60 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <h3 class="page-heading">Assignments</h3>
+                    <table class="panel table panel-default">
+                        <thead>
+                            <tr>
+                                <td>S.No</td>
+                                <td>Subject</td>
+                                <td>Title</td>
+                                <td>Description</td>
+                                <td>Deadline</td>
+                                <td>Action</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {script $i = 1} {foreach $a in $assignments}
+                            <tr>
+                                <td>{echo $i}</td>
+                                <td>{echo $a->course}</td>
+                                <td>{echo $a->title}</td>
+                                <td>{echo $a->description}...</td>
+                                <td>{echo $a->deadline}</td>
+                                {script $submitted = $a->submitted}
+                                <td>
+                                    {if $submitted}
+                                    <span class="label label-success">Submitted</span>
+                                    {/if} {else}
+                                    <a href="/student/submitAssignment/{echo $a->id}"><span class="label label-danger">SUBMIT NOW</span></a>
+                                    {/else}
+                                </td>
+                            </tr>
+                            {script ++$i} {/foreach}
+                        </tbody>
+                    </table>
+                
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    <div class="panel-body list-group">
+                        <ul class="list-group list-group-menu">
+                            <li class="list-group-item"><a class="link-text-color" href="/teacher">Dashboard</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Messages</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="#">Marks</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student/assignments">Assignments</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student/courses">Courses</a></li>
+                            <li class="list-group-item"><a class="link-text-color" href="/student/results">Results</a></li>                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

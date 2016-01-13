@@ -42,11 +42,17 @@ class Student extends School {
 		$this->setSEO(array("title" => "Students | Dashboard"));
         $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
+        $session = Registry::get("session");
 
         $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
         $classroom = Classroom::first(array("id = ?" => $enrollment->classroom_id));
         $grade = Grade::first(array("id = ?" => $classroom->grade_id));
         $courses = Course::all(array("grade_id = ?" => $classroom->grade_id));
+
+        $session->set('Student:$enrollment', $enrollment)
+                ->set('Student:$classroom', $classroom)
+                ->set('Student:$grade', $grade)
+                ->set('Student:$courses', $courses);
 
         $view->set("enrollment", $enrollment);
         $view->set("classroom", $classroom);
@@ -220,6 +226,59 @@ class Student extends School {
         $view->set("grade", $grade);
         $view->set("enrollment", $enrollment);
         $view->set("grades", $grades);
+    }
+
+    /**
+     * Finds assignments for the classroom
+     *
+     * @param int $course_id Finds assignments only for the given course (Optional)
+     * else finds all assignments for the student's classroom
+     * @before _secure, _student
+     */
+    public function assignments($course_id = null) {
+        $this->setSEO(array("title" => "Assignments | Student"));
+        $view = $this->getActionView();
+        $session = Registry::get("session");
+
+        $classroom = $session->get('Student:$classroom');
+        $courses = $session->get('Student:$courses');
+
+        if ($course_id) {
+            $assignments = \Assignment::all(array("course_id = ?" => $course_id, "live = ?" => true));
+        } else {
+            $assignments = \Assignment::all(array("classroom_id = ?" => $classroom->id, "live = ?" => true));
+        }
+        $submissions = \Submission::all(array("user_id = ?" => $this->user->id), array("assignment_id", "response"));
+
+        $result = array();
+        foreach ($assignments as $a) {
+            foreach ($courses as $c) {
+                if ($c->id == $a->course_id) {
+                    $course = $c;
+                    break;
+                }
+            }
+
+            $submitted = false;
+            foreach ($submissions as $s) {
+                if ($s->assignment_id == $a->id) {
+                    $submitted = true;
+                    break;
+                }
+            }
+            $result[] = array(
+                "title" => $a->title,
+                "description" => substr($a->description, 0, 100),
+                "deadline" => $a->deadline,
+                "id" => $a->id,
+                "course" => $course->title,
+                "submitted" => $submitted
+            );
+        }
+        $result = ArrayMethods::toObject($result);
+
+        $view->set("assignments", $result);
+
     }
 
     /**
