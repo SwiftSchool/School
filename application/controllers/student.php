@@ -47,7 +47,7 @@ class Student extends School {
         $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
         $classroom = Classroom::first(array("id = ?" => $enrollment->classroom_id));
         $grade = Grade::first(array("id = ?" => $classroom->grade_id));
-        $courses = Course::all(array("grade_id = ?" => $classroom->grade_id));
+        $courses = Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id"));
 
         $session->set('Student:$enrollment', $enrollment)
                 ->set('Student:$classroom', $classroom)
@@ -432,6 +432,65 @@ class Student extends School {
             ++$i;
         }
         echo json_encode($results);
+    }
+
+    /**
+     * @before _secure, _student
+     */
+    public function result() {
+        $this->setSEO(array("title" => "Result | Student"));
+        $view = $this->getActionView();
+        $session = Registry::get("session");
+
+        $classroom = $session->get('Student:$classroom');
+        $courses = $session->get('Student:$courses');
+        
+        $course_id = RequestMethods::post("course");
+        if (!$course_id) {
+            $course_id = $courses[0]->id;
+            $subject = $courses[0]->title;
+        } else {
+            foreach ($courses as $c) {
+                if ($c->id == $course_id) {
+                    $subject = $c->title;
+                    break;                    
+                }
+            }
+        }
+        $exams = \Exam::all(array("course_id = ?" => $course_id), array("year", "type", "id"));
+
+        $result = array();
+        foreach ($exams as $e) {
+            $whole_class = \ExamResult::all(array("exam_id = ?" => $e->id), array("marks", "user_id"));
+            
+            $total = 0; $highest = -1; $count = 0; $user_marks = 0;
+            foreach ($whole_class as $w_c) {
+                $total += $w_c->marks;
+                if ((int) $w_c->marks > $highest) {
+                    $highest = (int) $w_c->marks;
+                }
+
+                if ($w_c->user_id == $this->user->id) {
+                    $user_marks = (int) $w_c->marks;
+                }
+
+                ++$count;
+            }
+            $result[] = array(
+                "type" => $e->type,
+                "year" => $e->year,
+                "exam_id" => $e->id,
+                "marks" => $user_marks,
+                "highest" => $highest,
+                "average" => $total/$count
+            );
+        }
+        $result = ArrayMethods::toObject($result);
+
+        $view->set("subject", $subject)
+            ->set("results", $result)
+            ->set("courses", $courses);
+
     }
 
     /**

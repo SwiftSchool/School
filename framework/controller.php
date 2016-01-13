@@ -168,13 +168,15 @@ namespace Framework {
                                                 } elseif (is_a($value, 'Framework\Model')) {
                                                     $obj[$keys][] = $value->getJsonData();
                                                 } else {
-                                                    $obj[$keys] = $value;
+                                                    $obj[$keys][] = $value;
                                                 }
                                             } else{
                                                 $obj[$keys] = $values;
                                             }
                                         }
                                         break;
+                                    case 'string':
+                                        $obj[$keys] = $values;
                                 }
                             }
                         }
