@@ -40,6 +40,7 @@ class Student extends School {
 	 */
 	public function index() {
 		$this->setSEO(array("title" => "Students | Dashboard"));
+        $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
 
         $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
@@ -366,7 +367,8 @@ class Student extends School {
                 "start" => $r["date"] . "T00:00:00",
                 "end" => $r["date"] . "T23:59:59",
                 "allDay" => true,
-                "className" => "attendance"
+                "className" => "attendance",
+                "color" => ($r["presence"]) ? "green" : "red"
             );
             ++$i;
         }
