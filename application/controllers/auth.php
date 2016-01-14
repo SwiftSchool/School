@@ -10,26 +10,57 @@ use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 
 class Auth extends Controller {
+
+    public function __construct($options = array()) {
+        parent::__construct($options);
+
+        $headers = getallheaders();
+        if (isset($headers["X-Access-Token"])) {
+            $type = strtolower($headers["X-App"]);
+            $meta = Meta::first(array("property = ?" => "user", "meta_key = ?" => $type."-app", "meta_value = ?" => $headers["X-Access-Token"]), array("property_id"));
+            if ($meta) {
+                $this->_appLogin($meta, $type);
+            }
+        }
+    }
+
+    /**
+     * Login the user if the request if from App
+     */
+    protected function _appLogin($meta, $type) {
+        $session = Registry::get("session");
+        $user = User::first(array("id = ?" => $meta->property_id));
+        $this->setUser($user);
+        
+        switch ($type) {
+            case 'student':
+                $scholar = Scholar::first(array("user_id = ?" => $user->id));
+                $session->set("scholar", $scholar);
+                $organization = Organization::first(array("id = ?" => $scholar->organization_id));
+                break;
+            
+            case 'teacher':
+                $educator = Educator::first(array("user_id = ?" => $user->id));
+                $session->set("educator", $educator);
+                $organization = Organization::first(array("id = ?" => $educator->organization_id));
+                break;
+        }
+        $session->set("organization", $organization);
+    }
     
     public function login() {
         $this->setSEO(array("title" => "Login"));
         $view = $this->getActionView();
         $return = $this->_checkLogin();
 
-        if ($return) {
-            if (isset($return["error"])) {
-                $view->set("error", $return["error"]);
-            } elseif (isset($return["success"])) {
-                $session = Registry::get("session");
-                $view->set("success", $return["success"]);
-                
-                if ($session->get("educator")) {
-                    $view->set("educator", $session->get("educator"));
-                } elseif ($session->get("scholar")) {
-                    $view->set("scholar", $session->get("scholar"));
-                }
-            }
+        $data = array();
+
+        if (isset($return["error"])) {
+            $data["error"] = $return["error"];
+        } elseif (isset($return["success"])) {
+            $data = $return;
         }
+        $view->set($data);
     }
 
     protected function _checkLogin() {
@@ -59,8 +90,9 @@ class Auth extends Controller {
                 
                 $organization = Organization::first(array("id = ?" => $scholar->organization_id));
                 $session->set('organization', $organization);
-                if ($headers["X-Student-App"]) {
-                    return array("success" => true);
+                if (isset($headers["X-Student-App"])) {
+                    $meta = $this->_meta($user, "student");
+                    return array("success" => true, "meta" => $meta, "scholar" => $scholar);
                 } else {
                     self::redirect("/student");
                 }
@@ -78,19 +110,18 @@ class Auth extends Controller {
                 
                 $organization = Organization::first(array("id = ?" => $educator->organization_id));
                 $session->set('organization', $organization);
-                if ($headers["X-Teacher-App"]) {
-                    return array("success" => true);
+                if (isset($headers["X-Teacher-App"])) {
+                    $meta = $this->_meta($user, "teacher");
+                    return array("success" => true, "meta" => $meta, "educator" => $educator);
                 } else {
                     self::redirect("/teacher");
                 }
             }
 
-            return array("error" => "Something went wrong please try later");
-
+            return array("error" => "Something went wrong please try again later");
         } else {
-            return null;
-        }
-        
+            return array("error" => "Invalid Request");
+        }   
     }
 
     /**
@@ -184,5 +215,22 @@ class Auth extends Controller {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Sets the meta for app login
+     */
+    private function _meta($user, $app) {
+        $meta = Meta::first(array("property = ?" => "user", "property_id = ?" => $user->id, "meta_key = ?" => $app."-app"));
+        if (!$meta) {
+            $meta = new Meta(array(
+                "property" => "user",
+                "property_id" => $user->id,
+                "meta_key" => $app. "-app",
+                "meta_value" => Markup::uniqueString(44)
+            ));
+            $meta->save();
+        }
+        return $meta;
     }
 }
