@@ -243,7 +243,7 @@ class Student extends School {
         $classroom = $session->get('Student:$classroom');
         $courses = $session->get('Student:$courses');
 
-        $course_id = RequestMethods::post("course");
+        $course_id = RequestMethods::post("course", $course_id);
         if ($course_id) {
             $assignments = \Assignment::all(array("course_id = ?" => $course_id, "live = ?" => true));
         } else {
@@ -260,20 +260,23 @@ class Student extends School {
                 }
             }
 
-            $submitted = false;
+            $submitted = false; $filename = null;
             foreach ($submissions as $s) {
                 if ($s->assignment_id == $a->id) {
+                    $filename = $s->response;
                     $submitted = true;
                     break;
                 }
             }
+            
             $result[] = array(
                 "title" => $a->title,
                 "description" => substr($a->description, 0, 100),
                 "deadline" => $a->deadline,
                 "id" => $a->id,
                 "course" => $course->title,
-                "submitted" => $submitted
+                "submitted" => $submitted,
+                "filename" => $filename
             );
         }
         $result = ArrayMethods::toObject($result);
