@@ -442,6 +442,15 @@ class Student extends School {
     /**
      * @before _secure, _student
      */
+    public function attendances() {
+        $this->setSEO(array("title" => "Attendance | Student"));
+        $view = $this->getActionView();
+        $this->getLayoutView()->set("cal", true);
+    }
+
+    /**
+     * @before _secure, _student
+     */
     public function result($course_id = null) {
         $this->setSEO(array("title" => "Result | Student"));
         $view = $this->getActionView();

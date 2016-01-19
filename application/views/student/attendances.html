@@ -1,47 +1,18 @@
+{include events/modals/display_event.html}
 <div class="container">
     <div class="page-section">
         <div class="row">
             <div class="col-md-9">
-            	<div class="row">
-	            	<div class="container">
-	            		<form class="form form-inline" method="post">
-	            			<div class="form-group">
-	            				<label for="subject">Subject</label>
-	            				<select class="form-control" name="course">
-	            					{foreach $c in $courses}
-	            					<option value="{echo $c->id}">{echo $c->title}</option>
-	            					{/foreach}
-	            				</select>
-	            			</div>
-	            			<button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Go</button>
-	            		</form>
-	            	</div>
-            		
-            	</div><br>
                 <div class="row">
-                	<table class="panel panel-default table">
-                		<thead>
-                			<tr>
-                				<th>Subject: {echo $subject}</th>
-                			</tr>
-                			<tr>
-                				<th>Exam</th>
-                				<th>Marks</th>
-                				<th>Class Average</th>
-                				<th>Highest</th>
-                			</tr>
-                		</thead>
-                		<tbody>
-                			{foreach $r in $results}
-                			<tr>
-                				<td>{echo $r->type} - {echo $r->year}</td>
-                				<td>{echo $r->marks}</td>
-                				<td>{echo $r->average}</td>
-                				<td>{echo $r->highest}</td>
-                			</tr>
-                			{/foreach}
-                		</tbody>
-                	</table>
+                    <h2 class="page-header">Attendance</h2>
+                    <div id="calendar" class="panel"></div>
+                </div>
+                <div class="row">
+                    <blockquote>
+                        <p><span class="label label-success">Present</span>
+                        <span class="label label-danger">Absent</span>
+                        <span class="label label-info">Event</span></p>
+                    </blockquote>
                 </div>
             </div>
             <div class="col-md-3">
