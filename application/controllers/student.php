@@ -269,17 +269,18 @@ class Student extends School {
                 }
             }
             
-            $result[] = array(
+            $data = array(
                 "title" => $a->title,
-                "description" => substr($a->description, 0, 100),
+                "description" => $a->description,
                 "deadline" => $a->deadline,
                 "id" => $a->id,
                 "course" => $course->title,
                 "submitted" => $submitted,
                 "filename" => $filename
             );
+            $data = ArrayMethods::toObject($data);
+            $result[] = $data;
         }
-        $result = ArrayMethods::toObject($result);
 
         $view->set("assignments", $result)
             ->set("courses", $courses);
@@ -308,7 +309,7 @@ class Student extends School {
             return;
         }
 
-        $submission = \Submission::first(array("user_id = ?" => $this->user->id));
+        $submission = \Submission::first(array("user_id = ?" => $this->user->id, "assignment_id = ?" => $assgmt_id));
         if ($submission) {
             $view->set("success", "Assignment already submitted! Your response will be updated");
         }
@@ -319,7 +320,7 @@ class Student extends School {
                 return;
             }
 
-            $response = $this->_upload("response", array("type" => "assignments", "mimes" => "doc|docx|pdf"));
+            $response = $this->_upload("response", array("type" => "assignments", "mimes" => "png|jpe?g|bmp|gif"));
             if (!$response) {
                 $view->set("success", "File Upload failed!");
                 return;
@@ -490,7 +491,7 @@ class Student extends School {
 
                 ++$count;
             }
-            $result[] = array(
+            $data = array(
                 "type" => $e->type,
                 "year" => $e->year,
                 "exam_id" => $e->id,
@@ -498,8 +499,9 @@ class Student extends School {
                 "highest" => $highest,
                 "average" => $total/$count
             );
+            $data = ArrayMethods::toObject($data);
+            $result[] = $data;
         }
-        $result = ArrayMethods::toObject($result);
 
         $view->set("subject", $subject)
             ->set("results", $result)

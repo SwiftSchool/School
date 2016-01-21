@@ -73,4 +73,13 @@ class Assignment extends Shared\Model {
      */
     protected $_deadline;
 
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 255
+     * @index
+     */
+    protected $_attachment;    
+
 }

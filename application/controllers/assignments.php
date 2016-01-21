@@ -29,6 +29,8 @@ class Assignments extends Teacher {
 		$view->set("classroom", $classroom);
 		
 		if (RequestMethods::post("action") == "assignment") {
+			$attachment = $this->_upload("attachment", "assignments");
+			
 			$assignment = new \Assignment(array(
 				"title" => RequestMethods::post("title"),
 				"description" => RequestMethods::post("description"),
@@ -36,7 +38,8 @@ class Assignments extends Teacher {
 				"user_id" => $this->user->id,
 				"organization_id" => $this->organization->id,
 				"classroom_id" => $classroom_id,
-				"course_id" => $course_id
+				"course_id" => $course_id,
+				"attachment" => $attachment
 			));
 
 			if (!$assignment->validate()) {
@@ -44,7 +47,7 @@ class Assignments extends Teacher {
 				return;
 			}
 			$assignment->save();
-			$view->set("success", "Assignment Saved successfully!!");
+			$view->set("success", "Assignment Created successfully!!");
 		}
 	}
 
@@ -68,8 +71,9 @@ class Assignments extends Teacher {
 			$grade = \Grade::first(array("id = ?" => $course->grade_id), array("title"));
 			$classroom = \Classroom::first(array("id = ?" => $a->classroom_id), array("section"));
 
-			$results[] = array(
+			$data = array(
 				"id" => $a->id,
+				"course" => $course->title,
 				"title" => $a->title,
 				"class" => $grade->title,
 				"live" => $a->live,
@@ -79,8 +83,9 @@ class Assignments extends Teacher {
 				"course_id" => $a->course_id,
 				"classroom_id" => $a->classroom_id
 			);
+			$data = ArrayMethods::toObject($data);
+			$results[] = $data;
 		}
-		$results = ArrayMethods::toObject($results);
 		$view->set("assignments", $results);
 	}
 

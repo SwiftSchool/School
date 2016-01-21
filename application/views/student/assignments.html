@@ -37,8 +37,8 @@
                                 <td>{echo $i}</td>
                                 <td>{echo $a->course}</td>
                                 <td>{echo $a->title}</td>
-                                <td>{echo $a->description}...</td>
-                                <td>{echo $a->deadline}</td>
+                                <td>{echo substr($a->description, 0, 100)}...</td>
+                                <td>{echo Framework\StringMethods::only_date($a->deadline)}</td>
                                 {script $submitted = $a->submitted}
                                 <td>
                                     {if $submitted}

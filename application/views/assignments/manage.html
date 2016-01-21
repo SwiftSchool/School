@@ -9,6 +9,7 @@
                             <thead>
                                 <tr>
                                     <th>S.No</th>
+                                    <th>Subject</th>
                                     <th>Title</th>
                                     <th>Classroom</th>
                                     <th>Status</th>
@@ -21,6 +22,7 @@
                                 {script $i = 1} {foreach $a in $assignments}
                                 <tr>
                                     <td>{echo $i}</td>
+                                    <td>{echo $a->course}</td>
                                     <td>{echo $a->title}</td>
                                     <td>{echo $a->class . " -  ". $a->section}</td>
                                     {script $status = $a->live}
@@ -31,11 +33,11 @@
                                         <span class="label-label-warning">Disapproved</span>
                                         {/else}
                                     </td>
-                                    <td>{echo $a->deadline}</td>
+                                    <td>{echo Framework\StringMethods::only_date($a->deadline)}</td>
                                     {script $submissions = Submission::count(array("assignment_id = ?" => $a->id))}
                                     <td><a class="badge" href="/assignments/submissions/{echo $a->id}">{echo $submissions}</a></td>
                                     <td>
-                                        <a href="/assignments/create/{echo $a->course_id}/{echo $a->classroom_id}"><i class="fa fa-plus"></i> Create</a>
+                                        <a href="/assignments/create/{echo $a->course_id}/{echo $a->classroom_id}"><i class="fa fa-plus"></i> Create Another</a>
                                     </td>
                                 </tr>
                                 {script ++$i} {/foreach}
