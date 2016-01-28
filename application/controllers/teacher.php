@@ -189,12 +189,13 @@ class Teacher extends School {
         foreach ($grades as $g) {
             $storedGrades[$g->id] = $g->title;
         }
+        $courses = $this->_courses();
 
         $result = array();
         foreach ($teaches as $t) {
             $grade = $storedGrades[$t->grade_id];
             $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("id", "section", "year"));
-            $course = \Course::first(array("id = ?" => $t->course_id), array("title"));
+            $course = $courses[$t->course_id];
             $asgmnt = \Assignment::count(array("course_id = ?" => $t->course_id));
             
             $data = array(
@@ -258,6 +259,7 @@ class Teacher extends School {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
+        $course_id = RequestMethods::post("course", $course_id);
         if (!$course_id) {
             if ($c = $session->get('Teacher:$courses')) {
                 $teach = $c[0];
@@ -284,11 +286,15 @@ class Teacher extends School {
         for ($i = 1; $i <= 10; $i++) {
             $scale[] = $i;
         }
+
+        $courses = $this->_courses();
         $view->set(array(
             "students" => $enrollments,
             "class" => $klass->title . " - " . $classroom->section,
             "course" => $course->title,
-            "scale" => $scale
+            "scale" => $scale,
+            "courses" => $courses,
+            "course_id" => $teach->course_id
         ));
     }
 
@@ -365,6 +371,7 @@ class Teacher extends School {
                     }
                     $perf->update($where, array('$set' => array('track' => $track)));
                 } else {
+                    $where = array_merge($where, array('classroom_id' => (int) $teach->classroom_id));
                     $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
                     $doc = array_merge($where, array('track' => $track));
                     $perf->insert($doc);
@@ -434,6 +441,32 @@ class Teacher extends School {
         if (!$this->organization || !$this->educator) {
             self::redirect("/");
         }
+    }
+
+    /**
+     * Finds all the courses the teacher teaches
+     */
+    protected function _courses() {
+        $session = Registry::get("session");
+        
+        if (!$session->get('Teacher:$courses')) {
+            $teaches = Teach::all(array("user_id = ?" => $this->user->id), array("course_id"));
+            $session->set('Teacher:$courses', $teaches);    
+        } else {
+            $teaches = $session->get('Teacher:$courses');
+        }
+        
+        $courses = array();
+        foreach ($teaches as $t) {
+            $courses[] = $t->course_id;
+        }
+        $courses = array_unique($courses);
+
+        $setCourses = array();
+        foreach ($courses as $c) {
+            $setCourses[$c] = Course::first(array("id = ?" => $c), array("id", "title", "grade_id"));
+        }
+        return $setCourses;
     }
 
 }

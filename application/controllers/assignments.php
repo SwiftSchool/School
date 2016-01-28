@@ -61,22 +61,38 @@ class Assignments extends Teacher {
 
 		$where = array("user_id = ?" => $this->user->id);
 		$fields = array("title", "created", "course_id", "classroom_id", "deadline", "live", "id");
+
+		$course_id = RequestMethods::post("course", $course_id);
 		if ($course_id) {
 			$assignments = \Assignment::all(array_merge($where, array("course_id = ?" => $course_id)), $fields);
 		} else {
 			$assignments = \Assignment::all($where, $fields);
 		}
 		$results = array();
+
+		$grades = Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
+		$storedGrades = array();
+		foreach ($grades as $g) {
+			$storedGrades[$g->id] = $g->title;
+		}
+
+		$courses = $this->_courses();
+		$classrooms = array();
 		foreach ($assignments as $a) {
-			$course = \Course::first(array("id = ?" => $a->course_id), array("title", "grade_id"));
-			$grade = \Grade::first(array("id = ?" => $course->grade_id), array("title"));
-			$classroom = \Classroom::first(array("id = ?" => $a->classroom_id), array("section"));
+			$course = $courses[$a->course_id];
+			$grade = $storedGrades[$course->grade_id];
+
+			if (!isset($classrooms[$a->classroom_id])) {
+				$classroom = $classrooms[$a->classroom_id] = \Classroom::first(array("id = ?" => $a->classroom_id), array("section"));
+			} else {
+				$classroom = $classrooms[$a->classroom_id];
+			}
 
 			$data = array(
 				"id" => $a->id,
 				"course" => $course->title,
 				"title" => $a->title,
-				"class" => $grade->title,
+				"class" => $grade,
 				"live" => $a->live,
 				"section" => $classroom->section,
 				"deadline" => $a->deadline,
@@ -87,7 +103,9 @@ class Assignments extends Teacher {
 			$data = ArrayMethods::toObject($data);
 			$results[] = $data;
 		}
-		$view->set("assignments", $results);
+		$view->set("assignments", $results)
+			->set("courses", $courses)
+			->set("course_id", $course_id);
 	}
 
 	/**

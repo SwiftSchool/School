@@ -519,6 +519,18 @@ class Student extends School {
     }
 
     /**
+     * @before _test, _student
+     */
+    public function performance($course_id = null) {
+        if (!$course_id) {
+            $c = $session->get('Student:$courses');
+            $course = $c[0];
+        } else {
+            $course = Course::first(array("id = ?" => $course_id));
+        }
+    }
+
+    /**
      * @protected
      */
     public function _student() {
