@@ -225,20 +225,6 @@ class Teacher extends School {
 
         $classroom = Classroom::first(array("educator_id = ?" => $this->educator->id), array("id", "section", "grade_id"));
         $grade = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
-        $enrollments = Enrollment::all(array("classroom_id = ?" => $classroom->id), array("user_id"));
-
-        $students = array();
-        foreach ($enrollments as $e) {
-            $usr = User::first(array("id = ?" => $e->user_id), array("name"));
-            $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));
-
-            $students[] = array(
-                "user_id" => $e->user_id,
-                "name" => $usr->name,
-                "roll_no" => $scholar->roll_no
-            );
-        }
-        $students = ArrayMethods::toObject($students);
 
         $response = $this->_saveAttendances($classroom);
         if (isset($response["success"])) {
@@ -246,8 +232,31 @@ class Teacher extends School {
         } elseif (isset($response["saved"])) {
             $view->set("message", "Attendance Already saved for today");
         }
+
+        $students = $this->_findEnrollments($classroom->id, array('table' => 'attendance'));
         $view->set("class", $grade->title . " - ". $classroom->section);
         $view->set("students", $students);
+    }
+
+    /**
+     * Grade the students for each week
+     * @before _secure, _teacher
+     */
+    public function weeklyStudentsPerf($course_id) {
+        $this->setSEO(array("title" => "Manage Your Courses | Teacher"));
+        $view = $this->getActionView();
+
+        $teach = Teach::first(array("course_id = ?" => $course_id, "user_id = ?" => $this->user->id));
+        if (!$teach) {
+            self::redirect("/404");
+        }
+
+        $return = $this->_weeklyStudentsPerf($teach);
+        if ($return['success']) {
+            $view->set('success', 'Weekly performance of students saved!!');
+        }
+        $enrollments = $this->_findEnrollments($teach->classroom_id, array('table' => 'performance', 'teach' => $teach));
+        $view->set("students", $enrollments);
     }
 
     /**
@@ -289,6 +298,98 @@ class Teacher extends School {
                 return array("empty" => true);
             }
         }
+    }
+
+    protected function _weeklyStudentsPerf($teach) {
+        $mongo = Registry::get("MongoDB");
+        $perf = $mongo->performance;
+
+        if (RequestMethods::post("action") == "grade") {
+            $performances = $this->reArray($_POST);
+
+            $date = new DateTime(date('Y-m-d'));
+            $week = $date->format("W");
+            $yr = date('Y');
+
+            foreach ($performances as $p) {
+                if (!is_numeric($p["user_id"]) || !is_numeric($p["grade"])) {
+                    return false;
+                }
+
+                $where = array('user_id' => (int) $p['user_id'], 'course_id' => (int) $teach->course_id, 'teacher_id' => (int) $this->user->id, 'year' => $yr);
+                $record = $perf->findOne($where);
+                
+                // if record exists then we need to loop for the performance tracks
+                // to update grade for this week
+                if (isset($record)) {
+                    $track = array();
+                    foreach ($record['track'] as $r) {
+                        if ($week == $r['week']) {
+                            $track[] = array('week' => $week, 'grade' => $p['grade']);
+                        } else {
+                            $track[] = $r;
+                        }
+                    }
+                    $perf->update($where, array('$set' => array('track' => $track)));
+                } else {
+                    $track = array('week' => $week, 'grade' => $p['grade']);
+                    $doc = array_merge($where, array('track' => $track));
+                    $perf->insert($doc);
+                }
+            }
+            return array('success' => true);
+        } else {
+            return array('success' => false);
+        }
+    }
+
+    protected function _findEnrollments($classroom_id, $opts = array()) {
+        if ($opts["table"]) {
+            $mongo = Registry::get("MongoDB");
+            $t = $mongo->$opts["table"];
+        }
+        $enrollments = Enrollment::all(array("classroom_id = ?" => $classroom_id), array("user_id"));
+
+        $students = array(); $yr = date('Y');
+        foreach ($enrollments as $e) {
+            $usr = User::first(array("id = ?" => $e->user_id), array("name"));
+            $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));
+
+            $extra = array();
+            if ($opts["table"]) {
+                switch ($opts["table"]) {
+                    case 'attendance':
+                        $record = $t->findOne(array('date' => date('Y-m-d'), 'user_id' => (int) $e->user_id));
+                        if (isset($record)) {
+                            $extra = array('presence' => $record["presence"]);    
+                        }
+                        break;
+                    
+                    case 'performance':
+                        $record = $t->findOne(array('user_id' => (int) $e->user_id, 'teacher_id' => (int) $this->user->id, 'course_id' => (int) ($opts["teach"]->course_id), 'year' => $yr));
+                        if (isset($record)) {
+                            $date = new DateTime(date('Y-m-d'));
+                            $week = $date->format("W");
+                            foreach ($record['track'] as $r) {
+                                if ($week == $r['week']) {
+                                    $extra = array('grade' => $r['grade']);
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            $data = array(
+                "user_id" => $e->user_id,
+                "name" => $usr->name,
+                "roll_no" => $scholar->roll_no
+            );
+            $data = array_merge($data, $extra);
+            $data = ArrayMethods::toObject($data);
+            $students[] = $data;
+        }
+        return $students;
     }
 
     /**

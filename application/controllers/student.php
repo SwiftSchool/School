@@ -271,6 +271,7 @@ class Student extends School {
                 "course" => $course->title,
                 "submitted" => $submit["submission"],
                 "filename" => $submit["file"],
+                "submission_id" => $submit["submission_id"],
                 "marks" => $submit["grade"],
                 "remarks" => $submit["remarks"],
                 "status" => $submit["status"]
@@ -535,7 +536,8 @@ class Student extends School {
             "file" => null,
             "status" => null,
             "remarks" => null,
-            "grade" => null
+            "grade" => null,
+            "submission_id" => null
         );
         
         foreach ($submissions as $s) {
@@ -545,6 +547,7 @@ class Student extends School {
                 $submit["status"] = $s->live ? "Accepted" : "Rejected";
                 $submit["remarks"] = $s->remarks;
                 $submit["grade"] = $s->grade;
+                $submit["submission_id"] = $s->id;
                 break;
             }
         }

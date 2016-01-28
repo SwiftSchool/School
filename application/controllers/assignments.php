@@ -112,6 +112,7 @@ class Assignments extends Teacher {
 
 			$submissions[] = array(
 				"student" => $usr->name,
+				"submission_id" => $f->id,
 				"student_roll_no" => $student->roll_no,
 				"response" => $f->response,
 				"live" => $f->live,
@@ -145,12 +146,14 @@ class Assignments extends Teacher {
 	/**
 	 * @before _secure, _teacher
 	 */
-	public function gradeIt($assignment_id, $user_id) {
+	public function gradeIt($submission_id) {
 		$this->setSEO(array("title" => "Grade assignments | Teacher"));
 		$view = $this->getActionView();
 
-		$assignment = Assignment::first(array("id = ?" => $assignment_id), array("id", "user_id"));
-		if (!$assignment || $assignment->user_id != $this->user->id) {
+		$submission = Submission::first(array("id = ?" => $submission_id));
+		$assignment = Assignment::first(array("id = ?" => $submission->assignment_id), array("id", "user_id"));
+		
+		if (!$submission || !$assignment || $assignment->user_id != $this->user->id) {
 			self::redirect("/404");
 		}
 
@@ -159,7 +162,6 @@ class Assignments extends Teacher {
 		if (RequestMethods::post("action") == "saveMarks") {
 			$submission->grade = RequestMethods::post("grade");
 			$submission->remarks = RequestMethods::post("remarks");
-			$submission->live = (bool) RequestMethods::post("approve");
 
 			if ($submission->validate()) {
 				$submission->save();
