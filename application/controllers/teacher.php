@@ -182,16 +182,23 @@ class Teacher extends School {
         $this->setSEO(array("title" => "Manage Your Courses | Teacher"));
         $view = $this->getActionView();
 
-        $teaches = \Teach::all(array("user_id = ?" => $this->educator->user_id, "live = ?" => true));
+        $teaches = \Teach::all(array("user_id = ?" => $this->user->id, "live = ?" => true));
+        $grades = \Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
         
+        $storedGrades = array();
+        foreach ($grades as $g) {
+            $storedGrades[$g->id] = $g->title;
+        }
+
         $result = array();
         foreach ($teaches as $t) {
-            $grade = \Grade::first(array("id = ?" => $t->grade_id), array("title"));
+            $grade = $storedGrades[$t->grade_id];
             $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("id", "section", "year"));
             $course = \Course::first(array("id = ?" => $t->course_id), array("title"));
             $asgmnt = \Assignment::count(array("course_id = ?" => $t->course_id));
-            $result[] = array(
-                "grade" => $grade->title,
+            
+            $data = array(
+                "grade" => $grade,
                 "grade_id" => $t->grade_id,
                 "section" => $class->section,
                 "course" => $course->title,
@@ -199,8 +206,9 @@ class Teacher extends School {
                 "classroom_id" => $class->id,
                 "assignments" => $asgmnt
             );
+            $data = ArrayMethods::toObject($data);
+            $result[] = $data;
         }
-        $result = ArrayMethods::toObject($result);
 
         $view->set("courses", $result);
     }
