@@ -188,13 +188,16 @@ class Auth extends Controller {
      */
     protected function _upload($name, $opts = array()) {
         $type = isset($opts["type"]) ? $opts["type"] : "images";
+        /*** Create Directory if not present ***/
+        $path = APP_PATH . "/public/assets/uploads/{$type}";
+        exec("mkdir -p $path");
+        $path .= "/";
+
+        $filename = Markup::uniqueString() . ".{$extension}";
+
+        // For normal file upload via browser
         if (isset($_FILES[$name])) {
             $file = $_FILES[$name];
-            
-            /*** Create Directory if not present ***/
-            $path = APP_PATH . "/public/assets/uploads/{$type}";
-            exec("mkdir -p $path");
-            $path .= "/";
 
             $extension = pathinfo($file["name"], PATHINFO_EXTENSION);
             if (empty($extension)) {
@@ -206,11 +209,16 @@ class Auth extends Controller {
                     return false;
                 }
             }
-            $filename = Markup::uniqueString() . ".{$extension}";
+            
             if (move_uploaded_file($file["tmp_name"], $path . $filename)) {
                 return $filename;
             } else {
                 return FALSE;
+            }
+        // for app upload
+        } elseif ($f = RequestMethods::post($name)) {
+            if (file_put_contents($filename, base64_decode($f))) {
+                return $filename;
             }
         } else {
             return false;

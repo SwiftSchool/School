@@ -36,7 +36,7 @@ class Student extends School {
     }
 
 	/**
-	 * @before _secure, _student
+	 * @before _test, _student
 	 */
 	public function index() {
 		$this->setSEO(array("title" => "Students | Dashboard"));
@@ -61,7 +61,7 @@ class Student extends School {
 	}
 
     /**
-     * @before _secure
+     * @before _test
      */
 	public function profile() {
 		$this->setSEO(array("title" => "Students | Profile"));
@@ -233,7 +233,7 @@ class Student extends School {
      *
      * @param int $course_id Finds assignments only for the given course (Optional)
      * else finds all assignments for the student's classroom
-     * @before _secure, _student
+     * @before _test, _student
      */
     public function assignments($course_id = null) {
         $this->setSEO(array("title" => "Assignments | Student"));
@@ -249,7 +249,7 @@ class Student extends School {
         } else {
             $assignments = \Assignment::all(array("classroom_id = ?" => $classroom->id, "live = ?" => true));
         }
-        $submissions = \Submission::all(array("user_id = ?" => $this->user->id), array("assignment_id", "response"));
+        $submissions = \Submission::all(array("user_id = ?" => $this->user->id));
 
         $result = array();
         foreach ($assignments as $a) {
@@ -260,23 +260,20 @@ class Student extends School {
                 }
             }
 
-            $submitted = false; $filename = null;
-            foreach ($submissions as $s) {
-                if ($s->assignment_id == $a->id) {
-                    $filename = $s->response;
-                    $submitted = true;
-                    break;
-                }
-            }
+            $submit = $this->_submission($submissions, $a);
             
+            // Only check submit params only if "submission" key is true
             $data = array(
                 "title" => $a->title,
                 "description" => $a->description,
                 "deadline" => $a->deadline,
                 "id" => $a->id,
                 "course" => $course->title,
-                "submitted" => $submitted,
-                "filename" => $filename
+                "submitted" => $submit["submission"],
+                "filename" => $submit["file"],
+                "marks" => $submit["grade"],
+                "remarks" => $submit["remarks"],
+                "status" => $submit["status"]
             );
             $data = ArrayMethods::toObject($data);
             $result[] = $data;
@@ -288,7 +285,7 @@ class Student extends School {
     }
 
     /**
-     * @before _secure, _student
+     * @before _test, _student
      */
     public function submitAssignment($assgmt_id) {
         $assignment = \Assignment::first(array("id = ?" => $assgmt_id));
@@ -416,7 +413,7 @@ class Student extends School {
     }
 
     /**
-     * @before _secure, _student
+     * @before _test, _student
      */
     public function attendance() {
         $this->noview();
@@ -441,7 +438,7 @@ class Student extends School {
     }
 
     /**
-     * @before _secure, _student
+     * @before _test, _student
      */
     public function attendances() {
         $this->setSEO(array("title" => "Attendance | Student"));
@@ -450,7 +447,7 @@ class Student extends School {
     }
 
     /**
-     * @before _secure, _student
+     * @before _test, _student
      */
     public function result($course_id = null) {
         $this->setSEO(array("title" => "Result | Student"));
@@ -509,7 +506,7 @@ class Student extends School {
     }
 
     /**
-     * @before _secure, _student
+     * @before _test, _student
      */
     public function courses() {
         $this->setSEO(array("title" => "Result | Student"));
@@ -530,6 +527,50 @@ class Student extends School {
         if (!$this->scholar) {
             self::redirect("/");
         }
+    }
+
+    protected function _submission($submissions, $a) {
+        $submit = array(
+            "submission" => false,
+            "file" => null,
+            "status" => null,
+            "remarks" => null,
+            "grade" => null
+        );
+        
+        foreach ($submissions as $s) {
+            if ($s->assignment_id == $a->id) {
+                $submit["file"] = $s->response;
+                $submit["submission"] = true;
+                $submit["status"] = $s->live ? "Accepted" : "Rejected";
+                $submit["remarks"] = $s->remarks;
+                $submit["grade"] = $s->grade;
+                break;
+            }
+        }
+        return $submit;
+    }
+
+    public function _test() {
+        $user = User::first(array("username = ?" => "swift_5"));
+        $this->setUser($user);
+
+        $scholar = Scholar::first(array("user_id = ?" => $user->id));
+        $organization = Organization::first(array("id = ?" => $scholar->organization_id));
+
+        $session = Registry::get("session");
+        $session->set("scholar", $scholar);
+        $session->set("organization", $organization);
+
+        $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
+        $classroom = Classroom::first(array("id = ?" => $enrollment->classroom_id));
+        $grade = Grade::first(array("id = ?" => $classroom->grade_id));
+        $courses = Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id"));
+
+        $session->set('Student:$enrollment', $enrollment)
+                ->set('Student:$classroom', $classroom)
+                ->set('Student:$grade', $grade)
+                ->set('Student:$courses', $courses);
     }
 
 }

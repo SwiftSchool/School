@@ -36,4 +36,25 @@ class Submission extends Shared\Model {
      * @validate required, max(100)
      */
     protected $_response;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     *
+     * @value 5 (best), 1 (worst)
+     * @validate required, numeric, max(1), min(1)
+     */
+    protected $_grade;
+
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 255
+     *
+     * @validate max(255)
+     */
+    protected $_remarks;
 }

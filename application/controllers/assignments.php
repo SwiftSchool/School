@@ -29,6 +29,7 @@ class Assignments extends Teacher {
 		$view->set("classroom", $classroom);
 		
 		if (RequestMethods::post("action") == "assignment") {
+			$headers = getallheaders();
 			$attachment = $this->_upload("attachment", "assignments");
 			
 			$assignment = new \Assignment(array(
@@ -128,5 +129,44 @@ class Assignments extends Teacher {
 		$view->set("class", $klass);
 		$view->set("submissions", $submissions);
 		$view->set("assignment", $assignment);
+	}
+
+	/**
+	 * @before _secure
+	 */
+	public function result($assignment_id) {
+		$this->JSONView();
+		$view = $this->getActionView();
+
+		$result = Submission::first(array("assignment_id = ?" => $assignment_id, "user_id = ?" => $this->user->id));
+		$view->set("result", $result);
+	}
+
+	/**
+	 * @before _secure, _teacher
+	 */
+	public function gradeIt($assignment_id, $user_id) {
+		$this->setSEO(array("title" => "Grade assignments | Teacher"));
+		$view = $this->getActionView();
+
+		$assignment = Assignment::first(array("id = ?" => $assignment_id), array("id", "user_id"));
+		if (!$assignment || $assignment->user_id != $this->user->id) {
+			self::redirect("/404");
+		}
+
+		$submission = Submission::first(array("assignment_id = ?" => $assignment->id, "user_id = ?" => $user_id));
+
+		if (RequestMethods::post("action") == "saveMarks") {
+			$submission->grade = RequestMethods::post("grade");
+			$submission->remarks = RequestMethods::post("remarks");
+			$submission->live = (bool) RequestMethods::post("approve");
+
+			if ($submission->validate()) {
+				$submission->save();
+				$view->set("success", "Assignment successfully graded");
+			} else {
+				$view->set("errors", $submission->errors);
+			}
+		}
 	}
 }

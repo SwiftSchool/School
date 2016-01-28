@@ -28,6 +28,7 @@
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Deadline</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -40,9 +41,13 @@
                                 <td>{echo substr($a->description, 0, 100)}...</td>
                                 <td>{echo Framework\StringMethods::only_date($a->deadline)}</td>
                                 {script $submitted = $a->submitted}
+                                {if $submitted}
+                                <td class="text-success">Submitted :)</td>
+                                {/if} {else}
+                                <td class="text-danger">Not submitted !!</td>
+                                {/else}
                                 <td>
                                     {if $submitted}
-                                    <span class="label label-success">Submitted</span>
                                     <a href="{echo CDN}uploads/assignments/{echo $a->filename}" class="btn btn-info btn-xs" target="_blank"> View Response</a>
                                     {/if} {else}
                                     <a href="/student/submitAssignment/{echo $a->id}"><span class="label label-danger">SUBMIT NOW</span></a>
