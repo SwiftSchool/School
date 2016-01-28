@@ -3,7 +3,8 @@
         <div class="row">
             <div class="col-md-9">
                 <div class="row">
-                    <h3 class="page-heading">Attendance: {echo $class}</h3>
+                    <h3 class="page-heading">Weekly Performance: {echo $class}</h3>
+                    <h4>Subject: {echo $course}</h4>
                     <form action="" method="post">
                         {if isset($message)}
                         <div class="alert alert-info alert-dismissible fade in" role="alert">
@@ -25,9 +26,10 @@
                                     <td>{echo $s->name}</td>
                                     <td>{echo $s->roll_no}</td>
                                     <td class="form-group" style="width: 30%">
-                                        <select name="presence[]" class="form-control" required="">
-                                            <option value="1" {if isset($s->presence) && $s->presence === 1}selected=""{/if}>Present</option>
-                                            <option value="0" {if isset($s->presence) && $s->presence === 0}selected=""{/if}>Absent</option>
+                                        <select name="grade[]" class="form-control" required="">
+                                            {foreach $p in $scale}
+                                            <option value="{echo $p}" {if isset($s->grade) && $s->grade === $p}selected=""{/if}{elseif $p === 5}selected=""{/elseif}>{echo $p}</option>
+                                            {/foreach}
                                         </select>
                                     </td>
                                     <input type="hidden" name="user_id[]" value="{echo $s->user_id}">
@@ -35,7 +37,7 @@
                                 {/foreach}
                             </tbody>
                         </table>
-                        <input type="hidden" name="action" value="saveAttendance">
+                        <input type="hidden" name="action" value="grade">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
                     </form>
                 </div>

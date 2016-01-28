@@ -43,6 +43,9 @@ class Teacher extends School {
         $view = $this->getActionView();
 
         $courses = Teach::all(array("user_id = ?" => $this->user->id, "live = ?" => true));
+
+        $session = Registry::get("session");
+        $session->set('Teacher:$courses', $courses);
         $view->set("courses", $courses);
 	}
 
@@ -242,21 +245,43 @@ class Teacher extends School {
      * Grade the students for each week
      * @before _secure, _teacher
      */
-    public function weeklyStudentsPerf($course_id) {
-        $this->setSEO(array("title" => "Manage Your Courses | Teacher"));
+    public function weeklyStudentsPerf($course_id = null) {
+        $this->setSEO(array("title" => "Grade Students Weekly Performance | Teacher"));
         $view = $this->getActionView();
+        $session = Registry::get("session");
 
-        $teach = Teach::first(array("course_id = ?" => $course_id, "user_id = ?" => $this->user->id));
+        if (!$course_id) {
+            if ($c = $session->get('Teacher:$courses')) {
+                $teach = $c[0];
+            } else {
+                $teach = Teach::first(array("user_id = ?" => $this->user->id));
+            }
+        } else {
+            $teach = Teach::first(array("course_id = ?" => $course_id, "user_id = ?" => $this->user->id));
+        }
+
         if (!$teach) {
             self::redirect("/404");
         }
 
         $return = $this->_weeklyStudentsPerf($teach);
-        if ($return['success']) {
-            $view->set('success', 'Weekly performance of students saved!!');
-        }
+        $view->set("message", $return["message"]);
+
         $enrollments = $this->_findEnrollments($teach->classroom_id, array('table' => 'performance', 'teach' => $teach));
-        $view->set("students", $enrollments);
+        $classroom = Classroom::first(array("id = ?" => $teach->classroom_id), array("section", "grade_id"));
+        $klass = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
+        $course = Course::first(array("id = ?" => $teach->course_id), array("title"));
+
+        $scale = array();
+        for ($i = 1; $i <= 10; $i++) {
+            $scale[] = $i;
+        }
+        $view->set(array(
+            "students" => $enrollments,
+            "class" => $klass->title . " - " . $classroom->section,
+            "course" => $course->title,
+            "scale" => $scale
+        ));
     }
 
     /**
@@ -321,25 +346,25 @@ class Teacher extends School {
                 
                 // if record exists then we need to loop for the performance tracks
                 // to update grade for this week
+                $track = array();
                 if (isset($record)) {
-                    $track = array();
                     foreach ($record['track'] as $r) {
                         if ($week == $r['week']) {
-                            $track[] = array('week' => $week, 'grade' => $p['grade']);
+                            $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
                         } else {
                             $track[] = $r;
                         }
                     }
                     $perf->update($where, array('$set' => array('track' => $track)));
                 } else {
-                    $track = array('week' => $week, 'grade' => $p['grade']);
+                    $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
                     $doc = array_merge($where, array('track' => $track));
                     $perf->insert($doc);
                 }
             }
-            return array('success' => true);
+            return array('message' => 'Weekly performance of students saved!!');
         } else {
-            return array('success' => false);
+            return array('message' => null);
         }
     }
 
@@ -372,7 +397,7 @@ class Teacher extends School {
                             $week = $date->format("W");
                             foreach ($record['track'] as $r) {
                                 if ($week == $r['week']) {
-                                    $extra = array('grade' => $r['grade']);
+                                    $extra = array('grade' => (int) $r['grade']);
                                     break;
                                 }
                             }

@@ -531,14 +531,7 @@ class Student extends School {
     }
 
     protected function _submission($submissions, $a) {
-        $submit = array(
-            "submission" => false,
-            "file" => null,
-            "status" => null,
-            "remarks" => null,
-            "grade" => null,
-            "submission_id" => null
-        );
+        $submit = array("submission" => false, "file" => null, "status" => null, "remarks" => null, "grade" => null, "submission_id" => null);
         
         foreach ($submissions as $s) {
             if ($s->assignment_id == $a->id) {

@@ -24,7 +24,7 @@ class Teach extends Shared\Model {
      *
      * @validate required, numeric
      */
-    protected $_classroom_id;    
+    protected $_classroom_id;
 
     /**
      * @column
