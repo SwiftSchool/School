@@ -176,7 +176,9 @@ namespace Framework {
                                         }
                                         break;
                                     case 'string':
+                                    case 'integer':
                                         $obj[$keys] = $values;
+
                                 }
                             }
                         }

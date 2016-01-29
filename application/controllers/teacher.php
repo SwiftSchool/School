@@ -305,6 +305,8 @@ class Teacher extends School {
         $mongo = Registry::get("MongoDB");
         $attendance = $mongo->attendance;
         
+        $date = date('Y-m-d 00:00:00');
+        $mongo_date = new MongoDate(strtotime($date));
         if (RequestMethods::post("action") == "saveAttendance") {
             $attendances = $this->reArray($_POST);
 
@@ -316,21 +318,22 @@ class Teacher extends School {
                     "user_id" => (int) $a["user_id"],
                     "classroom_id" => (int) $classroom->id,
                     "organization_id" => (int) $this->organization->id,
-                    "date" => date('Y-m-d'),
+                    "date" => $mongo_date,
                     "presence" => (int) $a["presence"],
                     "live" => true
                 );
 
-                $record = $attendance->findOne(array('user_id' => (int) $a["user_id"], 'date' => date('Y-m-d')));
+                $where = array('user_id' => (int) $a["user_id"], 'date' => $mongo_date);
+                $record = $attendance->findOne($where);
                 if (isset($record)) {
-                    $attendance->update(array('user_id' => (int) $a["user_id"], 'date' => date('Y-m-d')), array('$set' => $doc));
+                    $attendance->update($where, array('$set' => $doc));
                 } else {
                     $attendance->insert($doc);
                 }
             }
             return array("success" => true);
         } else {
-            $record = $attendance->findOne(array('classroom_id' => (int) $classroom->id, 'date' => date('Y-m-d')));
+            $record = $attendance->findOne(array('classroom_id' => (int) $classroom->id, 'date' => $mongo_date));
             if (isset($record)) {
                 return array("saved" => true);
             } else {
@@ -399,7 +402,9 @@ class Teacher extends School {
             if ($opts["table"]) {
                 switch ($opts["table"]) {
                     case 'attendance':
-                        $record = $t->findOne(array('date' => date('Y-m-d'), 'user_id' => (int) $e->user_id));
+                        $date = date('Y-m-d 00:00:00');
+                        $mongo_date = new MongoDate(strtotime($date));
+                        $record = $t->findOne(array('date' => $mongo_date, 'user_id' => (int) $e->user_id));
                         if (isset($record)) {
                             $extra = array('presence' => $record["presence"]);    
                         }

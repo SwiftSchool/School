@@ -49,15 +49,34 @@ class Student extends School {
         $grade = Grade::first(array("id = ?" => $classroom->grade_id));
         $courses = Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id"));
 
+        $start = date('Y-m-01 00:00:00', strtotime('this month'));
+        $end = date('Y-m-t 00:00:00', strtotime('this month'));
+
+        // find average attendance for the month
+        $attendances = $this->attendance($start, $end, array('return' => true));
+        $present = 0; $total = 0;
+        foreach ($attendances as $a) {
+            $total++;
+            if ($a['title'] == "Present") {
+                $present++;
+            }
+        }
+        $avg = (string) (($present / $total) * 100);
+
+        // find total assignments
+        $asmt = $this->_asgmtAPI($classroom, $courses);
+
         $session->set('Student:$enrollment', $enrollment)
                 ->set('Student:$classroom', $classroom)
                 ->set('Student:$grade', $grade)
                 ->set('Student:$courses', $courses);
 
-        $view->set("enrollment", $enrollment);
-        $view->set("classroom", $classroom);
-        $view->set("grade", $grade);
-        $view->set("courses", $courses);
+        $view->set("enrollment", $enrollment)
+            ->set("classroom", $classroom)
+            ->set("grade", $grade)
+            ->set("courses", $courses)
+            ->set("assignments", $asmt)
+            ->set("attendance", substr($avg, 0, 5));
 	}
 
     /**
@@ -419,24 +438,37 @@ class Student extends School {
     /**
      * @before _test, _student
      */
-    public function attendance() {
-        $this->noview();
+    public function attendance($start = null, $end = null, $opts = array()) {
+        if (!isset($opts['return'])) {
+            $this->noview();    
+        }
 
         $mongo = Registry::get("MongoDB");
         $attendance = $mongo->selectCollection("attendance");
-        $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));
+
+        if ($start && $end) {
+            $start = new MongoDate(strtotime($start));
+            $end = new MongoDate(strtotime($end));
+            $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true, 'date' => array('$gte' => $start, '$lte' => $end)));
+        } else {
+            $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));    
+        }
 
         $i = 1; $results = array();
         foreach ($records as $r) {
+            $date = date('Y-m-d', $r["date"]->sec);
             $results[] = array(
                 "title" => ($r["presence"]) ? "Present" : "Absent",
-                "start" => $r["date"] . "T00:00:00",
-                "end" => $r["date"] . "T23:59:59",
+                "start" => $date . "T00:00:00",
+                "end" => $date . "T23:59:59",
                 "allDay" => true,
                 "className" => "attendance",
                 "color" => ($r["presence"]) ? "green" : "red"
             );
             ++$i;
+        }
+        if (isset($opts['return'])) {
+            return $results;
         }
         echo json_encode($results);
     }
@@ -597,6 +629,26 @@ class Student extends School {
             }
         }
         return $submit;
+    }
+
+    protected function _asgmtAPI($classroom, $courses) {
+        $assignments = Assignment::count(array("classroom_id = ?" => $classroom->id));
+        $submissions = Submission::all(array("user_id = ?" => $this->user->id));
+
+        $setCourses = array();
+        foreach ($courses as $c) {
+            $setCourses[$c->id] = $c->id;
+        }
+
+        $return = array();
+        $return['total'] = (int) $assignments;
+        $return['submitted'] = 0;
+        foreach ($submissions as $s) {
+            if (in_array($s->course_id, $setCourses)) {
+                $return['submitted']++;
+            }
+        }
+        return $return;
     }
 
     public function _test() {
