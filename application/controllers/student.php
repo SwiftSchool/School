@@ -326,7 +326,10 @@ class Student extends School {
             if (!$submission) {
                 $submission = new \Submission(array(
                     "user_id" => $this->user->id,
-                    "assignment_id" => $assignment->id
+                    "assignment_id" => $assignment->id,
+                    "course_id" => $assignment->course_id,
+                    "grade" => null,
+                    "remarks" => null
                 ));
             } else {
                 unlink(APP_PATH ."/public/assets/uploads/assignments/". $submission->response);
@@ -515,19 +518,56 @@ class Student extends School {
         $session = Registry::get("session");
 
         $courses = $session->get('Student:$courses');
-        $view->set("courses", $courses);
+        $result = array();
+        foreach ($courses as $c) {
+            $a = Assignment::count(array("course_id = ?" => $c->id));
+            $s = Submission::count(array("course_id = ?" => $c->id, "user_id = ?" => $this->user->id));
+            $data = array(
+                "_title" => $c->title,
+                "_description" => $c->description,
+                "_grade_id" => $c->grade_id,
+                "_id" => $c->id,
+                "_assignments" => $a,
+                "_assignment_submitted" => $s
+            );
+            $data = ArrayMethods::toObject($data);
+            $result[] = $data;
+        }
+        $view->set("courses", $result);
     }
 
     /**
      * @before _test, _student
      */
     public function performance($course_id = null) {
+        $this->JSONView();
+        $view = $this->getActionView();
+        $session = Registry::get("session");
+
+        $course_id = RequestMethods::post("course", $course_id);
         if (!$course_id) {
             $c = $session->get('Student:$courses');
             $course = $c[0];
         } else {
-            $course = Course::first(array("id = ?" => $course_id));
+            $course = Course::first(array("id = ?" => $course_id), array("id", "title"));
         }
+
+        $date = new DateTime(date('Y-m-d'));
+        $week = $date->format("W");
+
+        $perf = Registry::get("MongoDB")->performance;
+
+        $performance = array();
+        $record = $perf->findOne(array('user_id' => (int) $this->user->id, 'course_id' => (int) $course->id, 'year' => date('Y')));
+        if (isset($record)) {
+            $performance['course'] = $course->title;
+            $performance['teacher'] = User::first(array("id = ?" => $record['teacher_id']), array("name"))->name;
+            foreach ($record['track'] as $track) {
+                $performance['tracking'][] = $track;
+            }
+        }
+        $view->set("performance", $performance);
+
     }
 
     /**

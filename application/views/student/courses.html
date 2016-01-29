@@ -9,12 +9,13 @@
                         <div class="item col-xs-12 col-sm-6 col-lg-4">
                             <div class="panel panel-default paper-shadow" data-z="0.5">
                                 <div class="panel-body">
-                                    <h4 class="text-headline margin-v-0-10">{echo $c->title}</h4>
+                                    <h4 class="text-headline margin-v-0-10">{echo $c->_title}</h4>
                                 </div>
                                 <hr class="margin-none" />
                                 <div class="panel-body">
-                                    <a href="/student/assignments/{echo $c->id}" class="btn btn-primary btn-xs">Assignments</a>
-                                    <a href="/student/result/{echo $c->id}" class="btn btn-info btn-xs">Result</a>
+                                    <a href="/student/assignments/{echo $c->_id}" class="btn btn-primary btn-xs">Assignments</a>
+                                    <a href="/student/result/{echo $c->_id}" class="btn btn-info btn-xs">Result</a>
+                                    <a href="/student/performance/{echo $c->_id}" class="btn btn-success btn-xs">Performance</a>
                                 </div>
                             </div>
                         </div>

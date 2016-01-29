@@ -24,6 +24,16 @@ class Submission extends Shared\Model {
      *
      * @validate required, numeric
      */
+    protected $_course_id;
+
+    /**
+     * @column
+     * @readwrite
+     * @type integer
+     * @index
+     *
+     * @validate required, numeric
+     */
     protected $_user_id;
 
     /**
