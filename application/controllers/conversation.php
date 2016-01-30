@@ -57,22 +57,91 @@ class Conversation extends Teacher {
 	}
 
 	/**
-	 * @before _secure, _teacher
+	 * @before _secure
 	 */
 	public function message($conversation_id) {
+		if (!$conversation_id) {
+			self::redirect("/404");
+		} else {
+			$conversation_id = new MongoId($conversation_id);
+		}
+		$this->JSONView();
+		$view = $this->getActionView();
 
+		$conversation = $this->_findConv($conversation_id);
+		$return = $this->_reply($this->user, $conversation_id);
+		if (isset($return['error'])) {
+			$view->set('error', $return['error']);
+			return;
+		}
+
+		if (isset($return['success'])) {
+			$view->set('message', $return['message']);
+		}
 	}
 
 	/**
-	 * Students|Parents can only reply to the conversation
-	 * @before _secure
+	 * List all the conversations of the teacher
+	 * @before _secure, _teacher
 	 */
-	public function reply($conversation_id) {
+	public function all() {
+		$this->JSONView();
+		$view = $this->getActionView();
 
+		$conv = Registry::get("MongoDB")->conversation;
+		$records = $conv->find(array('user_id' => (int) $this->user->id, 'live' => true));
+
+		$conversations = $this->_fmtRecords($records);
+		$view->set("conversations", $conversations);
 	}
 
-	protected function _reply($conversation) {
+	/**
+	 * Finds the conversations for the student
+	 * @before _secure
+	 */
+	public function find() {
+		$this->JSONView();
+		$view = $this->getActionView();
 
+		$mongo = Registry::get("MongoDB");
+		$conv_users = $mongo->conv_users;
+		$conv = $mongo->conversation;
+		$records = $conv_users->find(array('user_id' => (int) $this->user->id, 'live' => true));
+
+		$conversations = array();
+		foreach ($records as $r) {
+			$c = $conv->findOne(array('_id' => $r['conversation_id']));
+			$usr = User::first(array("id = ?" => $c['user_id']), array("name"));
+			$conversations[] = array(
+				"teacher" => $usr->name,
+				"id" => $c['_id']->{'$id'}
+			);
+		}
+		$view->set("conversations", $conversations);
+	}
+
+	protected function _reply($user, $conversation) {
+		$m = Registry::get("MongoDB")->messages;
+		if (RequestMethods::post("action") == "sendMessage") {
+			$message = RequestMethods::post("message");
+			if (empty($message)) {
+				return array("error" => "Message is required");
+			}
+			$doc = array(
+				"conversation_id" => $conversation,
+				"created" => new MongoDate(),
+				"user_id" => (int) $user->id,
+				"content" => $message,
+				"live" => true
+			);
+			$m->insert($doc);
+			
+			$msg = $doc;
+			return array(
+				'success' => true,
+				'message' => $this->_fmtRecords(array($msg))
+			);
+		}
 	}
 
 	/**
@@ -129,6 +198,9 @@ class Conversation extends Teacher {
 		return $id;
 	}
 
+	/**
+	 * Adds a user to given conversation
+	 */
 	protected function _addUser($conversation, $opts = array()) {
 		$conv_users = Registry::get("MongoDB")->conv_users;
 		if (RequestMethods::post("action") == "addUser") {
@@ -146,20 +218,15 @@ class Conversation extends Teacher {
 		}
 	}
 
-	protected function _message($conversation) {
-		if (RequestMethods::post("action") == "sendMessage") {
-			
-		}
-	}
-
 	/**
 	 * Check if the user is a part of conversation
 	 */
-	protected function _validUser($conversation_id) {
+	protected function _validUser($conversation_id, $user = false) {
 		$mongo = Registry::get("MongoDB");
 		$conv_users = $mongo->conv_users;
 
-		$usr = $conv_users->findOne(array('conversation_id' => $conversation_id, 'user_id' => (int) $this->user->id, 'live' => true));
+		$user = ($user) ? $user : $this->user;
+		$usr = $conv_users->findOne(array('conversation_id' => $conversation_id, 'user_id' => (int) $user->id, 'live' => true));
 		if (!isset($usr)) {
 			self::redirect("/404");
 		}
@@ -198,34 +265,50 @@ class Conversation extends Teacher {
 
 		// find conversation participants
 		$records = $conv_users->find(array('conversation_id' => $conversation_id), array('_id' => false, 'conversation_id' => false));
-		$users = array();
 
-		// can query the db to find user - names etc
+		return $this->_fmtRecords($records);
+	}
+
+	protected function _fmtRecords($records) {
+		$rows = array();
 		foreach ($records as $r) {
 			$data = $r;
+			if (isset($r['_id'])) {
+				unset($data['_id']);
+				$data['id'] = $r['_id']->{'$id'};
+			}
+
+			if (isset($r['conversation_id'])) {
+				unset($data['conversation_id']);
+				$data['conversation_id'] = $r['conversation_id']->{'$id'};
+			}
 			$data['created'] = date('Y-m-d H:i:s', $r['created']->sec);
-			$users[] = $data;
+			$rows[] = $data;
 		}
-		return $users;
+		return $rows;
 	}
 
 	/**
 	 * Finds the messages of given conversation
 	 */
-	protected function _findMessages($conversation_id) {
+	protected function _findMessages($conversation_id, $opts = array()) {
 		$mongo = Registry::get("MongoDB");
 		$m = $mongo->messages;
 
 		$usr = $this->_validUser($conversation_id);
-		$messages = $m->find(array('conversation_id' => $conversation_id, 'created' => array('$gte' => $usr['created'])), array('_id' => false, 'conversation_id' => false));
-		
-		$msg = array();
-		foreach ($messages as $m) {
-			$data = $m;
-			$data['created'] = date('Y-m-d H:i:s', $m['created']->sec);
-			$msg[] = $data;
+		if (isset($opts['start']) && isset($opts['end'])) {
+			$user_created = strtotime(date('Y-m-d', $usr['created']->sec));
+			
+			$start = new MongoDate(($opts['start'] < $user_created) ? $user_created : $opts['start']);
+			$end = new MongoDate($opts['end']);
+			$created = array('$gte' => $start, '$lte' => $end);
+		} else {
+			$start = $usr['created'];
+			$created = array('$gte' => $usr['created']);
 		}
-		return $msg;
+		$messages = $m->find(array('conversation_id' => $conversation_id, 'created' => $created), array('_id' => false, 'conversation_id' => false));
+		
+		return $this->_fmtRecords($messages);
 	}
 
 }
