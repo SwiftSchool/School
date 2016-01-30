@@ -189,7 +189,7 @@ class Teacher extends School {
         foreach ($grades as $g) {
             $storedGrades[$g->id] = $g->title;
         }
-        $courses = $this->_courses();
+        $courses = $this->_courses($teaches);
 
         $result = array();
         foreach ($teaches as $t) {
@@ -245,7 +245,7 @@ class Teacher extends School {
             $view->set("message", "Attendance Already saved for today");
         }
 
-        $students = $this->_findEnrollments($classroom->id, array('table' => 'attendance'));
+        $students = $this->_findEnrollments($classroom, array('table' => 'attendance'));
         $view->set("class", $grade->title . " - ". $classroom->section);
         $view->set("students", $students);
     }
@@ -277,7 +277,8 @@ class Teacher extends School {
         $return = $this->_weeklyStudentsPerf($teach);
         $view->set("message", $return["message"]);
 
-        $enrollments = $this->_findEnrollments($teach->classroom_id, array('table' => 'performance', 'teach' => $teach));
+        $classroom = Classroom::first(array("id = ?" => $teach->classroom->id));
+        $enrollments = $this->_findEnrollments($classroom, array('table' => 'performance', 'teach' => $teach));
         $classroom = Classroom::first(array("id = ?" => $teach->classroom_id), array("section", "grade_id"));
         $klass = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
         $course = Course::first(array("id = ?" => $teach->course_id), array("title"));
@@ -386,20 +387,29 @@ class Teacher extends School {
         }
     }
 
-    protected function _findEnrollments($classroom_id, $opts = array()) {
-        if ($opts["table"]) {
+    protected function _findEnrollments($classroom, $opts = array()) {
+        if (isset($opts["table"])) {
             $mongo = Registry::get("MongoDB");
             $t = $mongo->$opts["table"];
         }
-        $enrollments = Enrollment::all(array("classroom_id = ?" => $classroom_id), array("user_id"));
+
+        if (is_array($classroom)) {
+            $enrollments = array();
+            foreach ($classroom as $c) {
+                $e = Enrollment::all(array("classroom_id = ?" => $c->id), array("user_id", "classroom_id"));
+                $enrollments = array_merge($enrollments, $e);
+            }
+        } else {
+            $enrollments = Enrollment::all(array("classroom_id = ?" => $classroom->id), array("user_id"));    
+        }
 
         $students = array(); $yr = date('Y');
         foreach ($enrollments as $e) {
-            $usr = User::first(array("id = ?" => $e->user_id), array("name"));
+            $usr = User::first(array("id = ?" => $e->user_id), array("name", "username"));
             $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));
 
             $extra = array();
-            if ($opts["table"]) {
+            if (isset($opts["table"])) {
                 switch ($opts["table"]) {
                     case 'attendance':
                         $date = date('Y-m-d 00:00:00');
@@ -425,6 +435,17 @@ class Teacher extends School {
                         break;
                 }
             }
+
+            if (isset($opts['conversation'])) {
+                $klass = $classroom[$e->classroom_id];
+                $extra = array(
+                    'username' => $usr->username,
+                    'class' => $klass->grade,
+                    'section' => $klass->section,
+                    'display' => $usr->name . " (Class: ". $klass->grade ." - ". $klass->section . ") Roll No: " . $scholar->roll_no
+                );
+            }
+            
             $data = array(
                 "user_id" => $e->user_id,
                 "name" => $usr->name,
@@ -451,16 +472,11 @@ class Teacher extends School {
     /**
      * Finds all the courses the teacher teaches
      */
-    protected function _courses() {
+    protected function _courses($teaches = null) {
         $session = Registry::get("session");
-        
-        if (!$session->get('Teacher:$courses')) {
-            $teaches = Teach::all(array("user_id = ?" => $this->user->id), array("course_id"));
-            $session->set('Teacher:$courses', $teaches);    
-        } else {
-            $teaches = $session->get('Teacher:$courses');
+        if (!$teaches) {
+            $teaches = Teach::all(array("user_id = ?" => $this->user->id));
         }
-        
         $courses = array();
         foreach ($teaches as $t) {
             $courses[] = $t->course_id;
@@ -472,6 +488,34 @@ class Teacher extends School {
             $setCourses[$c] = Course::first(array("id = ?" => $c), array("id", "title", "grade_id"));
         }
         return $setCourses;
+    }
+
+    protected function _findClassrooms() {
+        $teach = Teach::all(array("user_id = ?" => $this->user->id));
+        $class_ids = array();
+        foreach ($teach as $t) {
+            $class_ids[] = $t->classroom_id;
+        }
+        $class_ids = array_unique($class_ids);
+        
+        $grades = Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
+        $setGrades = array();
+        foreach ($grades as $g) {
+            $setGrades[$g->id] = $g;
+        }
+
+        $classrooms = array();
+        foreach ($class_ids as $key => $value) {
+            $c = Classroom::first(array("id = ?" => $value), array("id", "section", "grade_id"));
+            
+            $data = array(
+                'id' => (int) $c->id,
+                'grade' => $setGrades[$c->grade_id]->title,
+                'section' => $c->section
+            );
+            $classrooms[$value] = ArrayMethods::toObject($data);
+        }
+        return $classrooms;
     }
 
 }
