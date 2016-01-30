@@ -8,6 +8,7 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 use Framework\ArrayMethods as ArrayMethods;
+use Framework\StringMethods as StringMethods;
 use Shared\Markup as Markup;
 
 class Student extends School {
@@ -49,11 +50,10 @@ class Student extends School {
         $grade = Grade::first(array("id = ?" => $classroom->grade_id));
         $courses = Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id"));
 
-        $start = date('Y-m-01 00:00:00', strtotime('this month'));
-        $end = date('Y-m-t 00:00:00', strtotime('this month'));
+        $d = StringMethods::month_se();
 
         // find average attendance for the month
-        $attendances = $this->attendance($start, $end, array('return' => true));
+        $attendances = $this->attendance($d['start'], $d['end'], array('return' => true));
         $present = 0; $total = 0;
         foreach ($attendances as $a) {
             $total++;
@@ -591,14 +591,29 @@ class Student extends School {
 
         $performance = array();
         $record = $perf->findOne(array('user_id' => (int) $this->user->id, 'course_id' => (int) $course->id, 'year' => date('Y')));
+
+        $d = StringMethods::month_se();
+        $start = (int) (new DateTime($d['start']))->format("W");
+        if ($start == 53) {
+            $start = 1;
+        }
+        $end = (int) (new DateTime($d['end']))->format("W");
+        $monthly = array();
+
         if (isset($record)) {
             $performance['course'] = $course->title;
             $performance['teacher'] = User::first(array("id = ?" => $record['teacher_id']), array("name"))->name;
             foreach ($record['track'] as $track) {
+                $week = $track['week'];
+                if ($week <= $end && $week >= $start) {
+                    $monthly[] = $track['grade'];
+                }
                 $performance['tracking'][] = $track;
             }
         }
-        $view->set("performance", $performance);
+
+        $view->set("performance", $performance)
+            ->set("monthly", $monthly);
 
     }
 

@@ -233,6 +233,19 @@ namespace Framework {
             return urlencode(str_replace($pattern, $replace, $url));
         }
 
+        /**
+         * Gives a month's start and ending date
+         */
+        public static function month_se() {
+            $start = date('Y-m-01 00:00:00', strtotime('this month'));
+            $end = date('Y-m-t 00:00:00', strtotime('this month'));
+
+            return array(
+                'start' => $start,
+                'end' => $end
+            );
+        }
+
     }
 
 }

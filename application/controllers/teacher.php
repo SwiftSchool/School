@@ -277,7 +277,7 @@ class Teacher extends School {
         $return = $this->_weeklyStudentsPerf($teach);
         $view->set("message", $return["message"]);
 
-        $classroom = Classroom::first(array("id = ?" => $teach->classroom->id));
+        $classroom = Classroom::first(array("id = ?" => $teach->classroom_id));
         $enrollments = $this->_findEnrollments($classroom, array('table' => 'performance', 'teach' => $teach));
         $classroom = Classroom::first(array("id = ?" => $teach->classroom_id), array("section", "grade_id"));
         $klass = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
@@ -366,12 +366,17 @@ class Teacher extends School {
                 // to update grade for this week
                 $track = array();
                 if (isset($record)) {
+                    $found = false;
                     foreach ($record['track'] as $r) {
                         if ($week == $r['week']) {
                             $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
+                            $found = true;
                         } else {
                             $track[] = $r;
                         }
+                    }
+                    if (!$found) {
+                        $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
                     }
                     $perf->update($where, array('$set' => array('track' => $track)));
                 } else {
