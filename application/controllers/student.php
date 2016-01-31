@@ -10,6 +10,7 @@ use Framework\RequestMethods as RequestMethods;
 use Framework\ArrayMethods as ArrayMethods;
 use Framework\StringMethods as StringMethods;
 use Shared\Markup as Markup;
+use Shared\Services\Student as StudentService;
 
 class Student extends School {
 
@@ -441,30 +442,8 @@ class Student extends School {
             $this->noview();    
         }
 
-        $mongo = Registry::get("MongoDB");
-        $attendance = $mongo->selectCollection("attendance");
-
-        if ($start && $end) {
-            $start = new MongoDate(strtotime($start));
-            $end = new MongoDate(strtotime($end));
-            $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true, 'date' => array('$gte' => $start, '$lte' => $end)));
-        } else {
-            $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));    
-        }
-
-        $i = 1; $results = array();
-        foreach ($records as $r) {
-            $date = date('Y-m-d', $r["date"]->sec);
-            $results[] = array(
-                "title" => ($r["presence"]) ? "Present" : "Absent",
-                "start" => $date . "T00:00:00",
-                "end" => $date . "T23:59:59",
-                "allDay" => true,
-                "className" => "attendance",
-                "color" => ($r["presence"]) ? "green" : "red"
-            );
-            ++$i;
-        }
+        $service = new \Shared\Services\Attendance();
+        $results = $service->find($start, $end);
         if (isset($opts['return'])) {
             return $results;
         }
@@ -547,7 +526,7 @@ class Student extends School {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $courses = $session->get('Student:$courses');
+        $courses = StudentService::$_courses;
         $result = array();
         foreach ($courses as $c) {
             $a = Assignment::count(array("course_id = ?" => $c->id));
@@ -572,46 +551,21 @@ class Student extends School {
     public function performance($course_id = null) {
         $this->JSONView();
         $view = $this->getActionView();
-        $session = Registry::get("session");
 
         $course_id = RequestMethods::post("course", $course_id);
+        $courses = StudentService::$_courses;
         if (!$course_id) {
-            $c = $session->get('Student:$courses');
-            $course = $c[0];
+            $c = $courses;
+            $course = array_shift($c);
         } else {
-            $course = Course::first(array("id = ?" => $course_id), array("id", "title"));
+            $course = $courses[$course_id];
         }
 
-        $date = new DateTime(date('Y-m-d'));
-        $week = $date->format("W");
+        $service = new StudentService();
+        $find = $service->performance($course);
 
-        $perf = Registry::get("MongoDB")->performance;
-
-        $performance = array();
-        $record = $perf->findOne(array('user_id' => (int) $this->user->id, 'course_id' => (int) $course->id, 'year' => date('Y')));
-
-        $d = StringMethods::month_se();
-        $start = (int) (new DateTime($d['start']))->format("W");
-        if ($start == 53) {
-            $start = 1;
-        }
-        $end = (int) (new DateTime($d['end']))->format("W");
-        $monthly = array();
-
-        if (isset($record)) {
-            $performance['course'] = $course->title;
-            $performance['teacher'] = User::first(array("id = ?" => $record['teacher_id']), array("name"))->name;
-            foreach ($record['track'] as $track) {
-                $week = $track['week'];
-                if ($week <= $end && $week >= $start) {
-                    $monthly[] = $track['grade'];
-                }
-                $performance['tracking'][] = $track;
-            }
-        }
-
-        $view->set("performance", $performance)
-            ->set("monthly", $monthly);
+        $view->set("performance", $find['performance'])
+            ->set("monthly", $find['monthly']);
     }
 
     /**
@@ -621,6 +575,7 @@ class Student extends School {
         $session = Registry::get("session");
         $this->organization = $session->get("organization");
         $this->scholar = $session->get("scholar");
+        StudentService::init($this->scholar);
 
         $enrollment = !$session->get('Student:$enrollment') ? Enrollment::first(array("user_id = ?" => $this->user->id)) : $session->get('Student:$enrollment');
         $classroom = !$session->get('Student:$classroom') ? Classroom::first(array("id = ?" => $enrollment->classroom_id)) : $session->get('Student:$classroom');

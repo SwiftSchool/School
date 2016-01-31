@@ -42,10 +42,9 @@ class Teacher extends School {
         $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
 
-        $courses = Teach::all(array("user_id = ?" => $this->user->id, "live = ?" => true));
+        $courses = $session->get('Teacher:$courses', $courses);
 
         $session = Registry::get("session");
-        $session->set('Teacher:$courses', $courses);
         $view->set("courses", $courses);
 	}
 
@@ -476,8 +475,12 @@ class Teacher extends School {
      * @protected
      */
     public function _teacher() {
-        $this->organization = Registry::get("session")->get("organization");
-        $this->educator = Registry::get("session")->get("educator");
+        $session = Registry::get("session");
+        $this->organization = $session->get("organization");
+        $this->educator = $session->get("educator");
+
+        $courses = (!$session->get('Teacher:$courses')) ? Teach::all(array("user_id = ?" => $this->user->id, "live = ?" => true)) : $session->get('Teacher:$courses');
+        $session->set('Teacher:$courses', $courses);
         if (!$this->organization || !$this->educator) {
             self::redirect("/");
         }
