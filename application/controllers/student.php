@@ -37,7 +37,7 @@ class Student extends School {
     }
 
 	/**
-	 * @before _test, _student
+	 * @before _secure, _student
 	 */
 	public function index() {
 		$this->setSEO(array("title" => "Students | Dashboard"));
@@ -80,7 +80,7 @@ class Student extends School {
 	}
 
     /**
-     * @before _test
+     * @before _secure
      */
 	public function profile() {
 		$this->setSEO(array("title" => "Students | Profile"));
@@ -194,7 +194,6 @@ class Student extends School {
                 $view->set("error", true);
                 $view->set("message", $e->getMessage());
             }
-
         }
     }
 
@@ -252,7 +251,7 @@ class Student extends School {
      *
      * @param int $course_id Finds assignments only for the given course (Optional)
      * else finds all assignments for the student's classroom
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function assignments($course_id = null) {
         $this->setSEO(array("title" => "Assignments | Student"));
@@ -301,11 +300,10 @@ class Student extends School {
 
         $view->set("assignments", $result)
             ->set("courses", $courses);
-
     }
 
     /**
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function submitAssignment($assgmt_id) {
         $assignment = \Assignment::first(array("id = ?" => $assgmt_id));
@@ -436,7 +434,7 @@ class Student extends School {
     }
 
     /**
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function attendance($start = null, $end = null, $opts = array()) {
         if (!isset($opts['return'])) {
@@ -474,7 +472,7 @@ class Student extends School {
     }
 
     /**
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function attendances() {
         $this->setSEO(array("title" => "Attendance | Student"));
@@ -483,7 +481,7 @@ class Student extends School {
     }
 
     /**
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function result($course_id = null) {
         $this->setSEO(array("title" => "Result | Student"));
@@ -542,7 +540,7 @@ class Student extends School {
     }
 
     /**
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function courses() {
         $this->setSEO(array("title" => "Result | Student"));
@@ -569,7 +567,7 @@ class Student extends School {
     }
 
     /**
-     * @before _test, _student
+     * @before _secure, _student
      */
     public function performance($course_id = null) {
         $this->JSONView();
@@ -614,7 +612,6 @@ class Student extends School {
 
         $view->set("performance", $performance)
             ->set("monthly", $monthly);
-
     }
 
     /**
@@ -624,6 +621,16 @@ class Student extends School {
         $session = Registry::get("session");
         $this->organization = $session->get("organization");
         $this->scholar = $session->get("scholar");
+
+        $enrollment = !$session->get('Student:$enrollment') ? Enrollment::first(array("user_id = ?" => $this->user->id)) : $session->get('Student:$enrollment');
+        $classroom = !$session->get('Student:$classroom') ? Classroom::first(array("id = ?" => $enrollment->classroom_id)) : $session->get('Student:$classroom');
+        $grade = !$session->get('Student:$grade') ? Grade::first(array("id = ?" => $classroom->grade_id)) : $session->get('Student:$grade');
+        $courses = !$session->get('Student:$courses') ? Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id")) : $session->get('Student:$courses');
+
+        $session->set('Student:$enrollment', $enrollment)
+                ->set('Student:$classroom', $classroom)
+                ->set('Student:$grade', $grade)
+                ->set('Student:$courses', $courses);
         if (!$this->scholar) {
             self::redirect("/");
         }
@@ -665,27 +672,4 @@ class Student extends School {
         }
         return $return;
     }
-
-    public function _test() {
-        $user = User::first(array("username = ?" => "swift_5"));
-        $this->setUser($user);
-
-        $scholar = Scholar::first(array("user_id = ?" => $user->id));
-        $organization = Organization::first(array("id = ?" => $scholar->organization_id));
-
-        $session = Registry::get("session");
-        $session->set("scholar", $scholar);
-        $session->set("organization", $organization);
-
-        $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
-        $classroom = Classroom::first(array("id = ?" => $enrollment->classroom_id));
-        $grade = Grade::first(array("id = ?" => $classroom->grade_id));
-        $courses = Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id"));
-
-        $session->set('Student:$enrollment', $enrollment)
-                ->set('Student:$classroom', $classroom)
-                ->set('Student:$grade', $grade)
-                ->set('Student:$courses', $courses);
-    }
-
 }
