@@ -7,6 +7,7 @@
  */
 namespace Shared\Services;
 use Shared\Services\Classroom as Classroom;
+use Framework\Registry as Registry;
 
 class Attendance extends Classroom {
 	/**
@@ -24,17 +25,21 @@ class Attendance extends Classroom {
 		}	
 	}
 	/**
+     * @before _secure
 	 * Find the attendance for the given user (student)
 	 */
 	public function find($start = null, $end = null) {
+        $this->noview();
         $attendance = self::$_collection;
         
+        $user = Registry::get("session")->get("user");
+
         if ($start && $end) {
-            $start = new MongoDate(strtotime($start));
-            $end = new MongoDate(strtotime($end));
-            $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true, 'date' => array('$gte' => $start, '$lte' => $end)));
+            $start = new \MongoDate(strtotime($start));
+            $end = new \MongoDate(strtotime($end));
+            $records = $attendance->find(array('user_id' => (int) $user, 'live' => true, 'date' => array('$gte' => $start, '$lte' => $end)));
         } else {
-            $records = $attendance->find(array('user_id' => (int) $this->user->id, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));    
+            $records = $attendance->find(array('user_id' => (int) $user, 'live' => true), array('date' => true, '_id' => false, 'presence' => true));    
         }
 
         $i = 1; $results = array();

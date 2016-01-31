@@ -259,8 +259,8 @@ class Student extends School {
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $classroom = $session->get('Student:$classroom');
-        $courses = $session->get('Student:$courses');
+        $classroom = StudentService::$_classroom;
+        $courses = StudentService::$_courses;
 
         $course_id = RequestMethods::post("course", $course_id);
         if ($course_id) {
@@ -268,37 +268,9 @@ class Student extends School {
         } else {
             $assignments = \Assignment::all(array("classroom_id = ?" => $classroom->id, "live = ?" => true));
         }
-        $submissions = \Submission::all(array("user_id = ?" => $this->user->id));
 
-        $result = array();
-        foreach ($assignments as $a) {
-            foreach ($courses as $c) {
-                if ($c->id == $a->course_id) {
-                    $course = $c;
-                    break;
-                }
-            }
-
-            $submit = $this->_submission($submissions, $a);
-            
-            // Only check submit params only if "submission" key is true
-            $data = array(
-                "title" => $a->title,
-                "description" => $a->description,
-                "deadline" => $a->deadline,
-                "id" => $a->id,
-                "course" => $course->title,
-                "submitted" => $submit["submission"],
-                "filename" => ($a->attachment) ? $a->attachment : null,
-                "submission_id" => $submit["submission_id"],
-                "marks" => $submit["grade"],
-                "remarks" => $submit["remarks"],
-                "status" => $submit["status"]
-            );
-            $data = ArrayMethods::toObject($data);
-            $result[] = $data;
-        }
-
+        $service = new Shared\Services\Assignment();
+        $result = $service->all($assignments, $courses);
         $view->set("assignments", $result)
             ->set("courses", $courses);
     }
@@ -465,55 +437,19 @@ class Student extends School {
     public function result($course_id = null) {
         $this->setSEO(array("title" => "Result | Student"));
         $view = $this->getActionView();
-        $session = Registry::get("session");
-
-        $classroom = $session->get('Student:$classroom');
-        $courses = $session->get('Student:$courses');
         
         $course_id = RequestMethods::post("course", $course_id);
+        $courses = StudentService::$_courses;
         if (!$course_id) {
-            $course_id = $courses[0]->id;
-            $subject = $courses[0]->title;
+            $course = array_shift($courses);
         } else {
-            foreach ($courses as $c) {
-                if ($c->id == $course_id) {
-                    $subject = $c->title;
-                    break;                    
-                }
-            }
-        }
-        $exams = \Exam::all(array("course_id = ?" => $course_id), array("year", "type", "id"));
-
-        $result = array();
-        foreach ($exams as $e) {
-            $whole_class = \ExamResult::all(array("exam_id = ?" => $e->id), array("marks", "user_id"));
-            
-            $total = 0; $highest = -1; $count = 0; $user_marks = 0;
-            foreach ($whole_class as $w_c) {
-                $total += $w_c->marks;
-                if ((int) $w_c->marks > $highest) {
-                    $highest = (int) $w_c->marks;
-                }
-
-                if ($w_c->user_id == $this->user->id) {
-                    $user_marks = (int) $w_c->marks;
-                }
-
-                ++$count;
-            }
-            $data = array(
-                "type" => $e->type,
-                "year" => $e->year,
-                "exam_id" => $e->id,
-                "marks" => $user_marks,
-                "highest" => $highest,
-                "average" => $total/$count
-            );
-            $data = ArrayMethods::toObject($data);
-            $result[] = $data;
+            $course = $courses[$course_id];
         }
 
-        $view->set("subject", $subject)
+        $service = new StudentService();
+        $result = $service->results($course);
+
+        $view->set("subject", $course->title)
             ->set("results", $result)
             ->set("courses", $courses);
     }
@@ -555,8 +491,7 @@ class Student extends School {
         $course_id = RequestMethods::post("course", $course_id);
         $courses = StudentService::$_courses;
         if (!$course_id) {
-            $c = $courses;
-            $course = array_shift($c);
+            $course = array_shift($courses);
         } else {
             $course = $courses[$course_id];
         }
@@ -589,23 +524,6 @@ class Student extends School {
         if (!$this->scholar) {
             self::redirect("/");
         }
-    }
-
-    protected function _submission($submissions, $a) {
-        $submit = array("submission" => false, "file" => null, "status" => null, "remarks" => null, "grade" => null, "submission_id" => null);
-        
-        foreach ($submissions as $s) {
-            if ($s->assignment_id == $a->id) {
-                $submit["file"] = $s->response;
-                $submit["submission"] = true;
-                $submit["status"] = $s->live ? "Accepted" : "Rejected";
-                $submit["remarks"] = $s->remarks;
-                $submit["grade"] = $s->grade;
-                $submit["submission_id"] = $s->id;
-                break;
-            }
-        }
-        return $submit;
     }
 
     protected function _asgmtAPI($classroom, $courses) {

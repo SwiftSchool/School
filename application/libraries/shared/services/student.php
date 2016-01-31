@@ -67,6 +67,7 @@ class Student extends \Shared\Controller {
 	}
 
 	public function performance($course) {
+		$this->noview();
 		$session = Registry::get("session");
 		$perf = Registry::get("MongoDB")->performance;
 
@@ -98,5 +99,40 @@ class Student extends \Shared\Controller {
         }
 
         return array('performance' => $performance, 'monthly' => $monthly);
+	}
+
+	public function results($course) {
+		$this->noview();
+		$exams = \Exam::all(array("course_id = ?" => $course->id), array("year", "type", "id"));
+
+        $result = array();
+        foreach ($exams as $e) {
+            $whole_class = \ExamResult::all(array("exam_id = ?" => $e->id), array("marks", "user_id"));
+            
+            $total = 0; $highest = -1; $count = 0; $user_marks = 0;
+            foreach ($whole_class as $w_c) {
+                $total += $w_c->marks;
+                if ((int) $w_c->marks > $highest) {
+                    $highest = (int) $w_c->marks;
+                }
+
+                if ($w_c->user_id == self::$_student->user_id) {
+                    $user_marks = (int) $w_c->marks;
+                }
+
+                ++$count;
+            }
+            $data = array(
+                "type" => $e->type,
+                "year" => $e->year,
+                "exam_id" => $e->id,
+                "marks" => $user_marks,
+                "highest" => $highest,
+                "average" => $total/$count
+            );
+            $data = ArrayMethods::toObject($data);
+            $result[] = $data;
+        }
+        return $result;
 	}
 }
