@@ -78,6 +78,12 @@ class Assignments extends Teacher {
 
 		$courses = $this->_courses();
 		$classrooms = array();
+		$message = Registry::get("session")->get('$redirectMessage');
+		if ($message) {
+			$view->set("message", $message);
+			Registry::get("session")->erase('$redirectMessage');
+		}
+		$notification = Registry::get("MongoDB")->notifications;
 		foreach ($assignments as $a) {
 			$course = $courses[$a->course_id];
 			$grade = $storedGrades[$course->grade_id];
@@ -87,12 +93,19 @@ class Assignments extends Teacher {
 			} else {
 				$classroom = $classrooms[$a->classroom_id];
 			}
+			$record = $notification->findOne(array('sender' => 'user', 'sender_id' => (int) $this->user->id, 'type' => 'assignment', 'type_id' => (int) $a->id));
+			if (isset($record)) {
+				$notify = false;
+			} else {
+				$notify = true;
+			}
 
 			$data = array(
 				"id" => $a->id,
 				"course" => $course->title,
 				"title" => $a->title,
 				"class" => $grade,
+				"notified" => !$notify,
 				"live" => $a->live,
 				"section" => $classroom->section,
 				"deadline" => $a->deadline,

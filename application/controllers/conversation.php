@@ -53,7 +53,7 @@ class Conversation extends Teacher {
 
 		$view->set("users", $users)
 			->set("conversation", $conversation)
-			->set("messages", $messages);
+			->set("messages", count($messages) == 0 ? ArrayMethods::toObject(array()) : $messages);
 	}
 
 	/**
@@ -154,7 +154,7 @@ class Conversation extends Teacher {
 		$conv = Registry::get("MongoDB")->conversation;
 		if (RequestMethods::post("action") == "newConv") {
 			$title = RequestMethods::post("display");
-			$identifier = RequestMethods::post("username");
+			$identifier = RequestMethods::post("identifier");
 
 			$record = $conv->findOne(array('identifier' => $identifier, 'user_id' => (int) $this->user->id));
 			if (!isset($record)) {

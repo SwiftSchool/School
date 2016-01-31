@@ -19,12 +19,10 @@
                     
                 </div><br>
                 <div class="row">
-                    {script $message = Framework\Registry::get("session")->get('$redirectMessage')}
-                    {if ($message)}
+                    {if isset($message)}
                     <div class="alert alert-info alert-dismissible fade in" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                         {echo $message}
-                        {script Framework\Registry::get("session")->set('$redirectMessage', false)}
                     </div><br>
                     {/if}
                     <h3 class="page-heading">Manage Assignments</h3>
@@ -61,10 +59,7 @@
                                     {script $submissions = Submission::count(array("assignment_id = ?" => $a->id))}
                                     <td><a class="badge" href="/assignments/submissions/{echo $a->id}">{echo $submissions}</a></td>
                                     <td>
-                                        {script $notification = Framework\Registry::get("MongoDB")->notifications}
-                                        {script $record = $notification->findOne(array('sender' => 'user', 'sender_id' => (int) $user->id, 'type' => 'assignment', 'type_id' => (int) $a->id))}
-
-                                        {if !isset($record)}
+                                        {if !($a->notified)}
                                         <a href="/notification/assignment/{echo $a->id}"><i class="fa fa-flag"></i> Notify</a>
                                         {/if} {else}
                                         <a href="/notification/assignment/{echo $a->id}" onclick="return confirm('Are your sure, you want to notify again?')"><i class="fa fa-flag-checkered"></i> Notified</a>
