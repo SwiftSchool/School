@@ -289,7 +289,7 @@ class Student extends School {
                 "id" => $a->id,
                 "course" => $course->title,
                 "submitted" => $submit["submission"],
-                "filename" => $submit["file"],
+                "filename" => ($a->attachment) ? $a->attachment : null,
                 "submission_id" => $submit["submission_id"],
                 "marks" => $submit["grade"],
                 "remarks" => $submit["remarks"],

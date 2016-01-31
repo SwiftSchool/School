@@ -411,7 +411,9 @@ class Teacher extends School {
         $students = array(); $yr = date('Y');
         foreach ($enrollments as $e) {
             $usr = User::first(array("id = ?" => $e->user_id), array("name", "username"));
-            $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));
+            if (!isset($opts['only_user'])) {
+                $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));   
+            }
 
             $extra = array();
             if (isset($opts["table"])) {
@@ -422,6 +424,8 @@ class Teacher extends School {
                         $record = $t->findOne(array('date' => $mongo_date, 'user_id' => (int) $e->user_id));
                         if (isset($record)) {
                             $extra = array('presence' => $record["presence"]);    
+                        } else {
+                            $extra = array('presence' => null);
                         }
                         break;
                     
@@ -450,12 +454,17 @@ class Teacher extends School {
                     'display' => $usr->name . " (Class: ". $klass->grade ." - ". $klass->section . ") Roll No: " . $scholar->roll_no
                 );
             }
+
+            if (!isset($opts['only_user'])) {
+               $data = array(
+                   "user_id" => $e->user_id,
+                   "name" => $usr->name,
+                   "roll_no" => $scholar->roll_no
+               ); 
+            } else {
+                $data = array("user_id" => $e->user_id);
+            }
             
-            $data = array(
-                "user_id" => $e->user_id,
-                "name" => $usr->name,
-                "roll_no" => $scholar->roll_no
-            );
             $data = array_merge($data, $extra);
             $data = ArrayMethods::toObject($data);
             $students[] = $data;
