@@ -49,12 +49,13 @@ class Student extends School {
         $enrollment = Enrollment::first(array("user_id = ?" => $this->user->id));
         $classroom = Classroom::first(array("id = ?" => $enrollment->classroom_id));
         $grade = Grade::first(array("id = ?" => $classroom->grade_id));
-        $courses = Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id"));
+        $courses = StudentService::$_courses;
 
         $d = StringMethods::month_se();
 
         // find average attendance for the month
-        $attendances = $this->attendance($d['start'], $d['end'], array('return' => true));
+        $service = new \Shared\Services\Attendance();
+        $attendances = $service->find($start, $end);
         $present = 0; $total = 0;
         foreach ($attendances as $a) {
             $total++;
@@ -65,7 +66,8 @@ class Student extends School {
         $avg = (string) (($present / $total) * 100);
 
         // find total assignments
-        $asmt = $this->_asgmtAPI($classroom, $courses);
+        $service = new \Shared\Services\Assignment();
+        $asmt = $service->total($classroom, $courses);
 
         $session->set('Student:$enrollment', $enrollment)
                 ->set('Student:$classroom', $classroom)
@@ -286,53 +288,9 @@ class Student extends School {
         $this->setSEO(array("title" => "Submit Assignment"));
         $view = $this->getActionView();
 
-        $maxSize = "6291456";
-        $view->set("maxSize", $maxSize);
-        $view->set("assignment", $assignment);
-        
-        $allowed = strtotime($assignment->deadline);
-        $today = date('Y-m-d');
-        if ($today > $allowed) {
-            $view->set("error", "Last Date of submission is over");
-            return;
-        }
-
-        $submission = \Submission::first(array("user_id = ?" => $this->user->id, "assignment_id = ?" => $assgmt_id));
-        if ($submission) {
-            $view->set("success", "Assignment already submitted! Your response will be updated");
-        }
-
-        if (RequestMethods::post("action") == "submitAssignment") {
-            if (RequestMethods::post("maxSize") != $maxSize) {
-                $view->set("success", "Invalid Response");
-                return;
-            }
-
-            $response = $this->_upload("response", array("type" => "assignments", "mimes" => "png|jpe?g|bmp|gif"));
-            if (!$response) {
-                $view->set("success", "File Upload failed!");
-                return;
-            }
-            if (!$submission) {
-                $submission = new \Submission(array(
-                    "user_id" => $this->user->id,
-                    "assignment_id" => $assignment->id,
-                    "course_id" => $assignment->course_id,
-                    "grade" => null,
-                    "remarks" => null
-                ));
-            } else {
-                unlink(APP_PATH ."/public/assets/uploads/assignments/". $submission->response);
-            }
-            $submission->response = $response;
-
-            if (!$submission->validate()) {
-                $view->set("success", "Invalid Response! Validation Failed");
-                return;
-            }
-            $submission->save();
-            $view->set("success", "You have successfully submitted the assignment!");
-        }
+        $service = new \Shared\Services\Assignment();
+        $params = $service->submit();
+        $view->set($params);
     }
 
     /**
@@ -409,16 +367,12 @@ class Student extends School {
     /**
      * @before _secure, _student
      */
-    public function attendance($start = null, $end = null, $opts = array()) {
-        if (!isset($opts['return'])) {
-            $this->noview();    
-        }
+    public function attendance($start = null, $end = null) {
+        $this->noview();
 
         $service = new \Shared\Services\Attendance();
         $results = $service->find($start, $end);
-        if (isset($opts['return'])) {
-            return $results;
-        }
+        
         echo json_encode($results);
     }
 
@@ -524,25 +478,5 @@ class Student extends School {
         if (!$this->scholar) {
             self::redirect("/");
         }
-    }
-
-    protected function _asgmtAPI($classroom, $courses) {
-        $assignments = Assignment::count(array("classroom_id = ?" => $classroom->id));
-        $submissions = Submission::all(array("user_id = ?" => $this->user->id));
-
-        $setCourses = array();
-        foreach ($courses as $c) {
-            $setCourses[$c->id] = $c->id;
-        }
-
-        $return = array();
-        $return['total'] = (int) $assignments;
-        $return['submitted'] = 0;
-        foreach ($submissions as $s) {
-            if (in_array($s->course_id, $setCourses)) {
-                $return['submitted']++;
-            }
-        }
-        return $return;
     }
 }

@@ -9,7 +9,7 @@ namespace Shared\Services;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
 
-class Assignment extends Student {
+class Assignment extends \Auth {
 
 	public function all($assignments, $courses) {
 		$this->noview();
@@ -39,6 +39,23 @@ class Assignment extends Student {
         }
         return $result;
 	}
+
+    public function total($classroom, $courses) {
+        $this->noview();
+        $user = Registry::get("session")->get("user");
+        $assignments = \Assignment::count(array("classroom_id = ?" => $classroom->id));
+        $submissions = \Submission::all(array("user_id = ?" => $user));
+
+        $return = array();
+        $return['total'] = (int) $assignments;
+        $return['submitted'] = 0;
+        foreach ($submissions as $s) {
+            if (array_key_exists($s->course_id, $courses)) {
+                $return['submitted']++;
+            }
+        }
+        return $return;
+    }
 
 	protected function _submission($submissions, $a) {
         $submit = array("submission" => false, "file" => null, "status" => null, "remarks" => null, "grade" => null, "submission_id" => null);
