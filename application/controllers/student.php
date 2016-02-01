@@ -21,6 +21,7 @@ class Student extends School {
 
     public function logout() {
         Registry::get("session")->erase("scholar");
+        StudentService::destroy();
         parent::logout();
     }
 
@@ -68,11 +69,6 @@ class Student extends School {
         // find total assignments
         $service = new \Shared\Services\Assignment();
         $asmt = $service->total($classroom, $courses);
-
-        $session->set('Student:$enrollment', $enrollment)
-                ->set('Student:$classroom', $classroom)
-                ->set('Student:$grade', $grade)
-                ->set('Student:$courses', $courses);
 
         $view->set("enrollment", $enrollment)
             ->set("classroom", $classroom)
@@ -466,15 +462,7 @@ class Student extends School {
         $this->scholar = $session->get("scholar");
         StudentService::init($this->scholar);
 
-        $enrollment = !$session->get('Student:$enrollment') ? Enrollment::first(array("user_id = ?" => $this->user->id)) : $session->get('Student:$enrollment');
-        $classroom = !$session->get('Student:$classroom') ? Classroom::first(array("id = ?" => $enrollment->classroom_id)) : $session->get('Student:$classroom');
-        $grade = !$session->get('Student:$grade') ? Grade::first(array("id = ?" => $classroom->grade_id)) : $session->get('Student:$grade');
-        $courses = !$session->get('Student:$courses') ? Course::all(array("grade_id = ?" => $classroom->grade_id), array("title", "description", "id", "grade_id")) : $session->get('Student:$courses');
-
-        $session->set('Student:$enrollment', $enrollment)
-                ->set('Student:$classroom', $classroom)
-                ->set('Student:$grade', $grade)
-                ->set('Student:$courses', $courses);
+        
         if (!$this->scholar) {
             self::redirect("/");
         }

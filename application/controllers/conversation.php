@@ -8,6 +8,7 @@
 use Framework\RequestMethods as RequestMethods;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
+use Shared\Services\Teacher as TeacherService;
 
 class Conversation extends Teacher {
 	
@@ -19,7 +20,7 @@ class Conversation extends Teacher {
 		$this->JSONView();
 		$view = $this->getActionView();
 
-		$classrooms = $this->_findClassrooms();
+		$classrooms = TeacherService::$_classes;
 
 		$students = $this->_findEnrollments($classrooms, array('conversation' => true));
 		$view->set("students", $students);

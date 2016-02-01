@@ -8,6 +8,7 @@
 namespace Shared\Services;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
+use Framework\RequestMethods as RequestMethods;
 
 class Assignment extends \Auth {
 
@@ -53,6 +54,61 @@ class Assignment extends \Auth {
             if (array_key_exists($s->course_id, $courses)) {
                 $return['submitted']++;
             }
+        }
+        return $return;
+    }
+
+    public function submit($assignment) {
+        $this->noview();
+        $user = Registry::get("session")->get("user");
+        $maxSize = "6291456";
+        $return = array();
+
+        $return["maxSize"] = $maxSize;
+        $return["assignment"] = $assignment;
+
+        $allowed = strtotime($assignment->deadline);
+        $today = date('Y-m-d');
+        if ($today > $allowed) {
+            $return["error"] = "Last Date of submission is over";
+            return $return;
+        }
+
+        $submission = \Submission::first(array("user_id = ?" => $user, "assignment_id = ?" => $assignment->id));
+        if ($submission) {
+            $return["success"] = "Assignment already submitted! Your response will be updated";
+        }
+
+        if (RequestMethods::post("action") == "submitAssignment") {
+            if (RequestMethods::post("maxSize") != $maxSize) {
+                $return["success"] = "Invalid Response";
+                return $return;
+            }
+
+            $response = $this->_upload("response", array("type" => "assignments", "mimes" => "png|jpe?g|bmp|gif"));
+            if (!$response) {
+                $return["success"] = "File Upload failed!";
+                return $return;
+            }
+            if (!$submission) {
+                $submission = new \Submission(array(
+                    "user_id" => $user,
+                    "assignment_id" => $assignment->id,
+                    "course_id" => $assignment->course_id,
+                    "grade" => null,
+                    "remarks" => null
+                ));
+            } else {
+                unlink(APP_PATH ."/public/assets/uploads/assignments/". $submission->response);
+            }
+            $submission->response = $response;
+
+            if (!$submission->validate()) {
+                $return["success"] = "Invalid Response! Validation Failed";
+                return $return;
+            }
+            $submission->save();
+            $return["success"] = "You have successfully submitted the assignment!";
         }
         return $return;
     }

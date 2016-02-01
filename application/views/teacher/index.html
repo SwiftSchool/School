@@ -25,8 +25,7 @@
                         {foreach $c in $courses}
                         <li class="list-group-item media v-middle">
                             <div class="media-body">
-                                 {script $course = Course::first(array("id = ?" => $c->course_id), array("id", "title"))}
-                                <a href="#" class="text-subhead list-group-link">{echo $course->title}</a>
+                                <a href="#" class="text-subhead list-group-link">{echo $c->title}</a>
                             </div>
                             <div class="media-right">
                                 <div class="progress progress-mini width-100 margin-none">

@@ -8,6 +8,7 @@
 use Framework\Registry as Registry;
 use Framework\RequestMethods as RequestMethods;
 use Framework\ArrayMethods as ArrayMethods;
+use Shared\Services\Teacher as TeacherService;
 
 class Teacher extends School {
     
@@ -18,6 +19,7 @@ class Teacher extends School {
 
     public function logout() {
         Registry::get("session")->erase("educator");
+        TeacherService::destroy();
         parent::logout();
     }
 
@@ -42,9 +44,8 @@ class Teacher extends School {
         $this->getLayoutView()->set("cal", true);
         $view = $this->getActionView();
 
-        $courses = $session->get('Teacher:$courses', $courses);
+        $courses = TeacherService::$_courses;
 
-        $session = Registry::get("session");
         $view->set("courses", $courses);
 	}
 
@@ -188,7 +189,7 @@ class Teacher extends School {
         foreach ($grades as $g) {
             $storedGrades[$g->id] = $g->title;
         }
-        $courses = $this->_courses($teaches);
+        $courses = TeacherService::$_courses;
 
         $result = array();
         foreach ($teaches as $t) {
@@ -250,6 +251,7 @@ class Teacher extends School {
     }
 
     /**
+     * @todo move to services
      * Grade the students for each week
      * @before _secure, _teacher
      */
@@ -287,7 +289,7 @@ class Teacher extends School {
             $scale[] = $i;
         }
 
-        $courses = $this->_courses();
+        $courses = TeacherService::$_courses;
         $view->set(array(
             "students" => $enrollments,
             "class" => $klass->title . " - " . $classroom->section,
@@ -299,6 +301,7 @@ class Teacher extends School {
     }
 
     /**
+     * @todo move to Services
      * Save attendances into Mongo DB
      */
     protected function _saveAttendances(&$classroom) {
@@ -342,6 +345,7 @@ class Teacher extends School {
         }
     }
 
+    // @TODO move to TeacherService
     protected function _weeklyStudentsPerf($teach) {
         $mongo = Registry::get("MongoDB");
         $perf = $mongo->performance;
@@ -391,6 +395,7 @@ class Teacher extends School {
         }
     }
 
+    // @TODO move function to TeacherService
     protected function _findEnrollments($classroom, $opts = array()) {
         if (isset($opts["table"])) {
             $mongo = Registry::get("MongoDB");
@@ -478,61 +483,10 @@ class Teacher extends School {
         $session = Registry::get("session");
         $this->organization = $session->get("organization");
         $this->educator = $session->get("educator");
+        TeacherService::init($this->educator);
 
-        $courses = (!$session->get('Teacher:$courses')) ? Teach::all(array("user_id = ?" => $this->user->id, "live = ?" => true)) : $session->get('Teacher:$courses');
-        $session->set('Teacher:$courses', $courses);
         if (!$this->organization || !$this->educator) {
             self::redirect("/");
         }
     }
-
-    /**
-     * Finds all the courses the teacher teaches
-     */
-    protected function _courses($teaches = null) {
-        $session = Registry::get("session");
-        if (!$teaches) {
-            $teaches = Teach::all(array("user_id = ?" => $this->user->id));
-        }
-        $courses = array();
-        foreach ($teaches as $t) {
-            $courses[] = $t->course_id;
-        }
-        $courses = array_unique($courses);
-
-        $setCourses = array();
-        foreach ($courses as $c) {
-            $setCourses[$c] = Course::first(array("id = ?" => $c), array("id", "title", "grade_id"));
-        }
-        return $setCourses;
-    }
-
-    protected function _findClassrooms() {
-        $teach = Teach::all(array("user_id = ?" => $this->user->id));
-        $class_ids = array();
-        foreach ($teach as $t) {
-            $class_ids[] = $t->classroom_id;
-        }
-        $class_ids = array_unique($class_ids);
-        
-        $grades = Grade::all(array("organization_id = ?" => $this->organization->id), array("id", "title"));
-        $setGrades = array();
-        foreach ($grades as $g) {
-            $setGrades[$g->id] = $g;
-        }
-
-        $classrooms = array();
-        foreach ($class_ids as $key => $value) {
-            $c = Classroom::first(array("id = ?" => $value), array("id", "section", "grade_id"));
-            
-            $data = array(
-                'id' => (int) $c->id,
-                'grade' => $setGrades[$c->grade_id]->title,
-                'section' => $c->section
-            );
-            $classrooms[$value] = ArrayMethods::toObject($data);
-        }
-        return $classrooms;
-    }
-
 }

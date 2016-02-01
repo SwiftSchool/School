@@ -34,35 +34,46 @@ class Student extends \Shared\Controller {
 	}
 
 	public static function destroy() {
+		$session = Registry::get("session");
+		$session->erase('StudentService:$classroom')
+				->erase('StudentService:$courses');
 		self::$_student = null;
 		self::$_courses = null;
 		self::$_classroom = null;
 	}
 
 	protected static function _init() {
+		$session = Registry::get("session");
 		if (!self::$_classroom) {
-			$enrollment = \Enrollment::first(array("user_id = ?" => self::$_student->user_id), array("classroom_id"));
-			$c = \Classroom::first(array("id = ?" => $enrollment->classroom_id), array("grade_id", "section", "year", "id", "created"));
-			$g = \Grade::first(array("id = ?" => $c->grade_id), array("title", "id"));
+			if (!$session->get('StudentService:$classroom')) {
+				$enrollment = \Enrollment::first(array("user_id = ?" => self::$_student->user_id), array("classroom_id"));
+				$c = \Classroom::first(array("id = ?" => $enrollment->classroom_id), array("grade_id", "section", "year", "id", "created"));
+				$g = \Grade::first(array("id = ?" => $c->grade_id), array("title", "id"));
 
-			$classroom = array(
-				"id" => $c->id,
-				"grade" => $g->title,
-				"grade_id" => $g->id,
-				"section" => $c->section,
-				"year" => $c->year,
-				"created" => $c->created
-			);
-			self::$_classroom = ArrayMethods::toObject($classroom);
+				$classroom = array(
+					"id" => $c->id,
+					"grade" => $g->title,
+					"grade_id" => $g->id,
+					"section" => $c->section,
+					"year" => $c->year,
+					"created" => $c->created
+				);
+				$classroom = ArrayMethods::toObject($classroom);
+				$session->set('StudentService:$classroom', $classroom);
+			}
+			self::$_classroom = $session->get('StudentService:$classroom');
 		}
 		if (!self::$_courses) {
-			$courses = \Course::all(array("grade_id = ?" => self::$_classroom->grade_id));
-			
-			$subject = array();
-			foreach ($courses as $c) {
-				$subject[$c->id] = $c;
+			if (!$session->get('StudentService:$courses')) {
+				$courses = \Course::all(array("grade_id = ?" => self::$_classroom->grade_id));
+				
+				$subject = array();
+				foreach ($courses as $c) {
+					$subject[$c->id] = $c;
+				}
+				$session->set('StudentService:$courses', $subject);
 			}
-			self::$_courses = $subject;
+			self::$_courses = $session->get('StudentService:$courses');
 		}
 	}
 
