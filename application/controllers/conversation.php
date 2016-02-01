@@ -21,8 +21,14 @@ class Conversation extends Teacher {
 		$view = $this->getActionView();
 
 		$classrooms = TeacherService::$_classes;
+		$service = new Shared\Services\Classroom();
 
-		$students = $this->_findEnrollments($classrooms, array('conversation' => true));
+		$students = $s = array();
+		foreach ($classrooms as $c) {
+			$s[] = $service->enrollments($c, array('conversation' => true));
+			$students = array_merge($students, $s);
+		}
+
 		$view->set("students", $students);
         $this->_create();
 	}

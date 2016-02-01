@@ -187,23 +187,24 @@ class Teacher extends School {
         
         $storedGrades = array();
         foreach ($grades as $g) {
-            $storedGrades[$g->id] = $g->title;
+            $storedGrades[$g->id] = $g;
         }
         $courses = TeacherService::$_courses;
+        $classes = TeacherService::$_classes;
 
         $result = array();
         foreach ($teaches as $t) {
             $grade = $storedGrades[$t->grade_id];
-            $class = \Classroom::first(array("id = ?" => $t->classroom_id), array("id", "section", "year"));
+            $class = $classes[$t->classroom_id];
             $course = $courses[$t->course_id];
             $asgmnt = \Assignment::count(array("course_id = ?" => $t->course_id));
             
             $data = array(
-                "grade" => $grade,
-                "grade_id" => $t->grade_id,
+                "grade" => $grade->title,
+                "grade_id" => $g->id,
                 "section" => $class->section,
                 "course" => $course->title,
-                "course_id" => $t->course_id,
+                "course_id" => $course->id,
                 "classroom_id" => $class->id,
                 "assignments" => $asgmnt
             );
@@ -237,15 +238,16 @@ class Teacher extends School {
 
         $classroom = Classroom::first(array("educator_id = ?" => $this->educator->id), array("id", "section", "grade_id"));
         $grade = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
+        $service = new Shared\Services\Classroom();
 
-        $response = $this->_saveAttendances($classroom);
+        $response = $service->saveAttendance($classroom);
         if (isset($response["success"])) {
             $view->set("message", "Attendance Saved successfully!!");
         } elseif (isset($response["saved"])) {
             $view->set("message", "Attendance Already saved for today");
         }
-
-        $students = $this->_findEnrollments($classroom, array('table' => 'attendance'));
+        
+        $students = $service->enrollments($classroom, array('table' => 'attendance'));
         $view->set("class", $grade->title . " - ". $classroom->section);
         $view->set("students", $students);
     }
@@ -255,225 +257,40 @@ class Teacher extends School {
      * Grade the students for each week
      * @before _secure, _teacher
      */
-    public function weeklyStudentsPerf($course_id = null) {
+    public function weeklyStudentsPerf($course_id, $classroom_id) {
         $this->setSEO(array("title" => "Grade Students Weekly Performance | Teacher"));
         $view = $this->getActionView();
         $session = Registry::get("session");
 
-        $course_id = RequestMethods::post("course", $course_id);
-        if (!$course_id) {
-            if ($c = $session->get('Teacher:$courses')) {
-                $teach = $c[0];
-            } else {
-                $teach = Teach::first(array("user_id = ?" => $this->user->id));
-            }
-        } else {
-            $teach = Teach::first(array("course_id = ?" => $course_id, "user_id = ?" => $this->user->id));
+        if (!$course_id || !$classroom_id) {
+            self::redirect("/404");
         }
+        $teach = Teach::first(array("course_id = ?" => $course_id, "classroom_id = ?" => $classroom_id, "user_id = ?" => $this->user->id));
 
         if (!$teach) {
             self::redirect("/404");
         }
 
-        $return = $this->_weeklyStudentsPerf($teach);
-        $view->set("message", $return["message"]);
+        $service = new Shared\Services\Classroom();
+        $return = $service->weeklyPerformance($teach);
+        $view->set($return);
 
-        $classroom = Classroom::first(array("id = ?" => $teach->classroom_id));
-        $enrollments = $this->_findEnrollments($classroom, array('table' => 'performance', 'teach' => $teach));
-        $classroom = Classroom::first(array("id = ?" => $teach->classroom_id), array("section", "grade_id"));
-        $klass = Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
-        $course = Course::first(array("id = ?" => $teach->course_id), array("title"));
+        $classroom = TeacherService::$_classes[$teach->classroom_id];
+        $course = TeacherService::$_courses[$teach->course_id];
+
+        $enrollments = $service->enrollments($classroom, array('table' => 'performance', 'teach' => $teach));
 
         $scale = array();
         for ($i = 1; $i <= 10; $i++) {
             $scale[] = $i;
         }
 
-        $courses = TeacherService::$_courses;
         $view->set(array(
             "students" => $enrollments,
-            "class" => $klass->title . " - " . $classroom->section,
+            "class" => $classroom->grade . " - " . $classroom->section,
             "course" => $course->title,
-            "scale" => $scale,
-            "courses" => $courses,
-            "course_id" => $teach->course_id
+            "scale" => $scale
         ));
-    }
-
-    /**
-     * @todo move to Services
-     * Save attendances into Mongo DB
-     */
-    protected function _saveAttendances(&$classroom) {
-        $mongo = Registry::get("MongoDB");
-        $attendance = $mongo->attendance;
-        
-        $date = date('Y-m-d 00:00:00');
-        $mongo_date = new MongoDate(strtotime($date));
-        if (RequestMethods::post("action") == "saveAttendance") {
-            $attendances = $this->reArray($_POST);
-
-            foreach ($attendances as $a) {
-                if (!is_numeric($a["user_id"]) || !is_numeric($a["presence"])) {
-                    return false;
-                }
-                $doc = array(
-                    "user_id" => (int) $a["user_id"],
-                    "classroom_id" => (int) $classroom->id,
-                    "organization_id" => (int) $this->organization->id,
-                    "date" => $mongo_date,
-                    "presence" => (int) $a["presence"],
-                    "live" => true
-                );
-
-                $where = array('user_id' => (int) $a["user_id"], 'date' => $mongo_date);
-                $record = $attendance->findOne($where);
-                if (isset($record)) {
-                    $attendance->update($where, array('$set' => $doc));
-                } else {
-                    $attendance->insert($doc);
-                }
-            }
-            return array("success" => true);
-        } else {
-            $record = $attendance->findOne(array('classroom_id' => (int) $classroom->id, 'date' => $mongo_date));
-            if (isset($record)) {
-                return array("saved" => true);
-            } else {
-                return array("empty" => true);
-            }
-        }
-    }
-
-    // @TODO move to TeacherService
-    protected function _weeklyStudentsPerf($teach) {
-        $mongo = Registry::get("MongoDB");
-        $perf = $mongo->performance;
-
-        if (RequestMethods::post("action") == "grade") {
-            $performances = $this->reArray($_POST);
-
-            $date = new DateTime(date('Y-m-d'));
-            $week = $date->format("W");
-            $yr = date('Y');
-
-            foreach ($performances as $p) {
-                if (!is_numeric($p["user_id"]) || !is_numeric($p["grade"])) {
-                    return false;
-                }
-
-                $where = array('user_id' => (int) $p['user_id'], 'course_id' => (int) $teach->course_id, 'teacher_id' => (int) $this->user->id, 'year' => $yr);
-                $record = $perf->findOne($where);
-                
-                // if record exists then we need to loop for the performance tracks
-                // to update grade for this week
-                $track = array();
-                if (isset($record)) {
-                    $found = false;
-                    foreach ($record['track'] as $r) {
-                        if ($week == $r['week']) {
-                            $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
-                            $found = true;
-                        } else {
-                            $track[] = $r;
-                        }
-                    }
-                    if (!$found) {
-                        $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
-                    }
-                    $perf->update($where, array('$set' => array('track' => $track)));
-                } else {
-                    $where = array_merge($where, array('classroom_id' => (int) $teach->classroom_id));
-                    $track[] = array('week' => (int) $week, 'grade' => (int) $p['grade']);
-                    $doc = array_merge($where, array('track' => $track));
-                    $perf->insert($doc);
-                }
-            }
-            return array('message' => 'Weekly performance of students saved!!');
-        } else {
-            return array('message' => null);
-        }
-    }
-
-    // @TODO move function to TeacherService
-    protected function _findEnrollments($classroom, $opts = array()) {
-        if (isset($opts["table"])) {
-            $mongo = Registry::get("MongoDB");
-            $t = $mongo->$opts["table"];
-        }
-
-        if (is_array($classroom)) {
-            $enrollments = array();
-            foreach ($classroom as $c) {
-                $e = Enrollment::all(array("classroom_id = ?" => $c->id), array("user_id", "classroom_id"));
-                $enrollments = array_merge($enrollments, $e);
-            }
-        } else {
-            $enrollments = Enrollment::all(array("classroom_id = ?" => $classroom->id), array("user_id"));    
-        }
-
-        $students = array(); $yr = date('Y');
-        foreach ($enrollments as $e) {
-            $usr = User::first(array("id = ?" => $e->user_id), array("name", "username"));
-            if (!isset($opts['only_user'])) {
-                $scholar = Scholar::first(array("user_id = ?" => $e->user_id), array("roll_no"));   
-            }
-
-            $extra = array();
-            if (isset($opts["table"])) {
-                switch ($opts["table"]) {
-                    case 'attendance':
-                        $date = date('Y-m-d 00:00:00');
-                        $mongo_date = new MongoDate(strtotime($date));
-                        $record = $t->findOne(array('date' => $mongo_date, 'user_id' => (int) $e->user_id));
-                        if (isset($record)) {
-                            $extra = array('presence' => $record["presence"]);    
-                        } else {
-                            $extra = array('presence' => null);
-                        }
-                        break;
-                    
-                    case 'performance':
-                        $record = $t->findOne(array('user_id' => (int) $e->user_id, 'teacher_id' => (int) $this->user->id, 'course_id' => (int) ($opts["teach"]->course_id), 'year' => $yr));
-                        if (isset($record)) {
-                            $date = new DateTime(date('Y-m-d'));
-                            $week = $date->format("W");
-                            foreach ($record['track'] as $r) {
-                                if ($week == $r['week']) {
-                                    $extra = array('grade' => (int) $r['grade']);
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
-
-            if (isset($opts['conversation'])) {
-                $klass = $classroom[$e->classroom_id];
-                $extra = array(
-                    'username' => $usr->username,
-                    'class' => $klass->grade,
-                    'section' => $klass->section,
-                    'display' => $usr->name . " (Class: ". $klass->grade ." - ". $klass->section . ") Roll No: " . $scholar->roll_no
-                );
-            }
-
-            if (!isset($opts['only_user'])) {
-               $data = array(
-                   "user_id" => $e->user_id,
-                   "name" => $usr->name,
-                   "roll_no" => $scholar->roll_no
-               ); 
-            } else {
-                $data = array("user_id" => $e->user_id);
-            }
-            
-            $data = array_merge($data, $extra);
-            $data = ArrayMethods::toObject($data);
-            $students[] = $data;
-        }
-        return $students;
     }
 
     /**

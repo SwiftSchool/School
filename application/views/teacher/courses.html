@@ -21,7 +21,7 @@
                                     {/if} {else}
                                     <a class="label label-warning" href="/assignments/manage/{echo $c->course_id}"><i class="fa fa-list"></i> Manage Assignments</a>
                                     {/else}
-                                    <a href="/teacher/weeklyStudentsPerf/{echo $c->course_id}" class="label label-success"> Weekly Perf</a>
+                                    <a href="/teacher/weeklyStudentsPerf/{echo $c->course_id}/{echo $c->classroom_id}" class="label label-success"> Weekly Perf</a>
                                 </div>
                                 <h4 class="text-headline margin-v-0-10"><a href="#">{echo $c->course}</a></h4>
                             </div>

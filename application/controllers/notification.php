@@ -8,6 +8,7 @@
 use Framework\RequestMethods as RequestMethods;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
+use Shared\Services\Teacher as TeacherService;
 
 class Notification extends Teacher {
 	/**
@@ -31,8 +32,9 @@ class Notification extends Teacher {
         $template->set("title", $assignment->title);
         $content = $template->render();
 
-        $classroom = Classroom::first(array("id = ?" => $assignment->classroom_id));
-        $users = $this->_findEnrollments($classroom, array('only_user' => true));
+        $classroom = TeacherService::$_classes[$assignment->classroom_id];
+        $service = new Shared\Services\Classroom();
+        $users = $service->enrollments($classroom, array('only_user' => true));
 
         $this->_save(array('type' => 'assignment', 'type_id' => $assignment->id, 'url' => '/student/assignments/'.$assignment->course_id), $content, $users);
 	}

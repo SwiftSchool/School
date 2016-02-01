@@ -27,6 +27,11 @@ class Teacher extends \Shared\Controller {
 	 */
 	public static $_classes = null;
 
+	/**
+	 * @readwrite
+	 */
+	public static $_teaches = null;
+
 	public static function init($teacher) {
 		self::$_teacher = $teacher;
 
@@ -36,10 +41,10 @@ class Teacher extends \Shared\Controller {
 	public static function destroy() {
 		$session = Registry::get("session");
 		$session->erase('TeacherService:$courses')
+				->erase('TeacherService:$teaches')
 				->erase('TeacherService:$classes');
-		self::$_teacher = null;
-		self::$_courses = null;
-		self::$_classes = null;
+		self::$_teacher = null; self::$_courses = null;
+		self::$_classes = null; self::$_teaches = null;
 	}
 
 	protected static function _init() {
@@ -47,12 +52,14 @@ class Teacher extends \Shared\Controller {
 		if (!self::$_courses || !self::$_classes) {
 			if (!$session->get('TeacherService:$courses') || !$session->get('TeacherService:$classes')) {
 				$teaches = \Teach::all(array("user_id = ?" => self::$_teacher->user_id));
-				
+
+				$session->set('TeacherService:$teaches', $teaches);
 				$session->set('TeacherService:$courses', self::_findCourses($teaches));
 				$session->set('TeacherService:$classes', self::_findClasses($teaches));
 			}
 			self::$_courses = $session->get('TeacherService:$courses');
 			self::$_classes = $session->get('TeacherService:$classes');
+			self::$_teaches = $session->get('TeacherService:$teaches');
 		}
 	}
 
@@ -87,7 +94,8 @@ class Teacher extends \Shared\Controller {
 				"grade_id" => $g->id,
 				"grade" => $g->title,
 				"section" => $k->section,
-				"year" => $k->year
+				"year" => $k->year,
+				"educator_id" => $k->educator_id
 			);
 			$classes[$k->id] = ArrayMethods::toObject($data);
 		}
