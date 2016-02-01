@@ -95,6 +95,14 @@ class Classroom extends \Auth {
 	                }
 	            }
 	            break;
+
+            case 'submission':
+                $record = $t->findOne(array('user_id' => (int) $e->user_id, 'assignment_id' => (int) $opts['assignment_id']));
+                if (isset($record)) {
+                    $extra = array('grade' => $record['grade'], 'remarks' => $record['remarks']);
+                } else {
+                    $extra = array('grade' => null, 'remarks' => null);
+                }
 	    }
 
 		return $extra;

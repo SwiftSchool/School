@@ -294,6 +294,7 @@ class Student extends School {
      */
     public function remove($user_id) {
         $this->noview();
+        $sub = Registry::get("MongoDB")->submission;
 
         $scholar = Scholar::first(array("user_id = ?" => $user_id));
         if (!$scholar || $scholar->organization_id != $this->organization->id) {
@@ -304,14 +305,14 @@ class Student extends School {
             self::redirect("/404");   
         }
         $enrollment = Enrollment::first(array("user_id = ?" => $user->id));
-        $submissions = Submission::all(array("user_id = ?" => $user->id));
+        $submissions = $sub->find(array("user_id" => (int) $user->id));
         $examResults = ExamResult::all(array("user_id = ?" => $user->id));
 
         foreach ($examResults as $r) {
             // $r->delete();
         }
         foreach ($submissions as $s) {
-            // $s->delete();
+            // $s->remove();
         }
         // $enrollment->delete();
         // $user->delete();
@@ -414,9 +415,10 @@ class Student extends School {
 
         $courses = StudentService::$_courses;
         $result = array();
+        $sub = Registry::get("MongoDB")->submission;
         foreach ($courses as $c) {
             $a = Assignment::count(array("course_id = ?" => $c->id));
-            $s = Submission::count(array("course_id = ?" => $c->id, "user_id = ?" => $this->user->id));
+            $s = $sub->count(array("course_id" => (int) $c->id, "user_id" => (int) $this->user->id));
             $data = array(
                 "_title" => $c->title,
                 "_description" => $c->description,

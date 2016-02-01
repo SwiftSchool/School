@@ -15,7 +15,8 @@ class Assignment extends \Auth {
 	public function all($assignments, $courses) {
 		$this->noview();
 		$user = Registry::get("session")->get("user");
-        $submissions = \Submission::all(array("user_id = ?" => $user));
+        $sub = Registry::get("MongoDB")->submission;
+        $submissions = $sub->find(array("user_id" => (int) $user));
 
         $result = array();
         foreach ($assignments as $a) {
@@ -30,7 +31,6 @@ class Assignment extends \Auth {
                 "course" => $course->title,
                 "submitted" => $submit["submission"],
                 "filename" => ($a->attachment) ? $a->attachment : null,
-                "submission_id" => $submit["submission_id"],
                 "marks" => $submit["grade"],
                 "remarks" => $submit["remarks"],
                 "status" => $submit["status"]
@@ -44,14 +44,15 @@ class Assignment extends \Auth {
     public function total($classroom, $courses) {
         $this->noview();
         $user = Registry::get("session")->get("user");
+        $sub = Registry::get("MongoDB")->submission;
         $assignments = \Assignment::count(array("classroom_id = ?" => $classroom->id));
-        $submissions = \Submission::all(array("user_id = ?" => $user));
+        $submissions = $sub->find(array("user_id" => (int) $user));
 
         $return = array();
         $return['total'] = (int) $assignments;
         $return['submitted'] = 0;
         foreach ($submissions as $s) {
-            if (array_key_exists($s->course_id, $courses)) {
+            if (array_key_exists($s['course_id'], $courses)) {
                 $return['submitted']++;
             }
         }
@@ -61,6 +62,7 @@ class Assignment extends \Auth {
     public function submit($assignment) {
         $this->noview();
         $user = Registry::get("session")->get("user");
+        $sub = Registry::get("MongoDB")->submission;
         $maxSize = "6291456";
         $return = array();
 
@@ -74,7 +76,8 @@ class Assignment extends \Auth {
             return $return;
         }
 
-        $submission = \Submission::first(array("user_id = ?" => $user, "assignment_id = ?" => $assignment->id));
+        $where = array("user_id" => (int) $user, "assignment_id" => (int) $assignment->id);
+        $submission = $sub->findOne($where);
         if ($submission) {
             $return["success"] = "Assignment already submitted! Your response will be updated";
         }
@@ -91,39 +94,37 @@ class Assignment extends \Auth {
                 return $return;
             }
             if (!$submission) {
-                $submission = new \Submission(array(
-                    "user_id" => $user,
-                    "assignment_id" => $assignment->id,
-                    "course_id" => $assignment->course_id,
+                $sub->insert(array(
+                    "user_id" => (int) $user,
+                    "assignment_id" => (int) $assignment->id,
+                    "course_id" => (int) $assignment->course_id,
+                    "response" => $response,
                     "grade" => null,
-                    "remarks" => null
+                    "remarks" => null,
+                    "modified" => new \MongoDate(),
+                    "created" => new \MongoDate(),
+                    "live" => true
                 ));
             } else {
-                unlink(APP_PATH ."/public/assets/uploads/assignments/". $submission->response);
+                $sub->update($where, array('$set' => array('response' => $response)));
+                unlink(APP_PATH ."/public/assets/uploads/assignments/". $submission['response']);
             }
-            $submission->response = $response;
 
-            if (!$submission->validate()) {
-                $return["success"] = "Invalid Response! Validation Failed";
-                return $return;
-            }
-            $submission->save();
             $return["success"] = "You have successfully submitted the assignment!";
         }
         return $return;
     }
 
 	protected function _submission($submissions, $a) {
-        $submit = array("submission" => false, "file" => null, "status" => null, "remarks" => null, "grade" => null, "submission_id" => null);
+        $submit = array("submission" => false, "file" => null, "status" => null, "remarks" => null, "grade" => null);
         
         foreach ($submissions as $s) {
-            if ($s->assignment_id == $a->id) {
-                $submit["file"] = $s->response;
+            if ($s['assignment_id'] == $a->id) {
+                $submit["file"] = $s['response'];
                 $submit["submission"] = true;
-                $submit["status"] = $s->live ? "Accepted" : "Rejected";
-                $submit["remarks"] = $s->remarks;
-                $submit["grade"] = $s->grade;
-                $submit["submission_id"] = $s->id;
+                $submit["status"] = $s['live'] ? "Accepted" : "Rejected";
+                $submit["remarks"] = $s['remarks'];
+                $submit["grade"] = $s['grade'];
                 break;
             }
         }

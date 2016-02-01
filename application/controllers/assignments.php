@@ -4,10 +4,11 @@
  *
  * @author Hemant Mann
  */
-use Framework\RequestMethods as RequestMethods;
 use Shared\Markup as Markup;
 use Framework\Registry as Registry;
 use Framework\ArrayMethods as ArrayMethods;
+use Framework\RequestMethods as RequestMethods;
+use Shared\Services\Teacher as TeacherService;
 
 class Assignments extends Teacher {
 	/**
@@ -76,7 +77,7 @@ class Assignments extends Teacher {
 			$storedGrades[$g->id] = $g->title;
 		}
 
-		$courses = $this->_courses();
+		$courses = TeacherService::$_courses;
 		$classrooms = array();
 		$message = Registry::get("session")->get('$redirectMessage');
 		if ($message) {
@@ -132,31 +133,24 @@ class Assignments extends Teacher {
 		$this->setSEO(array("title" => "View Assignment Submissions | Teacher"));
 		$view = $this->getActionView();
 		
-		$classroom = \Classroom::first(array("id = ?" => $assignment->classroom_id), array("section", "year", "grade_id"));
-		$grade = \Grade::first(array("id = ?" => $classroom->grade_id), array("title"));
+		$classroom = TeacherService::$_classes[$assignment->classroom_id];
 
-		$find = \Submission::all(array("assignment_id = ?" => $assgmt_id));
+		$sub = Registry::get("MongoDB")->submission;
+		$find = $sub->find(array('assignment_id' => (int) $assgmt_id));
 		$submissions = array();
 		foreach ($find as $f) {
-			$usr = \User::first(array("id = ?" => $f->user_id), array("name"));
-			$student = \Scholar::first(array("user_id = ?" => $f->user_id), array("roll_no"));
+			$usr = \User::first(array("id = ?" => $f['user_id']), array("name"));
+			$student = \Scholar::first(array("user_id = ?" => $f['user_id']), array("roll_no"));
 
 			$submissions[] = array(
 				"student" => $usr->name,
-				"submission_id" => $f->id,
 				"student_roll_no" => $student->roll_no,
-				"response" => $f->response,
-				"live" => $f->live,
-				"submitted_on" => $f->created
+				"response" => $f['response'],
+				"live" => $f['live'],
+				"submitted_on" => date('Y-m-d H:i:s', $f['created']->sec)
 			);
 		}
 		$submissions = ArrayMethods::toObject($submissions);
-
-		$klass = array();
-		$klass["title"] = $grade->title;
-		$klass["section"] = $classroom->section;
-		$klass["year"] = $classroom->year;
-		$klass = ArrayMethods::toObject($klass);
 
 		$view->set("class", $klass);
 		$view->set("submissions", $submissions);
@@ -164,42 +158,64 @@ class Assignments extends Teacher {
 	}
 
 	/**
-	 * @before _secure
-	 */
-	public function result($assignment_id) {
-		$this->JSONView();
-		$view = $this->getActionView();
-
-		$result = Submission::first(array("assignment_id = ?" => $assignment_id, "user_id = ?" => $this->user->id));
-		$view->set("result", $result);
-	}
-
-	/**
 	 * @before _secure, _teacher
 	 */
-	public function gradeIt($submission_id) {
+	public function gradeIt($assignment_id) {
 		$this->setSEO(array("title" => "Grade assignments | Teacher"));
 		$view = $this->getActionView();
 
-		$submission = Submission::first(array("id = ?" => $submission_id));
-		$assignment = Assignment::first(array("id = ?" => $submission->assignment_id), array("id", "user_id"));
+		$assignment = Assignment::first(array("id = ?" => $assignment_id));
 		
-		if (!$submission || !$assignment || $assignment->user_id != $this->user->id) {
+		if (!$assignment || $assignment->user_id != $this->user->id) {
 			self::redirect("/404");
 		}
+		$classroom = TeacherService::$_classes[$assignment->classroom_id];
 
-		$submission = Submission::first(array("assignment_id = ?" => $assignment->id, "user_id = ?" => $user_id));
+		$service = new Shared\Services\Classroom();
 
+		$return = $this->_grade($assignment);
+		$students = $service->enrollments($classroom, array('table' => 'submission', 'assignment_id' => $assignment->id));
+		
+		$view->set($return)
+			->set("class", $classroom)
+			->set("assignment", $assignment)
+			->set('scale', array(1,2,3,4,5))
+			->set("students", $students);
+	}
+
+	protected function _grade($assignment) {
+		$sub = Registry::get("MongoDB")->submission;
 		if (RequestMethods::post("action") == "saveMarks") {
-			$submission->grade = RequestMethods::post("grade");
-			$submission->remarks = RequestMethods::post("remarks");
+			$submissions = $this->reArray($_POST);
+			
+			foreach ($submissions as $s) {
+				$doc = array(
+					'assignment_id' => (int) $assignment->id,
+					'course_id' => (int) $assignment->course_id,
+					'user_id' => (int) $s['user_id'],
+					'response' => null,
+					'grade' => (int) $s['grade'],
+					'remarks' => $s['remarks'],
+					'modified' => new \MongoDate(),
+					'created' => new \MongoDate(),
+					'live' => true
+				);
 
-			if ($submission->validate()) {
-				$submission->save();
-				$view->set("success", "Assignment successfully graded");
-			} else {
-				$view->set("errors", $submission->errors);
+				$where = array('assignment_id' => $doc['assignment_id'], 'user_id' => $doc['user_id']);
+				$record = $sub->findOne($where);
+				if (!isset($record)) {
+					$sub->insert($doc);
+				} else {
+					$sub->update($where, array('$set' => $doc));
+				}
+			}
+			return array("message" => "Assignment successfully graded");
+		} else {
+			$record = $sub->findOne(array('assignment_id' => (int) $assignment->id));
+			if (isset($record)) {
+				return array("message" => "Assignment already Graded!!!");
 			}
 		}
+		return array('message' => null);
 	}
 }

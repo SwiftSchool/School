@@ -1,0 +1,59 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <h3 class="page-heading">Assignment: "{echo $assignment->title}"</h3>
+                    <h4>Class: {echo $class->grade . "-". $class->section}</h4>
+                    <form action="" method="post">
+                        {if isset($message)}
+                        <div class="alert alert-info alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            {echo $message}
+                        </div><br>
+                        {/if}
+                        <table class="panel table panel-default">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Roll No</td>
+                                    <td>Grade</td>
+                                    <td>Remarks</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach $s in $students}
+                                <tr>
+                                    <td>{echo $s->name}</td>
+                                    <td>{echo $s->roll_no}</td>
+                                    <td class="form-group" style="width: 20%">
+                                        <select name="grade[]" class="form-control" required="">
+                                            {foreach $x in $scale}
+                                            <option value="{echo $x}" {if $s->grade !== null && $s->grade == $x}selected=""{/if}{elseif $x == 3}selected=""{/elseif}>{echo $x}</option>
+                                            {/foreach}
+                                        </select>
+                                    </td>
+                                    <td class="form-group">
+                                        <input type="text" name="remarks[]" class="form-control" placeholder="Any remarks for the student" value="{echo $s->remarks}">
+                                    </td>
+                                    <input type="hidden" name="user_id[]" value="{echo $s->user_id}">
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                        <input type="hidden" name="action" value="saveMarks">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    {include teacher/includes/nav.html}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
