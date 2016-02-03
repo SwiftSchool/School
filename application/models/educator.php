@@ -30,4 +30,12 @@ class Educator extends Shared\Model {
      */
     protected $_location_id;
 
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 100
+     */
+    protected $_timetable = null;
+
 }

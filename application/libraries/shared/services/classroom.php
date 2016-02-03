@@ -153,11 +153,12 @@ class Classroom extends \Auth {
 	public function weeklyPerformance($teach) {
 		$this->noview();
 		$perf = Registry::get("MongoDB")->performance;
+        $user = Registry::get("session")->get("user");
 
         if (RequestMethods::post("action") == "grade") {
             $performances = $this->reArray($_POST);
 
-            $week = (new DateTime(date('Y-m-d')))->format("W");
+            $week = (new \DateTime(date('Y-m-d')))->format("W");
             $yr = date('Y');
 
             foreach ($performances as $p) {
@@ -165,7 +166,7 @@ class Classroom extends \Auth {
                     return false;
                 }
 
-                $where = array('user_id' => (int) $p['user_id'], 'course_id' => (int) $teach->course_id, 'teacher_id' => (int) $this->user->id, 'year' => $yr);
+                $where = array('user_id' => (int) $p['user_id'], 'course_id' => (int) $teach->course_id, 'teacher_id' => (int) $user, 'year' => $yr);
                 $record = $perf->findOne($where);
                 
                 // if record exists then we need to loop for the performance tracks

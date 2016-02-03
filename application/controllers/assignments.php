@@ -179,7 +179,7 @@ class Assignments extends Teacher {
 		$view->set($return)
 			->set("class", $classroom)
 			->set("assignment", $assignment)
-			->set('scale', array(1,2,3,4,5))
+			->set('scale', array(0,1,2,3,4,5))
 			->set("students", $students);
 	}
 

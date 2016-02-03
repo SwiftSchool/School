@@ -64,4 +64,12 @@ class Classroom extends Shared\Model {
      */
     protected $_educator_id;
 
+    /**
+     * @column
+     * @readwrite
+     * @type text
+     * @length 100
+     */
+    protected $_timetable = null;
+
 }
