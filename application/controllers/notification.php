@@ -36,6 +36,9 @@ class Notification extends Teacher {
         $users = $service->enrollments($classroom, array('only_user' => true));
 
         $this->_save(array('type' => 'assignment', 'type_id' => $assignment->id, 'url' => '/student/assignments/'.$assignment->course_id), $content, $users);
+
+        Registry::get("session")->set('$redirectMessage', "Notification sent to students");
+        self::redirect($_SERVER['HTTP_REFERER']);
 	}
 
 	/**
@@ -90,8 +93,7 @@ class Notification extends Teacher {
 	        $view->set("message", "Notification sent to students!!");
 		} else {
 			$view->set("message", "Invalid Request! Something went wrong");
-		}
-		
+		}	
 	}
 
 	/**
@@ -118,7 +120,32 @@ class Notification extends Teacher {
 			);
 		}
 		$view->set("notifications", count($results) == 0 ? ArrayMethods::toObject(array()) : $results);
+	}
 
+	/**
+	 * Updating the notification status
+	 * @before _secure
+	 */
+	public function update($notification_id) {
+		$this->JSONView();
+		$view = $this->getActionView();
+
+		$notifications = Registry::get("MongoDB")->notifications;
+		$mongo_id = new \MongoId($notification_id);
+		
+		$record = $notifications->findOne(array('_id' => $mongo_id));
+		if (!isset($record) || $record['recipient'] != 'user' || $record['recipient_id'] != (int) $this->user->id) {
+			self::redirect("/404");
+		}
+
+		$status = RequestMethods::post("read", true);
+		if ($status === 'true') {
+			$status = true;
+		} elseif ($status === 'false') {
+			$status = false;
+		}
+		$notifications->update(array('_id' => $mongo_id), array('$set' => array('live' => $status)));
+		$view->set("success", "Notification status updated!!");
 	}
 
 	protected function _save($type, $content, $users) {
@@ -148,8 +175,5 @@ class Notification extends Teacher {
         	}
         	$notifications->update($where, array('$set' => $document));
         }
-
-        Registry::get("session")->set('$redirectMessage', "Notification sent to students");
-        self::redirect($_SERVER['HTTP_REFERER']);
 	}
 }
