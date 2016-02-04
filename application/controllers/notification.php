@@ -25,7 +25,6 @@ class Notification extends Teacher {
 		$this->JSONView();
 		$view = $this->getActionView();
 
-		$notifications = Registry::get("MongoDB")->notifications;
 		$template = new Framework\View(array(
             "file" => APP_PATH . "/application/views/notification/templates/newAssignment.html"
         ));
@@ -58,6 +57,41 @@ class Notification extends Teacher {
 	 */
 	public function fee() {
 
+	}
+
+	/**
+	 * Sends a notification to all the students studying the course
+	 * @param int $course_id Id of the course teacher is teaching
+	 * @param int $classroom_id Id of the classroom in which the teacher is teaching
+	 */
+	public function students($course_id, $classroom_id) {
+		$this->JSONView();
+		$view = $this->getActionView();
+
+		$found = false;
+		$teaches = TeacherService::$_teaches;
+		foreach ($teaches as $t) {
+			if ($t->course_id == $course_id && $t->classroom_id == $classroom_id) {
+				$found = true;
+			}
+		}
+		if (!$found) {
+			self::redirect("/404");
+		}
+
+		if (RequestMethods::post("action") == "notifyStudents") {
+			$classroom = TeacherService::$_classes[$classroom_id];
+	        $service = new Shared\Services\Classroom();
+	        $users = $service->enrollments($classroom, array('only_user' => true));
+
+	        $content = RequestMethods::post("message");
+	        $this->_save(array('type' => 'course', 'type_id' => $course_id, 'url' => ''), $content, $users);
+
+	        $view->set("message", "Notification sent to students!!");
+		} else {
+			$view->set("message", "Invalid Request! Something went wrong");
+		}
+		
 	}
 
 	/**

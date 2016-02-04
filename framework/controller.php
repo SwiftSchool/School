@@ -178,6 +178,10 @@ namespace Framework {
                                     case 'string':
                                     case 'integer':
                                         $obj[$keys] = $values;
+                                        break;
+
+                                    default:
+                                        break;
 
                                 }
                             }

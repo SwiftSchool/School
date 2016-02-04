@@ -56,7 +56,7 @@ class Student extends School {
 
         // find average attendance for the month
         $service = new \Shared\Services\Attendance();
-        $attendances = $service->find($start, $end);
+        $attendances = $service->find($d['start'], $d['end']);
         $present = 0; $total = 0;
         foreach ($attendances as $a) {
             $total++;
