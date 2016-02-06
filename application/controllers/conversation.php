@@ -23,9 +23,9 @@ class Conversation extends Teacher {
 		$classrooms = TeacherService::$_classes;
 		$service = new Shared\Services\Classroom();
 
-		$students = $s = array();
+		$students = array();
 		foreach ($classrooms as $c) {
-			$s[] = $service->enrollments($c, array('conversation' => true));
+			$s = $service->enrollments($c, array('conversation' => true));
 			$students = array_merge($students, $s);
 		}
 
@@ -179,8 +179,9 @@ class Conversation extends Teacher {
 	 * @return string Conversation ID of the new conversation
 	 */
 	protected function _newConv() {
+		$conv = Registry::get("MongoDB")->conversation;
 		$doc = array(
-			'title' => RequestMethods::post("title"),
+			'title' => RequestMethods::post("display"),
 			'identifier' => RequestMethods::post("identifier"),
 			'user_id' => (int) $this->user->id,
 			'live' => true,

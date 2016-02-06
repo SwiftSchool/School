@@ -105,7 +105,8 @@ class Notification extends Teacher {
 		$view = $this->getActionView();
 
 		$notifications = Registry::get("MongoDB")->notifications;
-		$records = $notifications->find(array('recipient' => 'user', 'recipient_id' => (int) $this->user->id, 'live' => false));
+		$records = $notifications->find(array('recipient' => 'user', 'recipient_id' => (int) $this->user->id));
+		$records->sort(array('created' => -1, 'live' => 1));
 
 		$results = array();
 		foreach ($records as $r) {
