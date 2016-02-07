@@ -9,10 +9,9 @@
                 <p>Title: <strong id="eventTitle"></strong></p>
                 <p>Description: <strong id="eventDescription"></strong></p>
                 <div class="modal-footer">
-                 {if $organization->user_id==$user->id}
+                    {if $organization->user_id==$user->id}
                     <a href="/events/edit/" id="eventEdit" class="btn btn-info">Edit</a>
-                    <a href="#" id="eventDel" class="modal-action modal-close btn btn-danger" data-dismiss="modal">Delete</a>
-                    {/if}
+                    <a href="#" id="eventDel" class="modal-action modal-close btn btn-danger" data-dismiss="modal">Delete</a> {/if}
                     <button type="button" class=" modal-action modal-close btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

@@ -112,8 +112,9 @@ class School extends Auth {
 			foreach ($query as $q) {
 				$where[$q["where"]] = $q["value"];
 			}
+			$fields = (isset($opts['fields']) ? $opts['fields'] : array("*")); 
 			
-			$check = $opts["model"]::all($where);
+			$check = $opts["model"]::all($where, $fields);
 			if ($check) {
 				$view->set("results", $check);
 			} else {

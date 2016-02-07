@@ -3,14 +3,15 @@
     window.opts = {};
 }(window, window.Model));
 
-/*** School Controller ***/
-(function (window, request, $) {
-    var School = (function () {
-        function School() {}
+(function (window, $) {
+    var Display = (function () {
+        function Display() {
+            this.target = false;
+        }
 
-        School.prototype = {
-            _find: function (opts) {
-                var find = $(opts.selector), target;
+        Display.prototype = {
+            find: function (selector) {
+                var find = $(selector), target;
                 if (find.length > 1) {
                     target = find[opts.index];
                 } else {
@@ -19,6 +20,41 @@
                 target = $(target);
                 return target;
             },
+            display: function (opts, data) {
+                var target = this.find(opts.selector);
+                if (data.results) {
+                    target.html('');
+                    var objects = data.results, i, max;
+                    for (i = 0, max = objects.length; i < max; ++i) {
+                        target.append('<option value="' + objects[i][opts.val] + '">' + objects[i][opts.display] + '</option>');
+                    }
+                } else {
+                    target.html('<option>No ' + opts.title + 's for this grade</option>');
+                }
+            },
+            info: function (usr) {
+                var modal = $('#userInfo'),
+                    el = $('#queryResults');
+
+                el.html('<p><strong>Name:</strong> ' + usr._name + '</p><p><strong>Email:</strong> ' + usr._email + '</p><p><strong>Phone:</strong> ' + usr._phone + '<p><strong>Roll No:</strong> ' + usr._roll_no + '</p><p><strong>Date Of Birth:</strong> ' + usr._dob + '</p>');
+                modal.openModal('show');
+            }
+        }
+
+        return Display;
+    }());
+
+    window.Display = new Display();
+}(window, jQuery));
+
+/*** School Controller ***/
+(function (window, request, $, Display) {
+    var School = (function () {
+        function School() {
+            this.cache = { student: {} };
+        }
+
+        School.prototype = {
             _fetch: function (opts, callback) {
                 var self = this;
                 request.create({
@@ -30,35 +66,13 @@
                 });
             },
             findSections: function (opts) {
-                var target = this._find(opts);
-                this._fetch(opts, function (data) {
-                    if (data.results) {
-                        target.html('');
-                        var classrooms = data.results, i, max;
-                        for (i = 0, max = classrooms.length; i < max; ++i) {
-                            target.append('<option value="' + classrooms[i]._id + '">' + classrooms[i]._section + '</option>');
-                        }
-                    } else {
-                        target.html('<option>No Sections for this grade</option>');
-                    }
-                });
+                this._fetch(opts, Display.display({ val: '_id', display: '_section', selector: opts.selector, title: 'Section' }, data));
             },
             findCourses: function(opts) {
-                var target = this._find(opts);
-                this._fetch(opts, function (data) {
-                    if (data.results) {
-                        target.html('');
-                        var courses = data.results, i, max;
-                        for (i = 0, max = courses.length; i < max; ++i) {
-                            target.append('<option value="' + courses[i]._id + '">' + courses[i]._title + '</option>');
-                        }
-                    } else {
-                        target.html('<option>No Courses for this grade</option>');
-                    }
-                });
+                this._fetch(opts, Display.display({ val: '_id', display: '_title', selector: opts.selector, title: 'Courses' }, data));
             },
             findExams: function (opts) {
-                var target = this._find(opts);
+                var target = Display.find(opts.selector);
                 this._fetch(opts, function (data) {
                     if (data.results) {
                         target.html('');
@@ -76,13 +90,51 @@
                         target.html('<option>No Exams for this grade</option>');
                     }
                 });
+            },
+            _studentInfo: function (usr, callback) {
+                var opts = {
+                    model: 'Scholar',
+                    query: [{
+                        where: 'user_id = ?',
+                        value: usr._id
+                    }],
+                    fields: ["dob", "roll_no"]
+                };
+                var self = this;
+                self._fetch(opts, function (data) {
+                    callback.call(self, data);
+                });
+            },
+            studentInfo: function (opts) {
+                var self = this,
+                    uid = opts.query[0].value,
+                    cached = self.cache.student;
+                if (typeof cached['User-' + uid] == "undefined") {
+                    self._fetch(opts, function (data) {
+                        if (!data.results) {
+                            return;
+                        }
+                        var usr = data.results[0];
+
+                        self._studentInfo(usr, function (data) {
+                            if (data.results) {
+                                var st = data.results[0];
+                                usr._roll_no = st._roll_no; usr._dob = st._dob;
+                            }
+                            cached['User-' + uid] = usr;
+                            Display.info(cached['User-' + uid]);
+                        });
+                    });
+                } else {
+                    Display.info(cached['User-' + uid]);
+                }
             }
         }
 
         return School;
     }());
     window.School = new School();
-}(window, window.request, jQuery));
+}(window, window.request, jQuery, window.Display));
 
 /*** Calendar Controller ***/
 (function (window, request, $) {
@@ -276,5 +328,19 @@ $(document).ready(function() {
         e.preventDefault();
         var id = $(this).attr("data-eventId");
         Cal.deleteEvent(id);
+    });
+
+    $('.showUserInfo').on('click', function (e) {
+        e.preventDefault();
+
+        var opts = {
+                model: 'User',
+                query: [{
+                    where: 'id = ?',
+                    value: $(this).data('uid')
+                }],
+                fields: ["name", "email", "phone", "id"]
+            };
+        School.studentInfo(opts);
     });
 });

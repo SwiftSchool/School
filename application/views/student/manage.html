@@ -1,3 +1,4 @@
+{include student/includes/info.html}
 <!-- Main Content -->
 <section class="content-wrap">
     <!-- Breadcrumb -->
@@ -68,7 +69,7 @@
                         <tr>
                             <td>{echo $i}</td>
                             {script $usr = User::first(array("id = ?" => $s->user_id), array("name", "username"))}
-                            <td>{echo $usr->name}</td>
+                            <td><a href="#" class="showUserInfo" data-uid="{echo $s->user_id}">{echo $usr->name}</a></td>
                             <td>{echo $usr->username}</td>
                             
                             <!-- Guardian Info -->
