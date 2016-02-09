@@ -68,7 +68,12 @@
                     <div class="panel-heading panel-collapse-trigger">
                         <h4 class="panel-title">My Account</h4>
                     </div>
-                    {include student/includes/nav.html}
+                    {script $session = Framework\Registry::get("session")}
+                    {if $session->get("scholar")}
+                        {include student/includes/nav.html}
+                    {/if} {elseif $session->get("educator")}
+                        {include teacher/includes/nav.html}
+                    {/elseif}
                 </div>
             </div>
         </div>

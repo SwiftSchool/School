@@ -45,7 +45,6 @@ class Teacher extends School {
         $view = $this->getActionView();
 
         $courses = TeacherService::$_courses;
-
         $view->set("courses", $courses);
 	}
 
@@ -210,6 +209,11 @@ class Teacher extends School {
             );
             $data = ArrayMethods::toObject($data);
             $result[] = $data;
+        }
+        $session = Registry::get("session");
+        if ($session->get('Notification\Students:$sent')) {
+            $view->set("success", "Notification sent to students");
+            $session->erase('Notification\Students:$sent');
         }
 
         $view->set("courses", $result);

@@ -1,3 +1,4 @@
+{include teacher/includes/notify.html}
 <div class="st-pusher" id="content">
     <!-- sidebar effects INSIDE of st-pusher: -->
     <!-- st-effect-3, st-effect-6, st-effect-7, st-effect-8, st-effect-14 -->
@@ -6,37 +7,48 @@
         <!-- extra div for emulating position:fixed of the menu -->
         <div class="st-content-inner padding-none">
             <div class="container-fluid">
-                <div class="page-section">
-                    <h1 class="text-display-1">My Courses</h1>
-                </div>
-                <div class="row" data-toggle="isotope">
-                    {foreach $c in $courses}
-                    <div class="item col-xs-12 col-sm-6 col-lg-4">
-                        <div class="panel panel-default paper-shadow" data-z="0.5">
-                            <div class="panel-body">
-                                {script $count = $c->assignments}
-                                <div class="pull-right">
-                                    <a class="label label-info" href="/assignments/create/{echo $c->course_id}/{echo $c->classroom_id}"><i class="fa fa-plus"></i> Create Assignment</a>
-                                    <a class="label label-warning" href="/assignments/manage/{echo $c->course_id}"><i class="fa fa-list"></i> Manage Assignments</a>
-                                    <a href="/teacher/weeklyStudentsPerf/{echo $c->course_id}/{echo $c->classroom_id}" class="label label-success"> Weekly Perf</a>
+                <div class="col-md-9">
+                    <div class="page-section">
+                        <h1 class="text-display-1">My Subjects</h1>
+                    </div>
+                    {if isset($success)}
+                    <div class="alert alert-success alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        {echo $success}
+                    </div><br>
+                    {/if}
+                    <div class="row" data-toggle="isotope">
+                        {foreach $c in $courses}
+                        <div class="item col-xs-12 col-sm-6 col-lg-6">
+                            <div class="panel panel-default paper-shadow" data-z="0.5">
+                                <div class="panel-body">
+                                    <h4 class="text-headline margin-v-0-10"><a href="#">{echo $c->course}</a></h4>
                                 </div>
-                                <h4 class="text-headline margin-v-0-10"><a href="#">{echo $c->course}</a></h4>
-                            </div>
-                            <hr class="margin-none" />
-                            <div class="panel-body">
-                                <p><strong>Grade: </strong><span class="label label-primary">{echo $c->grade}</span> <strong>Section: </strong><span class="label label-success">{echo $c->section}</span></p>
+                                <hr class="margin-none" />
+                                <div class="panel-body">
+                                    <p><strong>Grade: </strong><span class="label label-primary">{echo $c->grade}</span> <strong>Section: </strong><span class="label label-success">{echo $c->section}</span></p>
+                                </div>
+                                <div class="panel-body">
+                                    <p>
+                                        <a class="label label-info" href="/assignments/create/{echo $c->course_id}/{echo $c->classroom_id}"><i class="fa fa-plus"></i> Create Assignment</a>
+                                        <a class="label label-warning" href="/assignments/manage/{echo $c->course_id}"><i class="fa fa-list"></i> Manage Assignments</a></p>
+                                    <p>
+                                        <a href="/teacher/weeklyStudentsPerf/{echo $c->course_id}/{echo $c->classroom_id}" class="label label-success"> Weekly Perf</a>
+                                        <a href="#" class="label label-default notifyStudents" data-course="{echo $c->course_id}" data-classroom="{echo $c->classroom_id}"> Notify Students</a></p>
+                                </div>
                             </div>
                         </div>
+                        {/foreach}
                     </div>
-                    {/foreach}
+                </div><br><br>
+                <div class="col-md-3">
+                    <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                        <div class="panel-heading panel-collapse-trigger">
+                            <h4 class="panel-title">My Account</h4>
+                        </div>
+                        {include teacher/includes/nav.html}
+                    </div>
                 </div>
-                <ul class="pagination margin-top-none">
-                    <li class="disabled"><a href="app-instructor-courses.html#">&laquo;</a></li>
-                    <li class="active"><a href="app-instructor-courses.html#">1</a></li>
-                    <li><a href="app-instructor-courses.html#">2</a></li>
-                    <li><a href="app-instructor-courses.html#">3</a></li>
-                    <li><a href="app-instructor-courses.html#">&raquo;</a></li>
-                </ul>
             </div>
         </div>
         <!-- /st-content-inner -->

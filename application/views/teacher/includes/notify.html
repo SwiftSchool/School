@@ -1,0 +1,22 @@
+<!-- Modal -->
+<div class="modal fade" id="notifyStudents" tabindex="-1" role="dialog" aria-labelledby="notifyStudents">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="">Message</h2>
+            </div>
+            <form class="modal-body" action="" method="post" id="notifyStudentsForm">
+                <div class="form-group">
+                    <input type="text" name="message" required="" class="form-control">
+                    <input type="hidden" name="redirect" value="true">
+                    <input type="hidden" name="action" value="notifyStudents">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Notify</button>
+                    <button type="button" class=" modal-action modal-close btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

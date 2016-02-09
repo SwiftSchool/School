@@ -63,7 +63,7 @@ $(document).ready(function () {
 	if ($("#calendar").length !== 0) {
 		$("#calendar").fullCalendar({
 			header: {
-				left: 'prev,next today',
+				left: 'prev,next,today',
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
@@ -79,4 +79,12 @@ $(document).ready(function () {
 			eventSources: ["/events/all"]
 		});
 	}
+
+	$('.notifyStudents').on('click', function (e) {
+		e.preventDefault();
+		var self = $(this);
+
+		$('#notifyStudentsForm').attr('action', '/notification/students/' + self.data('course') + '/' + self.data('classroom'));
+		$('#notifyStudents').modal('show');
+	});
 });

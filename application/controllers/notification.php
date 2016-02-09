@@ -66,6 +66,7 @@ class Notification extends Teacher {
 	 * Sends a notification to all the students studying the course
 	 * @param int $course_id Id of the course teacher is teaching
 	 * @param int $classroom_id Id of the classroom in which the teacher is teaching
+	 * @before _secure, _teacher
 	 */
 	public function students($course_id, $classroom_id) {
 		$this->JSONView();
@@ -76,6 +77,7 @@ class Notification extends Teacher {
 		foreach ($teaches as $t) {
 			if ($t->course_id == $course_id && $t->classroom_id == $classroom_id) {
 				$found = true;
+				break;
 			}
 		}
 		if (!$found) {
@@ -88,8 +90,15 @@ class Notification extends Teacher {
 	        $users = $service->enrollments($classroom, array('only_user' => true));
 
 	        $content = RequestMethods::post("message");
+	        $course = TeacherService::$_courses[$course_id];
+
+	        $content .= ' Subject: ' . $course->title . ', Teacher: ' . $this->user->name;
 	        $this->_save(array('type' => 'course', 'type_id' => $course_id, 'url' => ''), $content, $users);
 
+	        if (RequestMethods::post("redirect")) {
+	        	Registry::get("session")->set('Notification\Students:$sent', true);
+	        	self::redirect($_SERVER['HTTP_REFERER']);
+	        }
 	        $view->set("message", "Notification sent to students!!");
 		} else {
 			$view->set("message", "Invalid Request! Something went wrong");
