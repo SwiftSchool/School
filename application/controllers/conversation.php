@@ -51,7 +51,13 @@ class Conversation extends Teacher {
 		} else {
 			$conversation_id = new MongoId($conversation_id);
 		}
-		$this->JSONView();
+		$this->setSEO(array("title" => "View Conversations"));
+		$session = Registry::get("session");
+		if ($session->get("scholar")) {
+			$this->layoutView->set("scholar", true);
+		} elseif ($session->get("educator")) {
+			$this->layoutView->set("educator", true);
+		}
 		$view = $this->getActionView();
 
 		$conversation = $this->_findConv($conversation_id);
@@ -85,6 +91,7 @@ class Conversation extends Teacher {
 		if (isset($return['success'])) {
 			$view->set('message', $return['message']);
 		}
+		self::redirect("/conversation/view/$conversation_id");
 	}
 
 	/**
@@ -92,8 +99,9 @@ class Conversation extends Teacher {
 	 * @before _secure, _teacher
 	 */
 	public function all() {
-		$this->JSONView();
+		$this->setSEO(array("title" => "Messages | Teacher"));
 		$view = $this->getActionView();
+		$this->layoutView->set("educator", true);
 
 		$conv = Registry::get("MongoDB")->conversation;
 		$records = $conv->find(array('user_id' => (int) $this->user->id, 'live' => true));
@@ -107,8 +115,9 @@ class Conversation extends Teacher {
 	 * @before _secure
 	 */
 	public function find() {
-		$this->JSONView();
+		$this->setSEO(array("title" => "Messages | Student"));
 		$view = $this->getActionView();
+		$this->layoutView->set("scholar", true);
 
 		$mongo = Registry::get("MongoDB");
 		$conv_users = $mongo->conv_users;
@@ -119,10 +128,13 @@ class Conversation extends Teacher {
 		foreach ($records as $r) {
 			$c = $conv->findOne(array('_id' => $r['conversation_id']));
 			$usr = User::first(array("id = ?" => $c['user_id']), array("name"));
-			$conversations[] = array(
+
+			$d = array(
 				"teacher" => $usr->name,
-				"id" => $c['_id']->{'$id'}
+				"id" => $c['_id']->{'$id'},
+				"created" => date('Y-m-d H:i:s', $c['created']->sec)
 			);
+			$conversations[] = ArrayMethods::toObject($d);
 		}
 		$view->set("conversations", $conversations);
 	}
@@ -318,5 +330,4 @@ class Conversation extends Teacher {
 		
 		return $this->_fmtRecords($messages);
 	}
-
 }

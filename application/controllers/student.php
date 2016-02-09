@@ -463,7 +463,6 @@ class Student extends School {
         $this->organization = $session->get("organization");
         $this->scholar = $session->get("scholar");
         StudentService::init($this->scholar);
-
         
         if (!$this->scholar) {
             self::redirect("/");

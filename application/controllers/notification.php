@@ -100,9 +100,11 @@ class Notification extends Teacher {
 	 * Fetch notifications for the APP
 	 * @before _secure
 	 */
-	public function fetch() {
-		$this->JSONView();
-		$view = $this->getActionView();
+	public function fetch($return = false) {
+		if (!$return) {
+			$this->JSONView();
+			$view = $this->getActionView();
+		}
 
 		$notifications = Registry::get("MongoDB")->notifications;
 		$records = $notifications->find(array('recipient' => 'user', 'recipient_id' => (int) $this->user->id));
@@ -110,7 +112,7 @@ class Notification extends Teacher {
 
 		$results = array();
 		foreach ($records as $r) {
-			$results[] = array(
+			$d = array(
 				"id" => $r['_id']->{'$id'},
 				"content" => $r['template'],
 				"url" => $r['url'],
@@ -119,6 +121,11 @@ class Notification extends Teacher {
 				"type" => $r['type'],
 				"type_id" => $r['type_id']
 			);
+			$results[] = ArrayMethods::toObject($d);
+		}
+
+		if ($return) {
+			return $results;
 		}
 		$view->set("notifications", count($results) == 0 ? ArrayMethods::toObject(array()) : $results);
 	}

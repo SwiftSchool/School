@@ -51,16 +51,9 @@ class Auth extends Controller {
     public function login() {
         $this->setSEO(array("title" => "Login"));
         $view = $this->getActionView();
-        $return = $this->_checkLogin();
+        $response = $this->_checkLogin();
 
-        $data = array();
-
-        if (isset($return["error"])) {
-            $data["error"] = $return["error"];
-        } elseif (isset($return["success"])) {
-            $data = $return;
-        }
-        $view->set($data);
+        $view->set($response);
     }
 
     protected function _checkLogin() {
@@ -126,7 +119,7 @@ class Auth extends Controller {
 
     /**
      * Creates new Users with unique username
-     * @return null
+     * @return null|object
      */
     protected function _createUser($opts) {
         $name = $opts["name"];
@@ -170,12 +163,11 @@ class Auth extends Controller {
         $file_keys = array_keys($array);
         $file_count = count($array[$file_keys[0]]);
         
-        for ($i=0; $i<$file_count; $i++) {
+        for ($i = 0; $i < $file_count; $i++) {
             foreach ($file_keys as $key) {
                 $file_ary[$i][$key] = $array[$key][$i];
             }
         }
-
         return $file_ary;
     }
 
@@ -193,7 +185,8 @@ class Auth extends Controller {
         exec("mkdir -p $path");
         $path .= "/";
 
-        $filename = Markup::uniqueString() . ".{$extension}";
+        $f = RequestMethods::post($name);
+        $filename = Markup::uniqueString();
 
         // For normal file upload via browser
         if (isset($_FILES[$name])) {
@@ -203,6 +196,7 @@ class Auth extends Controller {
             if (empty($extension)) {
                 return false;
             }
+            $filename .= ".{$extension}";
             /*** Check mime type before moving ***/
             if (isset($opts["mimes"])) {
                 if (!preg_match("/^{$opts['mimes']}$/", $extension)) {
@@ -216,7 +210,9 @@ class Auth extends Controller {
                 return FALSE;
             }
         // for app upload
-        } elseif ($f = RequestMethods::post($name)) {
+        } elseif ($f) {
+            $extension = RequestMethods::post("extension", ".pdf");
+            $f .= $extension;
             if (file_put_contents($filename, base64_decode($f))) {
                 return $filename;
             }

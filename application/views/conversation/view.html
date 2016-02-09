@@ -1,0 +1,76 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <h3>Conversations</h3>
+                <div class="media messages-container media-clearfix-xs-min media-grid">
+                    <form action="/conversation/message/{echo $conversation['id']}" method="post">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-envelope"></i> Send
+                                    </button>
+                                </div>
+                                <!-- /btn-group -->
+                                <input type="text" class="form-control share-text" name="message" placeholder="Write message..." required="">
+                                <input type="hidden" name="action" value="sendMessage">
+                            </div>
+                            <!-- /input-group -->
+                        </div>
+                    </form>
+                    <div class="media-body">
+                        {if !$all} {script $messages = array_slice($messages, -10)} {/if} 
+                        {foreach $m in $messages}
+                        <div class="row">
+                            <div class="col-md-6 {if $m['user_id'] == $user->id}pull-right{/if}">
+                                <div class="panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                                    <div class="panel-body">
+                                        <div class="media v-middle">
+                                            <div class="media-left">
+                                            </div>
+                                            <div class="media-body message">
+                                                {script $text = Shared\Markup::timeDiff(null, $m['created'])}
+                                                <p class="text-caption">
+                                                    {if $m['user_id'] == $user->id}
+                                                    <i class="fa fa-arrow-left"></i> {/if} {else}
+                                                    <i class="fa fa-arrow-right"></i> {/else} {echo $m['content']} <small class="text-light">{echo $text}</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                <form action="/conversation/message/{echo $conversation['id']}" method="post">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fa fa-envelope"></i> Send
+                                </button>
+                            </div>
+                            <!-- /btn-group -->
+                            <input type="text" class="form-control share-text" placeholder="Write message..." required="">
+                            <input type="hidden" name="action" value="sendMessage">
+                        </div>
+                        <!-- /input-group -->
+                    </div>
+                </form>
+                <br/>
+                <br/>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    {include student/includes/nav.html}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

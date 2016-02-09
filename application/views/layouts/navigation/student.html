@@ -3,10 +3,10 @@
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
             </button>
             <div class="navbar-brand navbar-brand-logo">
                 <a class="svg" href="/student"><i class="fa fa-cloud"></i>CloudEducate</a>
@@ -16,10 +16,41 @@
         <div class="collapse navbar-collapse" id="main-nav">
             <div class="navbar-right">
                 <ul class="nav navbar-nav navbar-nav-bordered navbar-nav-margin-right">
+                    <!-- notifications -->
+                    <li class="dropdown notifications updates">
+                        <a href="app-student-dashboard.html#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bell-o"></i>
+                            {script $c = new Notification(array("user" => $user))}
+                            {script $notifications = $c->fetch(true)}
+
+                            <span class="badge badge-primary">{echo count($notifications)}</span>
+                        </a>
+                        <ul class="dropdown-menu" role="notification">
+                            <li class="dropdown-header">Notifications</li>
+                            {foreach $n in $notifications}
+                            <li class="media">
+                                <div class="pull-right">
+                                    {if $n->read === true}
+                                    <span class="label label-info">Old</span>
+                                    {/if} {else}
+                                    <span class="label label-sucess">New</span>
+                                    {/else}
+                                </div>
+                                <div class="media-body">
+                                    <a href="{echo $n->url}">{echo $n->content}</a>
+                                    <br/>
+                                    {script $text = Shared\Markup::timeDiff(null, $n->created)}
+                                    <span class="text-caption text-muted">{echo $text}</span>
+                                </div>
+                            </li>
+                            {/foreach}
+                        </ul>
+                    </li>
+                    <!-- // END notifications -->
                     <!-- user -->
                     <li class="dropdown user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="{echo CDN}images/people/110/guy-6.jpg" alt="" class="img-circle" /> {echo $user->name}<span class="caret"></span>
+                            <img src="{echo CDN}images/people/110/guy-6.jpg" alt="" class="img-circle" /> {echo $user->name}<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="/student/dashboard"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>

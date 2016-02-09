@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="page-section">
+        <div class="row">
+            <div class="col-md-9">
+                <h3>Conversations</h3>
+                <div class="media messages-container media-clearfix-xs-min media-grid">
+                    <div class="media-body row">
+                        {foreach $c in $conversations}
+                        <div class="col-md-5 panel panel-default paper-shadow" data-z="0.5" data-hover-z="1" data-animated>
+                            <div class="panel-body">
+                                <div class="media v-middle">
+                                    <div class="media-left">
+                                        <a href="/conversation/view/{echo $c['id']}"><img src="{echo CDN}images/people/110/guy-5.jpg" alt="person" class="media-object img-circle width-50" /></a>
+                                    </div>
+                                    <div class="media-body message">
+                                        <h4 class="text-subhead margin-none"><a href="/conversation/view/{echo $c['id']}">{echo $c['title']}</a></h4>
+                                        {script $text = Shared\Markup::timeDiff(null, $c['created'])}
+                                        <p class="text-caption"><i class="fa fa-user"></i> Student</p>
+                                        <p class="text-caption text-light">Created: <i class="fa fa-clock-o"></i> {echo $text}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <div class="col-md-1"></div>
+                        {/foreach}
+                    </div>
+                </div>
+                <br/>
+                <br/>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                    <div class="panel-heading panel-collapse-trigger">
+                        <h4 class="panel-title">My Account</h4>
+                    </div>
+                    {include student/includes/nav.html}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

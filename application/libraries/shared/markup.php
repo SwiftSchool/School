@@ -94,6 +94,21 @@ namespace Shared {
             return ($string) ? $string : "";
         }
 
+        public static function timeDiff($start = null, $end) {
+            if (!$start) {
+                $start = date('Y-m-d H:i:s');
+            }
+            $datediff = strtotime($start) - strtotime($end);
+            if (($time = floor($datediff / (60 * 60 * 24))) > 0) {
+                $text = $time . " days ago";
+            } elseif (($time = floor($time * 24)) > 0) {
+                $text = $time . " hours ago";
+            } elseif (($time = floor($time * 60)) >= 0) {
+                $text = $time . " mins ago";
+            }
+            return $text;
+        }
+
     }
 
 }

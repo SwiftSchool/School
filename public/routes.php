@@ -37,6 +37,11 @@ $routes = array(
         "pattern" => "login",
         "controller" => "auth",
         "action" => "login"
+    ),
+    array(
+        "pattern" => "student/messages",
+        "controller" => "conversation",
+        "action" => "find"
     )
 );
 
