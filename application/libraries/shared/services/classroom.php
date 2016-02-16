@@ -21,8 +21,12 @@ class Classroom extends \Auth {
 		self::$_classroom = $classroom;
 	}
 
+    public function __construct($options = array()) {
+        parent::__construct($options);
+        $this->noview();
+    }
+
 	public function enrollments($classroom, $opts = array()) {
-		$this->noview();
         $enrollments = \Enrollment::all(array("classroom_id = ?" => $classroom->id), array("user_id"));
 
         $students = array();
@@ -109,7 +113,6 @@ class Classroom extends \Auth {
 	}
 
 	public function saveAttendance($classroom) {
-		$this->noview();
 		$mongo = Registry::get("MongoDB");
         $attendance = $mongo->attendance;
         
@@ -151,7 +154,6 @@ class Classroom extends \Auth {
 	}
 
 	public function weeklyPerformance($teach) {
-		$this->noview();
 		$perf = Registry::get("MongoDB")->performance;
         $user = Registry::get("session")->get("user");
 

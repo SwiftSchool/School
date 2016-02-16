@@ -12,8 +12,12 @@ use Framework\RequestMethods as RequestMethods;
 
 class Assignment extends \Auth {
 
+    public function __construct($options = array()) {
+        parent::__construct($options);
+        $this->noview();
+    }
+
 	public function all($assignments, $courses) {
-		$this->noview();
 		$user = Registry::get("session")->get("user");
         $sub = Registry::get("MongoDB")->submission;
         $submissions = $sub->find(array("user_id" => (int) $user));
@@ -42,7 +46,6 @@ class Assignment extends \Auth {
 	}
 
     public function total($classroom, $courses) {
-        $this->noview();
         $user = Registry::get("session")->get("user");
         $sub = Registry::get("MongoDB")->submission;
         $assignments = \Assignment::count(array("classroom_id = ?" => $classroom->id));
@@ -60,7 +63,6 @@ class Assignment extends \Auth {
     }
 
     public function submit($assignment) {
-        $this->noview();
         $user = Registry::get("session")->get("user");
         $sub = Registry::get("MongoDB")->submission;
         $maxSize = "6291456";

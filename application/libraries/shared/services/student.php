@@ -77,8 +77,12 @@ class Student extends \Shared\Controller {
 		}
 	}
 
+	public function __construct($options = array()) {
+        parent::__construct($options);
+        $this->noview();
+    }
+
 	public function performance($course) {
-		$this->noview();
 		$session = Registry::get("session");
 		$perf = Registry::get("MongoDB")->performance;
 
@@ -113,7 +117,6 @@ class Student extends \Shared\Controller {
 	}
 
 	public function results($course) {
-		$this->noview();
 		$exams = \Exam::all(array("course_id = ?" => $course->id), array("year", "type", "id"));
 
         $result = array();

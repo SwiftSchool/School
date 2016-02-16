@@ -19,6 +19,7 @@ class Attendance extends Classroom {
 	public function __construct($options = array()) {
 		parent::__construct($options);
 
+        $this->noview();
 		if (!self::$_collection) {
 			$mongo = Registry::get("MongoDB");
         	self::$_collection = $mongo->selectCollection("attendance");
@@ -29,7 +30,6 @@ class Attendance extends Classroom {
 	 * Find the attendance for the given user (student)
 	 */
 	public function find($start = null, $end = null) {
-        $this->noview();
         $attendance = self::$_collection;
         
         $user = Registry::get("session")->get("user");
