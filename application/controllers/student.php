@@ -25,6 +25,9 @@ class Student extends School {
         parent::logout();
     }
 
+    /**
+     * @protected
+     */
     public function render() {
         if ($this->scholar) {
             if ($this->actionView) {

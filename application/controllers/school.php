@@ -17,6 +17,9 @@ class School extends Auth {
      */
     protected $_organization;
 
+    /**
+     * @protected
+     */
     public function render() {
         if ($this->organization) {
             if ($this->actionView) {

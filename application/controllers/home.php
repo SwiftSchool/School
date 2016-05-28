@@ -10,6 +10,7 @@ use Framework\Registry as Registry;
 
 class Home extends Controller {
     /**
+     * @protected
      * Will set variables to all the views of a controller
      */
     public function render() {
