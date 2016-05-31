@@ -44,6 +44,11 @@ class Home extends Controller {
         $view = $this->getActionView();
     }
 
+    public function features() {
+        $this->setSEO(array("title" => "Features"));
+        $view = $this->getActionView();
+    }
+
     public function test() {
         $this->JSONView();
         $view = $this->getActionView();

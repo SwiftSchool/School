@@ -39,6 +39,11 @@ $routes = array(
         "action" => "login"
     ),
     array(
+        "pattern" => "index",
+        "controller" => "home",
+        "action" => "index"
+    ),
+    array(
         "pattern" => "student/messages",
         "controller" => "conversation",
         "action" => "find"
