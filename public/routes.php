@@ -39,6 +39,11 @@ $routes = array(
         "action" => "login"
     ),
     array(
+        "pattern" => "partners",
+        "controller" => "home",
+        "action" => "partners"
+    ),
+    array(
         "pattern" => "index",
         "controller" => "home",
         "action" => "index"

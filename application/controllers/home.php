@@ -49,6 +49,11 @@ class Home extends Controller {
         $view = $this->getActionView();
     }
 
+    public function partners() {
+        $this->setSEO(array("title" => "Partners"));
+        $view = $this->getActionView();
+    }
+
     public function test() {
         $this->JSONView();
         $view = $this->getActionView();
